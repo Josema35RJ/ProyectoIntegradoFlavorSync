@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -59,6 +60,12 @@ public class cookModel {
 	// Que cocinas, postres, dulces...
 	private List<String> listSpecialty = Arrays.asList("Todas", "Pastelero", "Carnes", "Pescado y Mariscos", "Verduras",
 			"Salsas", "Parrilla");
+	
+	 //Tecnicas usadas en la receta
+	  //Mas adelante Tecnicas sera otra entidad, con nombre de la tecnica, creador, restaurante o lugar donde se creo y descripcion o instruccion de como es
+	    @NotNull
+	    private List<String> listRecipeTechniques;
+
 
 	// Cuantos años tienes cocinando
 	@Positive(message = "The experience must be a positive number")
@@ -87,7 +94,7 @@ public class cookModel {
 			@Size(max = 100, message = "The surname cannot exceed 100 characters") @NotBlank(message = "surname is required") String surname,
 			@Email @Size(max = 100, message = "The email cannot exceed 100 characters") @NotBlank(message = "The email is required") String username,
 			@NotBlank(message = "Age is required") @Positive(message = "The height must be a positive number") int age,
-			@NotBlank(message = "The password is required") String password, List<String> listSpecialty,
+			@NotBlank(message = "The password is required") String password, List<String> listSpecialty, List<String>  listRecipeTechniques,
 			@Positive(message = "The experience must be a positive number") int experience) {
 		super();
 		this.id = id;
@@ -98,6 +105,7 @@ public class cookModel {
 		this.password = password;
 		this.enabled = true;
 		this.listSpecialty = listSpecialty;
+		this. listRecipeTechniques =  listRecipeTechniques;
 		this.experience = experience;
 		this.rol = "Aprendiz";
 		this.punctuation = 0;
@@ -166,6 +174,16 @@ public class cookModel {
 	public void setListSpecialty(List<String> listSpecialty) {
 		this.listSpecialty = listSpecialty;
 	}
+	
+	
+
+	public List<String> getListRecipeTechniques() {
+		return listRecipeTechniques;
+	}
+
+	public void setListRecipeTechniques(List<String> listRecipeTechniques) {
+		this.listRecipeTechniques = listRecipeTechniques;
+	}
 
 	public int getExperience() {
 		return experience;
@@ -211,8 +229,9 @@ public class cookModel {
 	public String toString() {
 		return "cookModel [id=" + id + ", firstname=" + firstname + ", surname=" + surname + ", username=" + username
 				+ ", age=" + age + ", password=" + password + ", enabled=" + enabled + ", listSpecialty="
-				+ listSpecialty + ", experience=" + experience + ", rol=" + rol + ", punctuation=" + punctuation
-				+ ", listRecipes=" + listRecipes + ", listRecipesFavorites=" + listRecipesFavorites + "]";
+				+ listSpecialty + ", listRecipeTechniques=" + listRecipeTechniques + ", experience=" + experience
+				+ ", rol=" + rol + ", punctuation=" + punctuation + ", listRecipes=" + listRecipes
+				+ ", listRecipesFavorites=" + listRecipesFavorites + "]";
 	}
 
 }

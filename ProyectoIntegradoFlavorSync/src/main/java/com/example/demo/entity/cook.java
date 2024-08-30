@@ -13,6 +13,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -28,16 +29,16 @@ public class cook {
 	private Integer id;
 
 	// Nombre del cocinero
-	@Column(name = "firstname", nullable = false)
-	@Size(max = 100, message = "The firstname cannot exceed 100 characters")
-	@NotBlank(message = "firstname is required")
+	@Column(name = "firstName", nullable = false)
+	@Size(max = 100, message = "The firstName cannot exceed 100 characters")
+	@NotBlank(message = "firstName is required")
 	private String firstname;
 
 	// apellidos del cocinero
-	@Column(name = "surname", nullable = false)
-	@Size(max = 100, message = "The surname cannot exceed 100 characters")
-	@NotBlank(message = "surname is required")
-	private String surname;
+	@Column(name = "lastName", nullable = false)
+	@Size(max = 100, message = "The lastName cannot exceed 100 characters")
+	@NotBlank(message = "lastName is required")
+	private String lastName;
 
 	// correo para que entre en su cuenta
 	@Column(name = "email", nullable = false)
@@ -61,6 +62,12 @@ public class cook {
 
 	// Que cocinas, postres, dulces...
 	private List<String> listSpecialty;
+	
+	 //Tecnicas usadas en la receta
+	  //Mas adelante Tecnicas sera otra entidad, con nombre de la tecnica, creador, restaurante o lugar donde se creo y descripcion o instruccion de como es
+	    @NotNull
+	    private List<String> listRecipeTechniques;
+
 
 	// Cuantos años tienes cocinando
 	@Positive(message = "The experience must be a positive number")
