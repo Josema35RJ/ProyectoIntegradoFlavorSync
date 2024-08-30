@@ -6,7 +6,6 @@ import com.example.demo.model.cookModel;
 
 public interface CookService {
 
-	boolean addCook (cookModel cook);
 	boolean deletedCook (int id);
 	boolean updateCook (cookModel cook);
 	List<cookModel> getAllCooks();

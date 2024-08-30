@@ -16,6 +16,7 @@ public interface CommentRepository extends JpaRepository<comment, Serializable> 
 	boolean updateComment (commentModel comment);
 	boolean deleteComment (int commentId);
 	List<comment> findByCommentId(int CommnetId);
-	List<comment> findByCommentRecipe (int recipeId);
+	List<comment> findByRecipeId (int recipeId);
+	List<comment> findByRecipeIdAndPunctuation(int recipeId, int Punctuaction);
 
 }

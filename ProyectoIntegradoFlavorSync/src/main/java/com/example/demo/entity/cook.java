@@ -49,27 +49,29 @@ public class cook {
 	// edad del cocinero
 	@NotBlank(message = "Age is required")
 	@Positive(message = "The height must be a positive number")
-	private List<Integer> age = IntStream.rangeClosed(18, 100).boxed().collect(Collectors.toList());;
+	private int age;
 
 	// contraseña para que entre en su cuenta
 	@Column(name = "password", nullable = false)
 	@NotBlank(message = "The password is required")
 	private String password;
+	
+	@NotBlank(message = "The enabled is required")
+	private boolean enabled;
 
 	// Que cocinas, postres, dulces...
-	private List<String> listSpecialty = Arrays.asList("Todas", "Pastelero", "Carnes", "Pescado y Mariscos", "Verduras",
-			"Salsas", "Parrilla");
+	private List<String> listSpecialty;
 
 	// Cuantos años tienes cocinando
 	@Positive(message = "The experience must be a positive number")
-	private List<Integer> experience = IntStream.rangeClosed(0,60).boxed().collect(Collectors.toList());;
+	private int experience;
 
 	// Segun la puntuacion tendra un rol u otro (empezando por aprendiz)
-	private List<String> rol = Arrays.asList("Amateur", "Aprendiz", "Profesional", "Chef");
+	private String rol ;
 
 	// Esta puntuacion se obtiene, en base a la media de notas de las recetas
 	@Positive(message = "The punctuaction must be a positive number")
-	private List<Integer> punctuation = Arrays.asList(1,2,3,4,5,6,7,8,9,10);
+	private int punctuation;
 
 	// Lista de recetas elaboradas o creadas por este cocinero
 	private List<recipe> listRecipes;

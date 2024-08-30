@@ -28,25 +28,23 @@ public class recipeModel {
 	private String name;
 
 	// Cocinero aprendiz, profesional, chef?
-	private List<String> level = Arrays.asList("Aprendiz", "Profesional", "Chef");
+	private String level;
 
 	// Para cuantas personas es la receta
 	@Column(name = "diners", nullable = false)
 	@Positive(message = "The diners must be a positive number")
-	private List<Integer> diners = IntStream.rangeClosed(1, 100).boxed().collect(Collectors.toList());
+	private int diners;
 
 	// Cuanto se tarda en elaborar la receta, en minutos
 	@Column(name = "preparationTime", nullable = false)
 	@Positive(message = "The preparationTime must be a positive number")
-	private List<Double> preparationTime = IntStream.rangeClosed(1, 100).asDoubleStream().boxed()
-			.collect(Collectors.toList());
+	private float preparationTime ;
 
 	// Si la receta se hace, en horno, microondas
-	private List<String> whereItisDone = Arrays.asList("Horno", "Microondas", "Freidora Aceite", "Freidora Aire",
-			"Vitroceramica"); // (kitchenappliance)
+	private List<String> whereItisDone; // (kitchenappliance)
 
 	// Si la receta es postre, entrante, primer plato...
-	private List<String> category = Arrays.asList("Postre", "Entrante", "Primer Plato");
+	private List<String> category ;
 
 	// En cada comentario se valora, la receta, de esa media, se otendra esta nota
 	@Positive(message = "The averageRating must be a positive number")
@@ -60,20 +58,25 @@ public class recipeModel {
 
 	// Lista de utensilios
 	private List<String> listkitchenUtensils;
+	
+	 //Tecnicas usadas en la receta
+	//Mas adelante Tecnicas sera otra entidad, con nombre de la tecnica, creador, restaurante o lugar donde se creo y descripcion o instruccion de como es
+    @NotNull
+    private List<String> listRecipeTechniques;
 
 	// Intrucciones para elaborar la receta
 	@NotNull
 	private String instructions;
 
-	private List<String> difficulty = Arrays.asList("Facil", "Medio", "Dificil", "Experto");
+	private String difficulty;
 
 	public recipeModel(Integer id, @Size(max = 25, message = "The name cannot exceed 25 characters") String name,
-			List<String> level, @Positive(message = "The diners must be a positive number") List<Integer> diners,
-			@Positive(message = "The preparationTime must be a positive number") List<Double> preparationTime,
+			String level, @Positive(message = "The diners must be a positive number") int diners,
+			@Positive(message = "The preparationTime must be a positive number") float preparationTime,
 			List<String> whereItisDone, List<String> category,
 			@Positive(message = "The punctuation must be a positive number") float averageRating,
-			List<commentModel> listComments, List<ingredientModel> listIngredients, List<String> listkitchenUtensils,
-			@NotNull String instructions, List<String> difficulty) {
+			List<commentModel> listComments, List<ingredientModel> listIngredients, List<String> listkitchenUtensils, List<String>listRecipeTechniques, 
+			@NotNull String instructions, String difficulty) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -86,6 +89,7 @@ public class recipeModel {
 		this.listComments = listComments;
 		this.listIngredients = listIngredients;
 		this.listkitchenUtensils = listkitchenUtensils;
+		this.listRecipeTechniques = listRecipeTechniques;
 		this.instructions = instructions;
 		this.difficulty = difficulty;
 	}
@@ -106,27 +110,27 @@ public class recipeModel {
 		this.name = name;
 	}
 
-	public List<String> getLevel() {
+	public String getLevel() {
 		return level;
 	}
 
-	public void setLevel(List<String> level) {
+	public void setLevel(String level) {
 		this.level = level;
 	}
 
-	public List<Integer> getDiners() {
+	public int getDiners() {
 		return diners;
 	}
 
-	public void setDiners(List<Integer> diners) {
+	public void setDiners(int diners) {
 		this.diners = diners;
 	}
 
-	public List<Double> getPreparationTime() {
+	public float getPreparationTime() {
 		return preparationTime;
 	}
 
-	public void setPreparationTime(List<Double> preparationTime) {
+	public void setPreparationTime(float preparationTime) {
 		this.preparationTime = preparationTime;
 	}
 
@@ -178,6 +182,14 @@ public class recipeModel {
 		this.listkitchenUtensils = listkitchenUtensils;
 	}
 
+	public List<String> getListRecipeTechniques() {
+		return listRecipeTechniques;
+	}
+
+	public void setListRecipeTechniques(List<String> listRecipeTechniques) {
+		this.listRecipeTechniques = listRecipeTechniques;
+	}
+
 	public String getInstructions() {
 		return instructions;
 	}
@@ -186,11 +198,11 @@ public class recipeModel {
 		this.instructions = instructions;
 	}
 
-	public List<String> getDifficulty() {
+	public String getDifficulty() {
 		return difficulty;
 	}
 
-	public void setDifficulty(List<String> difficulty) {
+	public void setDifficulty(String difficulty) {
 		this.difficulty = difficulty;
 	}
 
@@ -199,7 +211,7 @@ public class recipeModel {
 		return "recipeModel [id=" + id + ", name=" + name + ", level=" + level + ", diners=" + diners
 				+ ", preparationTime=" + preparationTime + ", whereItisDone=" + whereItisDone + ", category=" + category
 				+ ", averageRating=" + averageRating + ", listComments=" + listComments + ", listIngredients="
-				+ listIngredients + ", listkitchenUtensils=" + listkitchenUtensils + ", instructions=" + instructions
-				+ ", difficulty=" + difficulty + "]";
+				+ listIngredients + ", listkitchenUtensils=" + listkitchenUtensils + ", listRecipeTechniques="
+				+ listRecipeTechniques + ", instructions=" + instructions + ", difficulty=" + difficulty + "]";
 	}
 }

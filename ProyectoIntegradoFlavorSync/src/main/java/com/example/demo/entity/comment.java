@@ -41,5 +41,5 @@ public class comment {
 	// con las demas, para obtener las valoracion a la receta)
 	@Column(name = "punctuaction", nullable = false)
 	@Positive(message = "The punctuation must be a positive number")
-	private List<Integer> punctuation = IntStream.rangeClosed(1, 10).boxed().collect(Collectors.toList());;
+	private int punctuation ;
 }

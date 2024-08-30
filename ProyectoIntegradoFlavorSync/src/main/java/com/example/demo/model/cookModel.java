@@ -46,12 +46,15 @@ public class cookModel {
 	// edad del cocinero
 	@NotBlank(message = "Age is required")
 	@Positive(message = "The height must be a positive number")
-	private List<Integer> age = IntStream.rangeClosed(18, 100).boxed().collect(Collectors.toList());;
+	private int age;
 
 	// contraseña para que entre en su cuenta
 	@Column(name = "password", nullable = false)
 	@NotBlank(message = "The password is required")
 	private String password;
+	
+	@NotBlank(message = "The enabled is required")
+	private boolean enabled;
 
 	// Que cocinas, postres, dulces...
 	private List<String> listSpecialty = Arrays.asList("Todas", "Pastelero", "Carnes", "Pescado y Mariscos", "Verduras",
@@ -59,14 +62,14 @@ public class cookModel {
 
 	// Cuantos años tienes cocinando
 	@Positive(message = "The experience must be a positive number")
-	private List<Integer> experience = IntStream.rangeClosed(0,60).boxed().collect(Collectors.toList());;
+	private int experience;
 
 	// Segun la puntuacion tendra un rol u otro (empezando por aprendiz)
-	private List<String> rol = Arrays.asList("Amateur", "Aprendiz", "Profesional", "Chef");
+	private String rol;
 
 	// Esta puntuacion se obtiene, en base a la media de notas de las recetas
 	@Positive(message = "The punctuaction must be a positive number")
-	private List<Integer> punctuation = Arrays.asList(1,2,3,4,5,6,7,8,9,10);
+	private int punctuation;
 
 	// Lista de recetas elaboradas o creadas por este cocinero
 	private List<recipeModel> listRecipes;
@@ -83,11 +86,9 @@ public class cookModel {
 			@Size(max = 100, message = "The firstname cannot exceed 100 characters") @NotBlank(message = "firstname is required") String firstname,
 			@Size(max = 100, message = "The surname cannot exceed 100 characters") @NotBlank(message = "surname is required") String surname,
 			@Email @Size(max = 100, message = "The email cannot exceed 100 characters") @NotBlank(message = "The email is required") String username,
-			@NotBlank(message = "Age is required") @Positive(message = "The height must be a positive number") List<Integer> age,
+			@NotBlank(message = "Age is required") @Positive(message = "The height must be a positive number") int age,
 			@NotBlank(message = "The password is required") String password, List<String> listSpecialty,
-			@Positive(message = "The experience must be a positive number") List<Integer> experience, List<String> rol,
-			@Positive(message = "The punctuaction must be a positive number") List<Integer> punctuation,
-			List<recipeModel> listRecipes, List<recipeModel> listRecipesFavorites) {
+			@Positive(message = "The experience must be a positive number") int experience) {
 		super();
 		this.id = id;
 		this.firstname = firstname;
@@ -95,12 +96,11 @@ public class cookModel {
 		this.username = username;
 		this.age = age;
 		this.password = password;
+		this.enabled = true;
 		this.listSpecialty = listSpecialty;
 		this.experience = experience;
-		this.rol = rol;
-		this.punctuation = punctuation;
-		this.listRecipes = listRecipes;
-		this.listRecipesFavorites = listRecipesFavorites;
+		this.rol = "Aprendiz";
+		this.punctuation = 0;
 	}
 
 	public Integer getId() {
@@ -135,11 +135,11 @@ public class cookModel {
 		this.username = username;
 	}
 
-	public List<Integer> getAge() {
+	public int getAge() {
 		return age;
 	}
 
-	public void setAge(List<Integer> age) {
+	public void setAge(int age) {
 		this.age = age;
 	}
 
@@ -151,6 +151,14 @@ public class cookModel {
 		this.password = password;
 	}
 
+	public boolean isEnabled() {
+		return enabled;
+	}
+
+	public void setEnabled(boolean enabled) {
+		this.enabled = enabled;
+	}
+
 	public List<String> getListSpecialty() {
 		return listSpecialty;
 	}
@@ -159,27 +167,27 @@ public class cookModel {
 		this.listSpecialty = listSpecialty;
 	}
 
-	public List<Integer> getExperience() {
+	public int getExperience() {
 		return experience;
 	}
 
-	public void setExperience(List<Integer> experience) {
+	public void setExperience(int experience) {
 		this.experience = experience;
 	}
 
-	public List<String> getRol() {
+	public String getRol() {
 		return rol;
 	}
 
-	public void setRol(List<String> rol) {
+	public void setRol(String rol) {
 		this.rol = rol;
 	}
 
-	public List<Integer> getPunctuation() {
+	public int getPunctuation() {
 		return punctuation;
 	}
 
-	public void setPunctuation(List<Integer> punctuation) {
+	public void setPunctuation(int punctuation) {
 		this.punctuation = punctuation;
 	}
 
@@ -201,10 +209,10 @@ public class cookModel {
 
 	@Override
 	public String toString() {
-		return "cookModel [id=" + id + ", firstname=" + firstname + ", surname=" + surname + ", email=" + username
-				+ ", age=" + age + ", password=" + password + ", listSpecialty=" + listSpecialty + ", experience="
-				+ experience + ", rol=" + rol + ", punctuation=" + punctuation + ", listRecipes=" + listRecipes
-				+ ", listRecipesFavorites=" + listRecipesFavorites + "]";
+		return "cookModel [id=" + id + ", firstname=" + firstname + ", surname=" + surname + ", username=" + username
+				+ ", age=" + age + ", password=" + password + ", enabled=" + enabled + ", listSpecialty="
+				+ listSpecialty + ", experience=" + experience + ", rol=" + rol + ", punctuation=" + punctuation
+				+ ", listRecipes=" + listRecipes + ", listRecipesFavorites=" + listRecipesFavorites + "]";
 	}
-	
+
 }

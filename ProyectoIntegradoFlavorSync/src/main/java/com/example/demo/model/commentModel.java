@@ -38,11 +38,11 @@ public class commentModel {
 	// con las demas, para obtener las valoracion a la receta)
 	@Column(name = "punctuaction", nullable = false)
 	@Positive(message = "The punctuation must be a positive number")
-	private List<Integer> punctuation = IntStream.rangeClosed(1, 10).boxed().collect(Collectors.toList());
+	private int punctuation;
 
 	public commentModel(Integer id, int cookId, int recipeId,
 			@Size(max = 255, message = "The description cannot exceed 255 characters") String description,
-			@Positive(message = "The punctuation must be a positive number") List<Integer> punctuation) {
+			@Positive(message = "The punctuation must be a positive number") int punctuation) {
 		super();
 		this.id = id;
 		this.cookId = cookId;
@@ -83,11 +83,11 @@ public class commentModel {
 		Description = description;
 	}
 
-	public List<Integer> getPunctuation() {
+	public int getPunctuation() {
 		return punctuation;
 	}
 
-	public void setPunctuation(List<Integer> punctuation) {
+	public void setPunctuation(int punctuation) {
 		this.punctuation = punctuation;
 	}
 

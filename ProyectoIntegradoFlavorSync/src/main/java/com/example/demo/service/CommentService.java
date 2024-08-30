@@ -10,6 +10,6 @@ public interface CommentService {
 	boolean updateComment (commentModel comment);
 	boolean deleteComment (int id);
 	List<commentModel> getListComments();
-	List<commentModel> getListFindByPunctuationComments();
-
+	List<commentModel> getListCommentsFindByRecipeIdAndPunctuation(int recipeId, int punctuation);
+	List<commentModel> getListCommentsFindByRecipeId(int recipeId);
 }
