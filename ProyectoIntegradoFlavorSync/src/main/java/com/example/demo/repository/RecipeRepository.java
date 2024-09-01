@@ -12,11 +12,11 @@ import com.example.demo.entity.recipe;
 @Repository("recipeRepository")
 public interface RecipeRepository extends JpaRepository<recipe, Serializable> {
 
-	List<recipe> findByRecipeId(int RecipeId);
-    List<recipe> findByIngredients (List<ingredient> ingredientsModel);
+	recipe findById(int RecipeId);
+    List<recipe> findBylistIngredients (List<ingredient> ingredientsModel);
     List<recipe> findByLevel (String level);
     List<recipe> findByPreparationTime (double preparationTime);
-    List<recipe> findByWhereItisDone (String whereItisDone);
+    List<recipe> findByWhereItisDone (List<String> whereItisDone);
     List<recipe> findByCategory (String category);
     List<recipe> findByAverageRating (float averageRating);
     List<recipe> findByDifficulty (String difficulty);

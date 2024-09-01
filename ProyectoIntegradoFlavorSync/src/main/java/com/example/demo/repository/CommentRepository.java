@@ -12,10 +12,7 @@ import com.example.demo.model.commentModel;
 @Repository("commentRepository")
 public interface CommentRepository extends JpaRepository<comment, Serializable> {
 
-	boolean addCommnet (commentModel comment);
-	boolean updateComment (commentModel comment);
-	boolean deleteComment (int commentId);
-	List<comment> findByCommentId(int CommnetId);
+	comment findById(int CommnetId);
 	List<comment> findByRecipeId (int recipeId);
 	List<comment> findByRecipeIdAndPunctuation(int recipeId, int Punctuaction);
 

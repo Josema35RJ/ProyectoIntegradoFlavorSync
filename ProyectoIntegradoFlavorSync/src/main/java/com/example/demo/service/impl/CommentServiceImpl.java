@@ -61,10 +61,10 @@ public class CommentServiceImpl implements CommentService {
 	@Override
 	public boolean deleteComment(int id) {
 	    // Encuentra el comentario por su ID
-	    comment c = commentRepository.findById(id).get();
+	    comment c = commentRepository.findById(id);
 	    
 	    // Encuentra la receta asociada al comentario
-	    recipeModel r = recipeConverter.transform(recipeRepository.findById(c.getRecipeId()).get());
+	    recipeModel r = recipeConverter.transform(recipeRepository.findById(c.getRecipeId()));
 	    
 	    // Calcula la nueva nota media restando la puntuación del comentario a borrar
 	    float newAverageRating = (float) ((r.getAverageRating() * r.getListComments().size() - c.getPunctuation()) / (r.getListComments().size() - 1));

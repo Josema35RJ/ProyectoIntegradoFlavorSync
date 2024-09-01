@@ -12,9 +12,6 @@ import com.example.demo.model.ingredientModel;
 @Repository("ingredientRepository")
 public interface IngredientRepository extends JpaRepository<ingredient, Serializable> {
 
-    boolean addIngredient (ingredientModel in);
-    boolean updateIngredient (ingredientModel in);
-    boolean deleteIngredient (int ingredientId);
-	List<ingredient> findByIngredientId(int ingredientId);
+	ingredient findById(int ingredientId);
 
 }

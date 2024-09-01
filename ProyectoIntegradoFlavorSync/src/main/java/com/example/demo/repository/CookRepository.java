@@ -11,8 +11,8 @@ import com.example.demo.entity.cook;
 @Repository("cookRepository")
 public interface CookRepository extends JpaRepository<cook, Serializable> {
 
-	cook findByCookId(int CookId);
-	List<cook> findByRol (String rol);
+	cook findByid(int CookId);
+	List<cook> findByRole (String rol);
 	List<cook> findByAge (int age); //Para ayudar a cocineros jovenes
 	cook findByUsername(String username);
 

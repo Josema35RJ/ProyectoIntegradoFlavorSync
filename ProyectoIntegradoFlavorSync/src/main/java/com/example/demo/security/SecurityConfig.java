@@ -12,7 +12,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -21,14 +20,14 @@ import jakarta.servlet.http.HttpServletResponse;
 @EnableWebSecurity
 public class SecurityConfig {
 
-	@Bean
-	AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
-			throws Exception {
-		return authenticationConfiguration.getAuthenticationManager();
-	}
+    @Bean
+    AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration)
+            throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
+    }
 
-	@Bean
-	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    @Bean
+    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/", "/imgs/*", "/auth/**", "/webjars/*", "/css/*", "/files/", "/js/*").permitAll()
                 .requestMatchers("/cookChef/*").hasAuthority("ROL_GYMCHEF")
@@ -43,11 +42,8 @@ public class SecurityConfig {
                             public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
                                                                 Authentication authentication) throws IOException, ServletException {
                                 Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
-                                if (roles.contains("ROL_GYMCHEF") || roles.contains("ROL_COOKPROFESSIONAL")) {
-                                    response.sendRedirect("cookChef/chefPanel");
-                                } else if (roles.contains("ROL_COOKAPRENDIZ") || roles.contains("ROL_COOKAMATEUR")) {
-                                    //En la ventana del Amateur aparecera todo, ya que esto solo quiero disfrutar y pasarlo bien, mientras que en aprendiz, saldra como al chef y al profesional, pero sin poder crear recetas
-                                	response.sendRedirect("cookAmateur/amateurPanel"); // TODO: Cambiar la ruta para empresa
+                               if (roles.contains("ROL_COOKAPRENDIZ")) {
+                                    response.sendRedirect("cookAprendiz/aprendizPanel");
                                 }
                             }
                         }).permitAll())
@@ -58,6 +54,6 @@ public class SecurityConfig {
                         .invalidateHttpSession(true)
                         .deleteCookies("JSESSIONID"))
                 .headers(headers -> headers.cacheControl());
-	    return http.build();
-	}
+        return http.build();
+    }
 }

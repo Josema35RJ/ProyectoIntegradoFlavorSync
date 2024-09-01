@@ -48,7 +48,7 @@ public class IngredientServiceImpl implements IngredientService {
 	@Override
 	public boolean deleteIngredient(int id) {
 		// TODO Auto-generated method stub
-		ingredientRepository.delete(ingredientRepository.findById(id).get());
+		ingredientRepository.delete(ingredientRepository.findById(id));
 		return true;
 	}
 

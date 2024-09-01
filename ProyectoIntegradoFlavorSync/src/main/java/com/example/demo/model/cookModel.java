@@ -26,16 +26,16 @@ public class cookModel {
 	private Integer id;
 
 	// Nombre del cocinero
-	@Column(name = "firstname", nullable = false)
-	@Size(max = 100, message = "The firstname cannot exceed 100 characters")
-	@NotBlank(message = "firstname is required")
-	private String firstname;
+	@Column(name = "firstName", nullable = false)
+	@Size(max = 100, message = "The firstName cannot exceed 100 characters")
+	@NotBlank(message = "firstName is required")
+	private String firstName;
 
 	// apellidos del cocinero
-	@Column(name = "surname", nullable = false)
-	@Size(max = 100, message = "The surname cannot exceed 100 characters")
-	@NotBlank(message = "surname is required")
-	private String surname;
+	@Column(name = "lastName", nullable = false)
+	@Size(max = 100, message = "The lastName cannot exceed 100 characters")
+	@NotBlank(message = "lastName is required")
+	private String lastName;
 
 	// correo para que entre en su cuenta
 	@Column(name = "email", nullable = false)
@@ -72,7 +72,7 @@ public class cookModel {
 	private int experience;
 
 	// Segun la puntuacion tendra un rol u otro (empezando por aprendiz)
-	private String rol;
+	private String role;
 
 	// Esta puntuacion se obtiene, en base a la media de notas de las recetas
 	@Positive(message = "The punctuaction must be a positive number")
@@ -90,16 +90,16 @@ public class cookModel {
 	}
 
 	public cookModel(Integer id,
-			@Size(max = 100, message = "The firstname cannot exceed 100 characters") @NotBlank(message = "firstname is required") String firstname,
-			@Size(max = 100, message = "The surname cannot exceed 100 characters") @NotBlank(message = "surname is required") String surname,
+			@Size(max = 100, message = "The firstName cannot exceed 100 characters") @NotBlank(message = "firstName is required") String firstName,
+			@Size(max = 100, message = "The lastName cannot exceed 100 characters") @NotBlank(message = "lastName is required") String lastName,
 			@Email @Size(max = 100, message = "The email cannot exceed 100 characters") @NotBlank(message = "The email is required") String username,
 			@NotBlank(message = "Age is required") @Positive(message = "The height must be a positive number") int age,
 			@NotBlank(message = "The password is required") String password, List<String> listSpecialty, List<String>  listRecipeTechniques,
 			@Positive(message = "The experience must be a positive number") int experience) {
 		super();
 		this.id = id;
-		this.firstname = firstname;
-		this.surname = surname;
+		this.firstName = firstName;
+		this.lastName = lastName;
 		this.username = username;
 		this.age = age;
 		this.password = password;
@@ -107,7 +107,7 @@ public class cookModel {
 		this.listSpecialty = listSpecialty;
 		this. listRecipeTechniques =  listRecipeTechniques;
 		this.experience = experience;
-		this.rol = "Aprendiz";
+		this.role = "Aprendiz";
 		this.punctuation = 0;
 	}
 
@@ -119,20 +119,20 @@ public class cookModel {
 		this.id = id;
 	}
 
-	public String getFirstname() {
-		return firstname;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setFirstname(String firstname) {
-		this.firstname = firstname;
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
 	}
 
-	public String getSurname() {
-		return surname;
+	public String getLastName() {
+		return lastName;
 	}
 
-	public void setSurname(String surname) {
-		this.surname = surname;
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	public String getUsername() {
@@ -193,12 +193,12 @@ public class cookModel {
 		this.experience = experience;
 	}
 
-	public String getRol() {
-		return rol;
+	public String getRole() {
+		return role;
 	}
 
 	public void setRol(String rol) {
-		this.rol = rol;
+		this.role = rol;
 	}
 
 	public int getPunctuation() {
@@ -227,10 +227,10 @@ public class cookModel {
 
 	@Override
 	public String toString() {
-		return "cookModel [id=" + id + ", firstname=" + firstname + ", surname=" + surname + ", username=" + username
+		return "cookModel [id=" + id + ", firstname=" + firstName + ", surname=" + lastName + ", username=" + username
 				+ ", age=" + age + ", password=" + password + ", enabled=" + enabled + ", listSpecialty="
 				+ listSpecialty + ", listRecipeTechniques=" + listRecipeTechniques + ", experience=" + experience
-				+ ", rol=" + rol + ", punctuation=" + punctuation + ", listRecipes=" + listRecipes
+				+ ", role=" + role + ", punctuation=" + punctuation + ", listRecipes=" + listRecipes
 				+ ", listRecipesFavorites=" + listRecipesFavorites + "]";
 	}
 

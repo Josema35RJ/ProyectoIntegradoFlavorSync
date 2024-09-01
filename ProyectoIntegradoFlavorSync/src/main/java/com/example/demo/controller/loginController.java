@@ -81,21 +81,20 @@ public class loginController {
 
 		cook.setUsername(cook.getUsername().toLowerCase());
 
-		if (cook.getFirstname().length() > 25) {
+		if (cook.getFirstName().length() > 25) {
 			flash.addFlashAttribute("error", "¡El nombre excede los 25 caracteres!");
 			return "redirect:" + REGISTER_VIEW;
-		}else if (cook.getSurname().length() > 50) {
+		} else if (cook.getLastName().length() > 50) {
 			flash.addFlashAttribute("error", "¡Los apellidos excede los 50 caracteres!");
 			return "redirect:" + REGISTER_VIEW;
-		}else if  (cook.getExperience() < 0) {
+		} else if (cook.getExperience() < 0) {
 			flash.addFlashAttribute("error", "¡La experiencia debe ser mayor o igual a 0!");
 			return "redirect:" + REGISTER_VIEW;
-		}else if  (cook.getAge() < 18) {
+		} else if (cook.getAge() < 18) {
 			flash.addFlashAttribute("error", "¡La edad debe ser mayor o igual a 18!");
 			return "redirect:" + REGISTER_VIEW;
 		} else if (cookService.existeUsername(cook.getUsername())) {
-			flash.addFlashAttribute("error",
-					"Este correo electrónico ya está registrado");
+			flash.addFlashAttribute("error", "Este correo electrónico ya está registrado");
 			return "redirect:" + REGISTER_VIEW;
 		} else if (!isValidEmailAddress(cook.getUsername())) {
 			flash.addFlashAttribute("error", "¡El correo electrónico no tiene un formato válido!");
@@ -106,15 +105,6 @@ public class loginController {
 		} else if (cook.getPassword().length() < 6 || cook.getPassword().length() > 18) {
 			flash.addFlashAttribute("error", "¡La contraseña debe tener entre 6 y 18 caracteres!");
 			return "redirect:" + REGISTER_VIEW;
-		}else if (cook.getRol().equalsIgnoreCase("Profesional") || cook.getRol().equalsIgnoreCase("Chef")) {
-			if(cook.getListSpecialty().isEmpty()) {
-				flash.addFlashAttribute("error", "¡La lista no puede estar vacia");
-				return "redirect:" + REGISTER_VIEW;
-			}else {
-				cookService.registrar(cook);
-				flash.addFlashAttribute("success", "¡Cocinero registrado exitosamente!");
-				return "redirect:" + LOGIN_VIEW;
-			}
 		} else {
 			cookService.registrar(cook);
 			flash.addFlashAttribute("success", "¡Cocinero registrado exitosamente!");
