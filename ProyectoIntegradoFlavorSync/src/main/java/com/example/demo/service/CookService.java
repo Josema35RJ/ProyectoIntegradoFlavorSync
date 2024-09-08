@@ -3,8 +3,8 @@ package com.example.demo.service;
 import java.util.List;
 
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
+import com.example.demo.entity.cook;
 import com.example.demo.model.cookModel;
 
 public interface CookService {
@@ -19,4 +19,6 @@ public interface CookService {
 	boolean existeUsername(String username);
 	void registrar(cookModel cook);
 	UserDetails loadUserByUsername(String email);
+	cookModel findById(int id);
+	cookModel findByUsername(String username);
 }

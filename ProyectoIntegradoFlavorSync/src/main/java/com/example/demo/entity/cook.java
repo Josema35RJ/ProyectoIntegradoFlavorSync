@@ -2,6 +2,7 @@ package com.example.demo.entity;
 
 import java.util.List;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -40,6 +41,12 @@ public class cook {
 	@NotBlank(message = "lastName is required")
 	private String lastName;
 
+	// apodo del cocinero
+	@Column(name = "nickName", nullable = false)
+	@Size(max = 100, message = "The nickName cannot exceed 100 characters")
+	@NotBlank(message = "nickName is required")
+	private String nickName;
+
 	// correo para que entre en su cuenta
 	@Column(name = "email", nullable = false)
 	@Email
@@ -51,6 +58,18 @@ public class cook {
 	@NotNull(message = "Age is required")
 	@Positive(message = "The height must be a positive number")
 	private int age;
+
+	// ciudad del cocinero
+	@Column(name = "city", nullable = false)
+	@Size(max = 100, message = "The city cannot exceed 100 characters")
+	@NotBlank(message = "city is required")
+	private String city;
+
+	// pais del cocinero
+	@Column(name = "country", nullable = false)
+	@Size(max = 100, message = "The country cannot exceed 100 characters")
+	@NotBlank(message = "country is required")
+	private String country;
 
 	// contraseña para que entre en su cuenta
 	@Column(name = "password", nullable = false)
@@ -67,7 +86,8 @@ public class cook {
 	// Mas adelante Tecnicas sera otra entidad, con nombre de la tecnica, creador,
 	// restaurante o lugar donde se creo y descripcion o instruccion de como es
 	@NotNull
-	private List<String> listRecipeTechniques;
+	@OneToMany(cascade = CascadeType.PERSIST)
+	private List<culinaryTechniques> listCulinaryTechniques;
 
 	// Cuantos años tienes cocinando
 	@Min(value = 0, message = "The experience must be a non-negative number")

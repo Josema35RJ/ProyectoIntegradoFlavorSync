@@ -62,7 +62,7 @@ public class recipeModel {
 	 //Tecnicas usadas en la receta
 	//Mas adelante Tecnicas sera otra entidad, con nombre de la tecnica, creador, restaurante o lugar donde se creo y descripcion o instruccion de como es
     @NotNull
-    private List<String> listRecipeTechniques;
+    private List<culinaryTechniquesModel> listRecipeTechniques;
 
 	// Intrucciones para elaborar la receta
 	@NotNull
@@ -75,7 +75,7 @@ public class recipeModel {
 			@Positive(message = "The preparationTime must be a positive number") float preparationTime,
 			List<String> whereItisDone, List<String> category,
 			@Positive(message = "The punctuation must be a positive number") float averageRating,
-			List<commentModel> listComments, List<ingredientModel> listIngredients, List<String> listkitchenUtensils, List<String>listRecipeTechniques, 
+			List<commentModel> listComments, List<ingredientModel> listIngredients, List<String> listkitchenUtensils, List<culinaryTechniquesModel>listRecipeTechniques, 
 			@NotNull String instructions, String difficulty) {
 		super();
 		this.id = id;
@@ -182,11 +182,11 @@ public class recipeModel {
 		this.listkitchenUtensils = listkitchenUtensils;
 	}
 
-	public List<String> getListRecipeTechniques() {
+	public List<culinaryTechniquesModel> getListRecipeTechniques() {
 		return listRecipeTechniques;
 	}
 
-	public void setListRecipeTechniques(List<String> listRecipeTechniques) {
+	public void setListRecipeTechniques(List<culinaryTechniquesModel> listRecipeTechniques) {
 		this.listRecipeTechniques = listRecipeTechniques;
 	}
 

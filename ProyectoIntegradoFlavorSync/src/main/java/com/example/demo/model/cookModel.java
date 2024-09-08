@@ -5,11 +5,13 @@ import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -37,6 +39,12 @@ public class cookModel {
 	@NotBlank(message = "lastName is required")
 	private String lastName;
 
+	// apodo del cocinero
+	@Column(name = "nickName", nullable = false)
+	@Size(max = 100, message = "The nickName cannot exceed 100 characters")
+	@NotBlank(message = "nickName is required")
+	private String nickName;
+
 	// correo para que entre en su cuenta
 	@Column(name = "email", nullable = false)
 	@Email
@@ -49,23 +57,35 @@ public class cookModel {
 	@Positive(message = "The height must be a positive number")
 	private int age;
 
+	// ciudad del cocinero
+	@Column(name = "city", nullable = false)
+	@Size(max = 100, message = "The city cannot exceed 100 characters")
+	@NotBlank(message = "city is required")
+	private String city;
+
+	// pais del cocinero
+	@Column(name = "country", nullable = false)
+	@Size(max = 100, message = "The country cannot exceed 100 characters")
+	@NotBlank(message = "country is required")
+	private String country;
+
 	// contraseña para que entre en su cuenta
 	@Column(name = "password", nullable = false)
 	@NotBlank(message = "The password is required")
 	private String password;
-	
+
 	@NotBlank(message = "The enabled is required")
 	private boolean enabled;
 
 	// Que cocinas, postres, dulces...
-	private List<String> listSpecialty = Arrays.asList("Todas", "Pastelero", "Carnes", "Pescado y Mariscos", "Verduras",
-			"Salsas", "Parrilla");
-	
-	 //Tecnicas usadas en la receta
-	  //Mas adelante Tecnicas sera otra entidad, con nombre de la tecnica, creador, restaurante o lugar donde se creo y descripcion o instruccion de como es
-	    @NotNull
-	    private List<String> listRecipeTechniques;
+	private List<String> listSpecialty ;
 
+	// Tecnicas usadas en la receta
+	// Mas adelante Tecnicas sera otra entidad, con nombre de la tecnica, creador,
+	// restaurante o lugar donde se creo y descripcion o instruccion de como es
+	@OneToMany(cascade = CascadeType.PERSIST)
+	@NotNull
+	private List<culinaryTechniquesModel> listCulinaryTechniques;
 
 	// Cuantos años tienes cocinando
 	@Positive(message = "The experience must be a positive number")
@@ -92,23 +112,35 @@ public class cookModel {
 	public cookModel(Integer id,
 			@Size(max = 100, message = "The firstName cannot exceed 100 characters") @NotBlank(message = "firstName is required") String firstName,
 			@Size(max = 100, message = "The lastName cannot exceed 100 characters") @NotBlank(message = "lastName is required") String lastName,
+			@Size(max = 100, message = "The nickName cannot exceed 100 characters") @NotBlank(message = "nickName is required") String nickName,
 			@Email @Size(max = 100, message = "The email cannot exceed 100 characters") @NotBlank(message = "The email is required") String username,
 			@NotBlank(message = "Age is required") @Positive(message = "The height must be a positive number") int age,
-			@NotBlank(message = "The password is required") String password, List<String> listSpecialty, List<String>  listRecipeTechniques,
-			@Positive(message = "The experience must be a positive number") int experience) {
+			@Size(max = 100, message = "The city cannot exceed 100 characters") @NotBlank(message = "city is required") String city,
+			@Size(max = 100, message = "The country cannot exceed 100 characters") @NotBlank(message = "country is required") String country,
+			@NotBlank(message = "The password is required") String password,
+			@NotBlank(message = "The enabled is required") boolean enabled, List<String> listSpecialty,
+			@NotNull List<culinaryTechniquesModel> listCulinaryTechniques,
+			@Positive(message = "The experience must be a positive number") int experience, String role,
+			@Positive(message = "The punctuaction must be a positive number") int punctuation,
+			List<recipeModel> listRecipes, List<recipeModel> listRecipesFavorites) {
 		super();
 		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
+		this.nickName = nickName;
 		this.username = username;
 		this.age = age;
+		this.city = city;
+		this.country = country;
 		this.password = password;
-		this.enabled = true;
+		this.enabled = enabled;
 		this.listSpecialty = listSpecialty;
-		this. listRecipeTechniques =  listRecipeTechniques;
+		this.listCulinaryTechniques = listCulinaryTechniques;
 		this.experience = experience;
 		this.role = "Aprendiz";
 		this.punctuation = 0;
+		this.listRecipes = listRecipes;
+		this.listRecipesFavorites = listRecipesFavorites;
 	}
 
 	public Integer getId() {
@@ -135,6 +167,14 @@ public class cookModel {
 		this.lastName = lastName;
 	}
 
+	public String getNickName() {
+		return nickName;
+	}
+
+	public void setNickName(String nickName) {
+		this.nickName = nickName;
+	}
+
 	public String getUsername() {
 		return username;
 	}
@@ -149,6 +189,22 @@ public class cookModel {
 
 	public void setAge(int age) {
 		this.age = age;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getCountry() {
+		return country;
+	}
+
+	public void setCountry(String country) {
+		this.country = country;
 	}
 
 	public String getPassword() {
@@ -174,15 +230,13 @@ public class cookModel {
 	public void setListSpecialty(List<String> listSpecialty) {
 		this.listSpecialty = listSpecialty;
 	}
-	
-	
 
-	public List<String> getListRecipeTechniques() {
-		return listRecipeTechniques;
+	public List<culinaryTechniquesModel> getListRecipeTechniques() {
+		return listCulinaryTechniques;
 	}
 
-	public void setListRecipeTechniques(List<String> listRecipeTechniques) {
-		this.listRecipeTechniques = listRecipeTechniques;
+	public void setListRecipeTechniques(List<culinaryTechniquesModel> listRecipeTechniques) {
+		this.listCulinaryTechniques = listRecipeTechniques;
 	}
 
 	public int getExperience() {
@@ -197,8 +251,8 @@ public class cookModel {
 		return role;
 	}
 
-	public void setRol(String rol) {
-		this.role = rol;
+	public void setRole(String role) {
+		this.role = role;
 	}
 
 	public int getPunctuation() {
@@ -227,11 +281,10 @@ public class cookModel {
 
 	@Override
 	public String toString() {
-		return "cookModel [id=" + id + ", firstname=" + firstName + ", surname=" + lastName + ", username=" + username
-				+ ", age=" + age + ", password=" + password + ", enabled=" + enabled + ", listSpecialty="
-				+ listSpecialty + ", listRecipeTechniques=" + listRecipeTechniques + ", experience=" + experience
-				+ ", role=" + role + ", punctuation=" + punctuation + ", listRecipes=" + listRecipes
-				+ ", listRecipesFavorites=" + listRecipesFavorites + "]";
+		return "cookModel [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", nickName=" + nickName
+				+ ", username=" + username + ", age=" + age + ", city=" + city + ", country=" + country + ", password="
+				+ password + ", enabled=" + enabled + ", listSpecialty=" + listSpecialty + ", listRecipeTechniques="
+				+ listCulinaryTechniques + ", experience=" + experience + ", role=" + role + ", punctuation="
+				+ punctuation + ", listRecipes=" + listRecipes + ", listRecipesFavorites=" + listRecipesFavorites + "]";
 	}
-
 }

@@ -160,8 +160,20 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 		cook.setPassword(passwordEncoder().encode(cook.getPassword()));
 		cook.setEnabled(true);
 		if (cook.getRole() == null)
-			cook.setRol("ROL_COOKAPRENDIZ");
+			cook.setRole("ROL_COOKAPRENDIZ");
 		cookRepository.save(cookConverter.transform(cook));
+	}
+
+	@Override
+	public cookModel findById(int id) {
+		// TODO Auto-generated method stub
+		return cookConverter.transform(cookRepository.findByid(id));
+	}
+
+	@Override
+	public cookModel findByUsername(String username) {
+		// TODO Auto-generated method stub
+		return cookConverter.transform(cookRepository.findByUsername(username));
 	}
 
 }

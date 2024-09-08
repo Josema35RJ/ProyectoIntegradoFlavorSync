@@ -67,7 +67,8 @@ public class recipe {
     //Tecnicas usadas en la receta
   //Mas adelante Tecnicas sera otra entidad, con nombre de la tecnica, creador, restaurante o lugar donde se creo y descripcion o instruccion de como es
     @NotNull
-    private List<String> listRecipeTechniques;
+    @OneToMany(cascade = CascadeType.PERSIST)
+    private List<culinaryTechniques> listRecipeTechniques;
 
 	// Intrucciones para elaborar la receta
 	@NotNull

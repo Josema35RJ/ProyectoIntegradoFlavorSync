@@ -1,0 +1,97 @@
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Roboto', sans-serif;
+    background-size: cover;
+    background-position: center;
+    color: #333;
+}
+
+.navbar {
+    background-color: #343a40; /* Fondo oscuro */
+    padding: 10px 20px;
+    border-radius: 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand, .nav-link {
+    color: #fff !important;
+    font-weight: 500;
+}
+
+.nav-link:hover {
+    color: #ffc107 !important; /* Color de hover */
+}
+
+.container-fluid {
+    height: calc(100% - 56px - 40px); /* Altura total menos la altura de la navbar y el footer */
+    padding: 20px;
+    border-radius: 8px;
+}
+
+.footer {
+    background-color: #ff7043;
+    color: #fff;
+    text-align: center;
+    padding: 10px 0;
+}
+
+.footer .text-muted {
+    color: #ffe0b2 !important;
+}
+
+.card {
+    border: none;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    margin-bottom: 20px;
+}
+
+.card-body {
+    background-color: #fff;
+    padding: 20px;
+}
+
+.card-title {
+    color: #ff7043;
+    font-weight: bold;
+}
+
+.card-text {
+    color: #666;
+}
+
+.icon {
+    color: #ff7043;
+    margin-right: 5px;
+}
+
+.navbar-brand::before {
+    content: "\f2e7";
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    margin-right: 10px;
+}
+
+.nav-link::before {
+    content: "\f2e7";
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    margin-right: 5px;
+}
+
+.content {
+    width: 100%; /* Ajusta el ancho al 100% del contenedor */
+    height: auto; /* Ajusta la altura automáticamente */
+    background-image: url('/imgs/kitchenAm.jpg'); /* Asegúrate de que la ruta de la imagen sea correcta */
+    background-size: cover;
+    background-position: center;
+    padding: 30%; /* Ajusta el padding según sea necesario */
+    border-radius: 0px;
+}
+
+.carousel-item img {
+    width: 100%; /* Ajusta el ancho de la imagen al 100% del contenedor */
+    height: auto; /* Ajusta la altura automáticamente */
+}
