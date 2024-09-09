@@ -2,18 +2,26 @@
 <html lang="en">
 <head>
 <title>Registro</title>
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 <link rel="stylesheet" href="/css/register.css">
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
+<script
+	src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js"></script>
 </head>
 <body>
-	<nav class="navbar navbar-expand-lg navbar-dark bg-primary animate__animated animate__fadeInDown">
+	<nav
+		class="navbar navbar-expand-lg navbar-dark bg-primary animate__animated animate__fadeInDown">
 		<div class="container">
 			<a class="navbar-brand" href="#">FlavorSync</a>
-			<button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+			<button class="navbar-toggler" type="button" data-toggle="collapse"
+				data-target="#navbarNav" aria-controls="navbarNav"
+				aria-expanded="false" aria-label="Toggle navigation">
 				<span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarNav">
@@ -25,75 +33,128 @@
 			</div>
 		</div>
 	</nav>
-	<div class="container d-flex align-items-center justify-content-center" style="height: calc(100vh - 120px);">
-        <div class="row justify-content-center animate__animated animate__fadeInUp">
-            <div class="col-md-6">
-                <div class="card mt-5 mx-auto">
-                    <div class="card-header text-center">
-                        <h2>Bienvenido a FlavorSync</h2>
-                    </div>
-                    <div class="card-body">
-                        <form id="registerForm" th:action="@{/auth/register}" method="post">
-                            <div class="mb-3">
-                                <label for="firstName" class="form-label">Nombre:</label>
-                                <input type="text" id="firstName" name="firstName" class="form-control" required autocomplete="given-name" placeholder="Introduce tu nombre">
-                            </div>
-                            <div class="mb-3">
-                                <label for="lastName" class="form-label">Apellidos:</label>
-                                <input type="text" id="lastName" name="lastName" class="form-control" required autocomplete="family-name" placeholder="Introduce tus apellidos">
-                            </div>
-                            <div class="mb-3">
-                                <label for="email" class="form-label">Correo electrónico:</label>
-                                <input type="email" id="username" name="username" class="form-control" required autocomplete="email" placeholder="Introduce un correo electrónico válido">
-                            </div>
-                            <div class="mb-3">
-                                <label for="age" class="form-label">Edad:</label>
-                                <input type="number" id="age" name="age" class="form-control" required autocomplete="new-age" placeholder="Introduce tu Edad">
-                            </div>
-                            <div class="mb-3">
-                                <label for="experience" class="form-label">Experiencia:</label>
-                                <input type="number" id="experience" name="experience" class="form-control" required autocomplete="new-experience" placeholder="Introduce tu Experiencia">
-                            </div>
-                            <div class="mb-3">
-                                <label for="listSpecialty" class="form-label">Lista de Especialidades (Carnes, Postres...):</label>
-                                <input type="text" id="listSpecialty" name="listSpecialty" class="form-control" required autocomplete="new-listSpecialty" placeholder="Introduce tu Lista de Especialidades (las que más manejes o sueles usar)">
-                            </div>
-                            <div class="mb-3">
-                                <label for="listRecipeTechniques" class="form-label">Lista de Técnicas (Esféricos, Espuma...):</label>
-                                <input type="text" id="listRecipeTechniques" name="listRecipeTechniques" class="form-control" required autocomplete="new-listRecipeTechniques" placeholder="Introduce tu Lista de Técnicas (las que más manejes o sueles usar)">
-                            </div>
-                            <div class="mb-3">
-                                <label for="city" class="form-label">Ciudad:</label>
-                                <input type="text" id="city" name="city" class="form-control" required autocomplete="address-level2" placeholder="Introduce tu ciudad">
-                            </div>
-                            <div class="mb-3">
-                                <label for="country" class="form-label">País:</label>
-                                <input type="text" id="country" name="country" class="form-control" required autocomplete="country" placeholder="Introduce tu país">
-                            </div>
-                            <div class="mb-3">
-                                <label for="password" class="form-label">Contraseña:</label>
-                                <input type="password" id="password" name="password" class="form-control" required autocomplete="new-password" placeholder="Introduce una contraseña segura">
-                            </div>
-                            <div class="mb-3">
-                                <label for="confirmPassword" class="form-label">Confirmar contraseña:</label>
-                                <input type="password" id="confirmPassword" name="confirmPassword" class="form-control" required autocomplete="new-password" placeholder="Confirma tu contraseña">
-                            </div>
-                            <div class="mb-3">
-                                <button type="submit" class="btn btn-primary btn-block">Registrarse</button>
-                            </div>
-                        </form>
-                        <div class="mb-3">
-                            <a href="/auth/login" class="btn btn-secondary btn-block">Iniciar sesión</a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-	<footer class="footer bg-dark text-white mt-5 p-4 text-center animate__animated animate__fadeInUp">
-		© 2024 FlavorSync. Todos los derechos reservados.
-	</footer>
-	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-    <script src="/js/register.js"></script>
+	<div class="container d-flex align-items-center justify-content-center"
+		style="height: calc(100vh - 120px);">
+		<div
+			class="row justify-content-center animate__animated animate__fadeInUp">
+			<div class="col-md-6">
+				<div class="card mt-5 mx-auto">
+					<div class="card-header text-center">
+						<h2>Bienvenido a FlavorSync</h2>
+					</div>
+					<div class="card-body">
+						<form id="registerForm" th:action="@{/auth/register}"
+							method="post">
+							<div class="mb-3">
+								<label for="nickName" class="form-label">Apodo:</label> <input
+									type="text" id="nickName" name="nickName" class="form-control"
+									required autocomplete="given-name"
+									placeholder="Introduce tu apodo">
+							</div>
+							<div class="mb-3">
+								<label for="firstName" class="form-label">Nombre:</label> <input
+									type="text" id="firstName" name="firstName"
+									class="form-control" required autocomplete="given-name"
+									placeholder="Introduce tu nombre">
+							</div>
+							<div class="mb-3">
+								<label for="lastName" class="form-label">Apellidos:</label> <input
+									type="text" id="lastName" name="lastName" class="form-control"
+									required autocomplete="family-name"
+									placeholder="Introduce tus apellidos">
+							</div>
+							<div class="mb-3">
+								<label for="email" class="form-label">Correo
+									electrónico:</label> <input type="email" id="username" name="username"
+									class="form-control" required autocomplete="email"
+									placeholder="Introduce un correo electrónico válido">
+							</div>
+							<div class="mb-3">
+								<label for="age" class="form-label">Edad:</label> <input
+									type="number" id="age" name="age" class="form-control" required
+									autocomplete="new-age" placeholder="Introduce tu Edad" min="18"
+									max="80">
+							</div>
+							<div class="mb-3">
+								<label for="experience" class="form-label">Experiencia:</label>
+								<input type="number" id="experience" name="experience"
+									class="form-control" required autocomplete="new-experience"
+									placeholder="Introduce tu Experiencia" min="0" max="80">
+							</div>
+							<div class="mb-3">
+								<label for="listSpecialty" class="form-label">Lista de
+									Especialidades (Carnes, Postres...):</label> <select id="listSpecialty"
+									name="listSpecialty" class="form-control" multiple required>
+									<option value="" disabled>Selecciona una o más
+										especialidades</option>
+									<option value="Carnes">Carnes</option>
+									<option value="Postres">Postres</option>
+									<option value="Pescados">Pescados</option>
+									<option value="Vegetariano">Vegetariano</option>
+									<option value="Panadería">Panadería</option>
+									<option value="Pastelería">Pastelería</option>
+									<option value="Sopas">Sopas</option>
+									<option value="Ensaladas">Ensaladas</option>
+									<option value="Mariscos">Mariscos</option>
+									<option value="Bebidas">Bebidas</option>
+								</select>
+							</div>
+							<div class="mb-3">
+								<label for="listCulinaryTechniques" class="form-label">Lista
+									de Técnicas (Esféricos, Espuma...):</label> <select
+									id="listCulinaryTechniques" name="listCulinaryTechniques"
+									class="form-control" multiple required>
+									<option value="" disabled>Selecciona una o más
+										técnicas</option>
+									<option
+										th:each="culinaryTechniquesModel : ${listCulinaryTechniques}"
+										th:value="${culinaryTechniquesModel.id}"
+										th:text="${culinaryTechniquesModel.name}"></option>
+								</select>
+							</div>
+							<div class="mb-3">
+								<label for="countrySelect" class="form-label">País:</label> <select
+									id="countrySelect" name="country" class="form-control" required>
+									<option value="">Selecciona un país</option>
+								</select>
+							</div>
+							<div class="mb-3">
+								<label for="citySelect" class="form-label">Ciudad:</label> <select
+									id="citySelect" name="city" class="form-control" required>
+									<option value="">Selecciona una ciudad</option>
+								</select>
+							</div>
+							<div class="mb-3">
+								<label for="password" class="form-label">Contraseña:</label> <input
+									type="password" id="password" name="password"
+									class="form-control" required autocomplete="new-password"
+									placeholder="Introduce una contraseña segura">
+							</div>
+							<div class="mb-3">
+								<label for="confirmPassword" class="form-label">Confirmar
+									contraseña:</label> <input type="password" id="confirmPassword"
+									name="confirmPassword" class="form-control" required
+									autocomplete="new-password"
+									placeholder="Confirma tu contraseña">
+							</div>
+							<div class="mb-3">
+								<button type="submit" class="btn btn-primary btn-block">Registrarse</button>
+							</div>
+						</form>
+						<div class="mb-3">
+							<a href="/auth/login" class="btn btn-secondary btn-block">Iniciar
+								sesión</a>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<footer
+		class="footer bg-dark text-white mt-5 p-4 text-center animate__animated animate__fadeInUp">
+		© 2024 FlavorSync. Todos los derechos reservados. </footer>
+	<script
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<script src="/js/register.js"></script>
 </body>
 </html>

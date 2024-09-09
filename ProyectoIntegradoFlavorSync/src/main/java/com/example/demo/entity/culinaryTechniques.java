@@ -13,7 +13,7 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Entity
-@Table(name = "culinayTechniques")
+@Table(name = "culinaryTechniques")
 @Data
 public class culinaryTechniques {
 
@@ -41,10 +41,10 @@ public class culinaryTechniques {
 		private String history;
 		
 	//Donde nacio o se creo
-	@Column(name = "origin", nullable = false)
-	@Size(max = 100, message = "The origin cannot exceed 100 characters")
-	@NotBlank(message = "origin is required")
-	private String Origin;
+	@Column(name = "country", nullable = false)
+	@Size(max = 100, message = "The country cannot exceed 100 characters")
+	@NotBlank(message = "country is required")
+	private String Country;
 	
 	//Mas adelante se añadira
 	//private String img;

@@ -1,24 +1,19 @@
 package com.example.demo.model;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
 
 public class cookModel {
 
@@ -83,9 +78,9 @@ public class cookModel {
 	// Tecnicas usadas en la receta
 	// Mas adelante Tecnicas sera otra entidad, con nombre de la tecnica, creador,
 	// restaurante o lugar donde se creo y descripcion o instruccion de como es
-	@OneToMany(cascade = CascadeType.PERSIST)
 	@NotNull
-	private List<culinaryTechniquesModel> listCulinaryTechniques;
+	@OneToMany(cascade = CascadeType.PERSIST)
+	private List<culinaryTechniquesModel> listCulinaryTechniques = new ArrayList<>();
 
 	// Cuantos años tienes cocinando
 	@Positive(message = "The experience must be a positive number")
@@ -108,6 +103,8 @@ public class cookModel {
 	public cookModel() {
 		super();
 	}
+
+	
 
 	public cookModel(Integer id,
 			@Size(max = 100, message = "The firstName cannot exceed 100 characters") @NotBlank(message = "firstName is required") String firstName,
@@ -142,6 +139,8 @@ public class cookModel {
 		this.listRecipes = listRecipes;
 		this.listRecipesFavorites = listRecipesFavorites;
 	}
+
+
 
 	public Integer getId() {
 		return id;
@@ -235,8 +234,8 @@ public class cookModel {
 		return listCulinaryTechniques;
 	}
 
-	public void setListRecipeTechniques(List<culinaryTechniquesModel> listRecipeTechniques) {
-		this.listCulinaryTechniques = listRecipeTechniques;
+	public void setListRecipeTechniques(List<culinaryTechniquesModel> listCulinaryTechniques) {
+		this.listCulinaryTechniques = listCulinaryTechniques;
 	}
 
 	public int getExperience() {
@@ -283,7 +282,7 @@ public class cookModel {
 	public String toString() {
 		return "cookModel [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", nickName=" + nickName
 				+ ", username=" + username + ", age=" + age + ", city=" + city + ", country=" + country + ", password="
-				+ password + ", enabled=" + enabled + ", listSpecialty=" + listSpecialty + ", listRecipeTechniques="
+				+ password + ", enabled=" + enabled + ", listSpecialty=" + listSpecialty + ", listCulinaryTechniques="
 				+ listCulinaryTechniques + ", experience=" + experience + ", role=" + role + ", punctuation="
 				+ punctuation + ", listRecipes=" + listRecipes + ", listRecipesFavorites=" + listRecipesFavorites + "]";
 	}

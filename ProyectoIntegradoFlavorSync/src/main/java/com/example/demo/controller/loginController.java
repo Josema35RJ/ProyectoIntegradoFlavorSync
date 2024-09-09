@@ -16,6 +16,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.demo.converter.CookConverter;
 import com.example.demo.model.cookModel;
 import com.example.demo.service.CookService;
+import com.example.demo.service.CulinaryTechniquesService;
 
 @Controller
 public class loginController {
@@ -26,6 +27,10 @@ public class loginController {
 	@Autowired
 	@Qualifier("cookService")
 	private CookService cookService;
+	
+	@Autowired
+	@Qualifier("culinaryTechniquesService")
+	private CulinaryTechniquesService culinaryTechniquesService;
 
 	@Autowired
 	@Qualifier("cookConverter")
@@ -68,13 +73,15 @@ public class loginController {
 	@GetMapping("/auth/register")
 	public String registerForm(Model model) {
 		model.addAttribute("cook", new cookModel());
+		model.addAttribute("listCulinaryTechniques", culinaryTechniquesService.getListCulinaryTechniques());
 		return REGISTER_VIEW;
 	}
 
 	@PostMapping("/auth/register")
 	public String registerSubmit(@ModelAttribute("cookModel") cookModel cook,
 			@RequestParam("confirmPassword") String confirmPassword, BindingResult result, RedirectAttributes flash) {
-
+        System.out.println("***************************************************");
+		System.out.println(cook);
 		if (result.hasErrors()) {
 			return REGISTER_VIEW;
 		}

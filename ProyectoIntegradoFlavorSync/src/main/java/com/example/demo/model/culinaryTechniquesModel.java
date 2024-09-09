@@ -37,25 +37,29 @@ public class culinaryTechniquesModel {
 	private String history;
 
 	// Donde nacio o se creo
-	@Column(name = "origin", nullable = false)
-	@Size(max = 100, message = "The origin cannot exceed 100 characters")
-	@NotBlank(message = "origin is required")
-	private String Origin;
+	@Column(name = "country", nullable = false)
+	@Size(max = 100, message = "The country cannot exceed 100 characters")
+	@NotBlank(message = "country is required")
+	private String Country;
 	
 	// Mas adelante se añadira
 	// private String img;
+	
+	public culinaryTechniquesModel() {
+		super();
+	}
 
 	public culinaryTechniquesModel(Integer id,
 			@Size(max = 100, message = "The name cannot exceed 100 characters") @NotBlank(message = "name is required") String name,
 			@Size(max = 100, message = "The description cannot exceed 400 characters") @NotBlank(message = "description is required") String description,
 			@Size(max = 100, message = "The history cannot exceed 100 characters") @NotBlank(message = "history is required") String history,
-			@Size(max = 100, message = "The origin cannot exceed 100 characters") @NotBlank(message = "origin is required") String origin) {
+			@Size(max = 100, message = "The country cannot exceed 100 characters") @NotBlank(message = "origin is required") String country) {
 		super();
 		this.id = id;
 		this.name = name;
 		this.description = description;
 		this.history = history;
-		Origin = origin;
+		Country = country;
 	}
 
 	public Integer getId() {
@@ -91,17 +95,17 @@ public class culinaryTechniquesModel {
 	}
 
 	public String getOrigin() {
-		return Origin;
+		return Country;
 	}
 
-	public void setOrigin(String origin) {
-		Origin = origin;
+	public void setCountry(String country) {
+		Country = country;
 	}
 
 	@Override
 	public String toString() {
 		return "culinaryTechniques [id=" + id + ", name=" + name + ", description=" + description + ", history="
-				+ history + ", Origin=" + Origin + "]";
+				+ history + ", Country=" + Country + "]";
 	}	
 
 }
