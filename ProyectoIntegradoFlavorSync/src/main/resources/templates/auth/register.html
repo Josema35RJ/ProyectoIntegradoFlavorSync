@@ -43,6 +43,8 @@
 						<h2>Bienvenido a FlavorSync</h2>
 					</div>
 					<div class="card-body">
+
+
 						<form id="registerForm" th:action="@{/auth/register}"
 							method="post">
 							<div class="mb-3">
@@ -70,10 +72,9 @@
 									placeholder="Introduce un correo electrónico válido">
 							</div>
 							<div class="mb-3">
-								<label for="age" class="form-label">Edad:</label> <input
-									type="number" id="age" name="age" class="form-control" required
-									autocomplete="new-age" placeholder="Introduce tu Edad" min="18"
-									max="80">
+								<label for="birthDate" class="form-label">Fecha de
+									Nacimiento:</label> <input type="date" id="birthDate" name="birthDate"
+									class="form-control" required>
 							</div>
 							<div class="mb-3">
 								<label for="experience" class="form-label">Experiencia:</label>
@@ -101,15 +102,13 @@
 							</div>
 							<div class="mb-3">
 								<label for="listCulinaryTechniques" class="form-label">Lista
-									de Técnicas (Esféricos, Espuma...):</label> <select
-									id="listCulinaryTechniques" name="listCulinaryTechniques"
-									class="form-control" multiple required>
+									de Técnicas:</label> <select id="listCulinaryTechniquesIds"
+									name="listCulinaryTechniquesIds" class="form-control" multiple
+									required>
 									<option value="" disabled>Selecciona una o más
 										técnicas</option>
-									<option
-										th:each="culinaryTechniquesModel : ${listCulinaryTechniques}"
-										th:value="${culinaryTechniquesModel.id}"
-										th:text="${culinaryTechniquesModel.name}"></option>
+									<option th:each="technique : ${listCulinaryTechniques}"
+										th:value="${technique.id}" th:text="${technique.name}"></option>
 								</select>
 							</div>
 							<div class="mb-3">
@@ -136,6 +135,14 @@
 									name="confirmPassword" class="form-control" required
 									autocomplete="new-password"
 									placeholder="Confirma tu contraseña">
+							</div>
+							<div class="mb-3">
+								<label for="imagenFile" class="form-label">Imagen de
+									perfil (PNG o JPG):</label> <input type="file" id="imagePerfil"
+									name="imagenPerfil" class="form-control"
+									accept="image/png, image/jpeg" required>
+								<!-- Input oculto para almacenar la imagen en base64 -->
+								<input type="hidden" id="imagePerfil" name="imagePerfil">
 							</div>
 							<div class="mb-3">
 								<button type="submit" class="btn btn-primary btn-block">Registrarse</button>

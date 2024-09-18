@@ -1,131 +1,169 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FlavorSync - Editar Perfil</title>
-    <!-- CSS de Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    <!-- Font Awesome para iconos -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
-    <!-- CSS personalizado -->
-    <link rel="stylesheet" href="/css/panels.css">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlavorSync - Editar Perfil</title>
+<!-- CSS de Bootstrap -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<!-- Font Awesome para iconos -->
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+	rel="stylesheet">
+<!-- CSS personalizado -->
+<link rel="stylesheet" href="/css/panels.css">
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#"><i class="fas fa-utensils"></i> FlavorSync</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-          
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                   <li class="nav-item"><a class="nav-link" href="/auth/cookAprendiz/aprendizPanel">Home</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#">Mis Recetas</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<div class="container-fluid">
+			<a class="navbar-brand" href="#"><i class="fas fa-utensils"></i>
+				FlavorSync</a>
+			<button class="navbar-toggler" type="button"
+				data-bs-toggle="collapse" data-bs-target="#navbarNav"
+				aria-controls="navbarNav" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
 
-    <main class="container mt-5">
-        <div class="row justify-content-center">
-            <div class="col-md-8">
-                <div class="card">
-                    <div class="card-header">
-                        <h2>Editar Perfil</h2>
-                    </div>
-                    <div class="card-body">
-                        <form class="row g-3 needs-validation" novalidate>
-                            <div class="col-md-6">
-                                <label for="firstName" class="form-label">Nombre</label>
-                                <input type="text" class="form-control" id="firstName" th:value="${cookPerfil != null ? cookPerfil.firstName : ''}" required>
-                                <div class="valid-feedback">
-                                    ¡Se ve bien!
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="lastName" class="form-label">Apellido</label>
-                                <input type="text" class="form-control" id="lastName" th:value="${cookPerfil != null ? cookPerfil.lastName : ''}" required>
-                                <div class="valid-feedback">
-                                    ¡Se ve bien!
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="nickname" class="form-label">Apodo de Cocinero</label>
-                                <div class="input-group has-validation">
-                                    <span class="input-group-text" id="inputGroupPrepend">@</span>
-                                    <input type="text" class="form-control" id="nickname" th:value="${cookPerfil != null ? cookPerfil.firstName : ''}" required>
-                                    <div class="invalid-feedback">
-                                        Por favor, elige un apodo de cocinero.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="email" class="form-label">Correo Electrónico</label>
-                                <input type="email" class="form-control" id="email" th:value="${cookPerfil != null ? cookPerfil.username : ''}" required>
-                                <div class="invalid-feedback">
-                                    Por favor, proporciona un correo electrónico válido.
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="age" class="form-label">Edad</label>
-                                <input type="number" class="form-control" id="age" th:value="${cookPerfil != null ? cookPerfil.age : ''}" required>
-                                <div class="invalid-feedback">
-                                    Por favor, proporciona una edad válida.
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="password" class="form-label">Contraseña</label>
-                                <div class="input-group">
-                                    <input type="password" class="form-control" id="password" th:value="${cookPerfil != null ? cookPerfil.password : ''}" required>
-                                    <span class="input-group-text" onclick="togglePassword()">
-                                        <i class="fas fa-eye" id="togglePasswordIcon"></i>
-                                    </span>
-                                    <div class="invalid-feedback">
-                                        Por favor, proporciona una contraseña.
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <label for="city" class="form-label">Ciudad</label>
-                                <input type="text" class="form-control" id="city" th:value="${cookPerfil != null ? cookPerfil.city : ''}" required>
-                                <div class="invalid-feedback">
-                                    Por favor, proporciona una ciudad válida.
-                                </div>
-                            </div>
-                            <div class="col-md-3">
-                                <label for="state" class="form-label">Pais</label>
-                                <select class="form-select" id="country" required>
-                                    <option selected disabled value="">Elige...</option>
-                                    <option>España</option>
-                                    <option>Argentina</option>
-                                    <option>Colombia</option>
-                                </select>
-                                <div class="invalid-feedback">
-                                    Por favor, selecciona un estado válido.
-                                </div>
-                            </div>
-                            <div class="col-12">
-                                <button class="btn btn-primary" type="submit">Guardar Cambios</button>
-                                <button class="btn btn-secondary" type="button">Cancelar</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </main>
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+					<li class="nav-item"><a class="nav-link"
+						href="/auth/cookAprendiz/aprendizPanel">Home</a></li>
+					<li class="nav-item"><a class="nav-link" href="#">Mis
+							Recetas</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
 
-    <footer class="footer mt-auto">
-        <div class="container">
-            <span class="text-muted">© 2024 FlavorSync</span>
-        </div>
-    </footer>
+	<main class="container mt-5">
+		<div class="row justify-content-center">
+			<div class="col-md-8">
+				<div class="card">
+					<div class="card-header">
+						<h2>Editar Perfil</h2>
+					</div>
+					<div class="card-body">
+						<form class="row g-3 needs-validation" novalidate>
+							<div class="col-md-6 text-center">
+								<label for="profileImage" class="form-label">Imagen de
+									Perfil</label>
 
-    <!-- JS de Bootstrap -->
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
-    <script src="/js/validationPerfilCook.js"></script>
+								<div>
+    <!-- Mostrar la imagen si existe en base64 -->
+    <img id="profileImage"
+         th:if="${base64Image != null}"
+         th:src="'data:image/' + ${imageType} + ';base64,' + ${base64Image}"
+         class="img-fluid rounded-circle"
+         style="width: 150px; height: 150px; object-fit: cover;">
+    
+    <!-- Mostrar una imagen predeterminada si no hay imagen en base64 -->
+    <img id="profileImage"
+         th:if="${base64Image == null}"
+         src="/path/to/default/image.jpg"
+         class="img-fluid rounded-circle"
+         style="width: 150px; height: 150px; object-fit: cover;">
+</div>
+
+							</div>
+							<div class="col-md-6">
+								<label for="firstName" class="form-label">Nombre</label> <input
+									type="text" class="form-control" id="firstName"
+									th:value="${cookPerfil != null ? cookPerfil.firstName : ''}"
+									required>
+								<div class="valid-feedback">¡Se ve bien!</div>
+							</div>
+							<div class="col-md-6">
+								<label for="lastName" class="form-label">Apellido</label> <input
+									type="text" class="form-control" id="lastName"
+									th:value="${cookPerfil != null ? cookPerfil.lastName : ''}"
+									required>
+								<div class="valid-feedback">¡Se ve bien!</div>
+							</div>
+							<div class="col-md-6">
+								<label for="nickname" class="form-label">Apodo de
+									Cocinero</label>
+								<div class="input-group has-validation">
+									<span class="input-group-text" id="inputGroupPrepend">@</span>
+									<input type="text" class="form-control" id="nickname"
+										th:value="${cookPerfil != null ? cookPerfil.firstName : ''}"
+										required>
+									<div class="invalid-feedback">Por favor, elige un apodo
+										de cocinero.</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<label for="email" class="form-label">Correo Electrónico</label>
+								<input type="email" class="form-control" id="email"
+									th:value="${cookPerfil != null ? cookPerfil.username : ''}"
+									required>
+								<div class="invalid-feedback">Por favor, proporciona un
+									correo electrónico válido.</div>
+							</div>
+							<div class="col-md-6">
+								<label for="age" class="form-label">Edad</label> <input
+									type="number" class="form-control" id="age"
+									th:value="${cookPerfil != null ? cookPerfil.age : ''}" required>
+								<div class="invalid-feedback">Por favor, proporciona una
+									edad válida.</div>
+							</div>
+							<div class="col-md-6">
+								<label for="password" class="form-label">Contraseña</label>
+								<div class="input-group">
+									<input type="password" class="form-control" id="password"
+										th:value=""
+										required> <span class="input-group-text"
+										onclick="togglePassword()"> <i class="fas fa-eye"
+										id="togglePasswordIcon"></i>
+									</span>
+									<div class="invalid-feedback">Por favor, proporciona una
+										contraseña.</div>
+								</div>
+							</div>
+							<div class="col-md-6">
+								<label for="city" class="form-label">Ciudad</label> <input
+									type="text" class="form-control" id="city"
+									th:value="${cookPerfil != null ? cookPerfil.city : ''}"
+									required>
+								<div class="invalid-feedback">Por favor, proporciona una
+									ciudad válida.</div>
+							</div>
+							<div class="col-md-3">
+								<label for="state" class="form-label">Pais</label> <select
+									class="form-select" id="country" required>
+									<option selected disabled value="">Elige...</option>
+									<option>España</option>
+									<option>Argentina</option>
+									<option>Colombia</option>
+								</select>
+								<div class="invalid-feedback">Por favor, selecciona un
+									estado válido.</div>
+							</div>
+							<div class="col-12">
+								<button class="btn btn-primary" type="submit">Guardar
+									Cambios</button>
+								<button class="btn btn-secondary" type="button">Cancelar</button>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</main>
+
+	<footer class="footer mt-auto">
+		<div class="container">
+			<span class="text-muted">© 2024 FlavorSync</span>
+		</div>
+	</footer>
+
+	<!-- JS de Bootstrap -->
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+	<script src="/js/validationPerfilCook.js"></script>
 </body>
 </html>

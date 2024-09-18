@@ -16,10 +16,14 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
 import com.example.demo.converter.CookConverter;
+import com.example.demo.converter.CulinaryTechniquesConverter;
 import com.example.demo.entity.cook;
+import com.example.demo.entity.culinaryTechniques;
 import com.example.demo.model.cookModel;
 import com.example.demo.repository.CookRepository;
+import com.example.demo.repository.CulinaryTechniquesRepository;
 import com.example.demo.security.CustomUserDetails;
 import com.example.demo.service.CookService;
 
@@ -33,6 +37,14 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 	@Autowired
 	@Qualifier("cookConverter")
 	private CookConverter cookConverter;
+
+	@Autowired
+	@Qualifier("culinaryTechniquesRepository")
+	private CulinaryTechniquesRepository culinaryTechniquesRepository;
+
+	@Autowired
+	@Qualifier("culinaryTechniquesConverter")
+	private CulinaryTechniquesConverter culinaryTechniquesConverter;
 
 	@Override
 	public boolean deletedCook(int id) {
@@ -55,8 +67,8 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 			c.setUsername(cook.getUsername());
 		} else if (cook.getListSpecialty().equals(c.getListSpecialty())) {
 			c.setListSpecialty(cook.getListSpecialty());
-		} else if (cook.getAge() == c.getAge()) {
-			c.setAge(cook.getAge());
+		} else if (cook.getBirthDate() == c.getBirthDate()) {
+			c.setBirthDate(cook.getBirthDate());
 		}
 		return true;
 	}
@@ -145,7 +157,7 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 
 		return builder;
 	}
-	
+
 	@Override
 	public boolean existeUsername(String username) {
 		// TODO Auto-generated method stub
@@ -157,6 +169,7 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 	@Override
 	public void registrar(cookModel cook) {
 		// TODO Auto-generated method stub
+
 		cook.setPassword(passwordEncoder().encode(cook.getPassword()));
 		cook.setEnabled(true);
 		if (cook.getRole() == null)
@@ -174,6 +187,22 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 	public cookModel findByUsername(String username) {
 		// TODO Auto-generated method stub
 		return cookConverter.transform(cookRepository.findByUsername(username));
+	}
+
+	@Override
+	public boolean registrar(cookModel cook, List<String> culinaryTechniquesIds) {
+		// TODO Auto-generated method stub
+		List<culinaryTechniques> l = new ArrayList<>();
+		for (String x : culinaryTechniquesIds) {
+			l.add(culinaryTechniquesRepository.findById(x).get());
+		}
+		cook.setPassword(passwordEncoder().encode(cook.getPassword()));
+		cook.setEnabled(true);
+		cook.setRole("ROL_COOKAPRENDIZ");
+		cook c = cookConverter.transform(cook);
+		c.setListCulinaryTechniques(l);
+		cookRepository.save(c);
+		return true;
 	}
 
 }

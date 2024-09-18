@@ -1,7 +1,11 @@
 package com.example.demo.model;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -10,6 +14,8 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -48,9 +54,9 @@ public class cookModel {
 	private String username;
 
 	// edad del cocinero
-	@NotBlank(message = "Age is required")
-	@Positive(message = "The height must be a positive number")
-	private int age;
+	@NotNull(message = "birthDate is required")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date birthDate;
 
 	// ciudad del cocinero
 	@Column(name = "city", nullable = false)
@@ -69,16 +75,14 @@ public class cookModel {
 	@NotBlank(message = "The password is required")
 	private String password;
 
-	@NotBlank(message = "The enabled is required")
 	private boolean enabled;
 
 	// Que cocinas, postres, dulces...
-	private List<String> listSpecialty ;
+	private List<String> listSpecialty;
 
 	// Tecnicas usadas en la receta
 	// Mas adelante Tecnicas sera otra entidad, con nombre de la tecnica, creador,
 	// restaurante o lugar donde se creo y descripcion o instruccion de como es
-	@NotNull
 	@OneToMany(cascade = CascadeType.PERSIST)
 	private List<culinaryTechniquesModel> listCulinaryTechniques = new ArrayList<>();
 
@@ -90,7 +94,8 @@ public class cookModel {
 	private String role;
 
 	// Esta puntuacion se obtiene, en base a la media de notas de las recetas
-	@Positive(message = "The punctuaction must be a positive number")
+	@Min(value = 0, message = "The punctuation must be a non-negative number")
+	@Max(value = 10, message = "The punctuation must not exceed 10")
 	private int punctuation;
 
 	// Lista de recetas elaboradas o creadas por este cocinero
@@ -100,47 +105,47 @@ public class cookModel {
 	// otros)
 	private List<recipeModel> listRecipesFavorites;
 
+	// Imagen del perfil
+	private byte[] imagePerfil;
+
+	// Imagen o imagenes del cocinero guardada en base64
+	private List<byte[]> imagesCook = new ArrayList<>();
+
 	public cookModel() {
 		super();
 	}
 
-	
-
-	public cookModel(Integer id,
+//Constructor, con imagen de perfil del cocinero 
+	public cookModel(
 			@Size(max = 100, message = "The firstName cannot exceed 100 characters") @NotBlank(message = "firstName is required") String firstName,
 			@Size(max = 100, message = "The lastName cannot exceed 100 characters") @NotBlank(message = "lastName is required") String lastName,
 			@Size(max = 100, message = "The nickName cannot exceed 100 characters") @NotBlank(message = "nickName is required") String nickName,
 			@Email @Size(max = 100, message = "The email cannot exceed 100 characters") @NotBlank(message = "The email is required") String username,
-			@NotBlank(message = "Age is required") @Positive(message = "The height must be a positive number") int age,
+			@NotBlank(message = "Age is required") @Positive(message = "The height must be a positive number") Date birthDate,
 			@Size(max = 100, message = "The city cannot exceed 100 characters") @NotBlank(message = "city is required") String city,
 			@Size(max = 100, message = "The country cannot exceed 100 characters") @NotBlank(message = "country is required") String country,
 			@NotBlank(message = "The password is required") String password,
 			@NotBlank(message = "The enabled is required") boolean enabled, List<String> listSpecialty,
-			@NotNull List<culinaryTechniquesModel> listCulinaryTechniques,
+			List<culinaryTechniquesModel> listCulinaryTechniques,
 			@Positive(message = "The experience must be a positive number") int experience, String role,
 			@Positive(message = "The punctuaction must be a positive number") int punctuation,
-			List<recipeModel> listRecipes, List<recipeModel> listRecipesFavorites) {
+			List<recipeModel> listRecipes, List<recipeModel> listRecipesFavorites, byte[] imagePerfil) {
 		super();
-		this.id = id;
 		this.firstName = firstName;
 		this.lastName = lastName;
 		this.nickName = nickName;
 		this.username = username;
-		this.age = age;
+		this.birthDate = birthDate;
 		this.city = city;
 		this.country = country;
 		this.password = password;
-		this.enabled = enabled;
+		this.enabled = true;
 		this.listSpecialty = listSpecialty;
 		this.listCulinaryTechniques = listCulinaryTechniques;
 		this.experience = experience;
-		this.role = "Aprendiz";
+		this.role = "ROL_COOKAPRENDIZ";
 		this.punctuation = 0;
-		this.listRecipes = listRecipes;
-		this.listRecipesFavorites = listRecipesFavorites;
 	}
-
-
 
 	public Integer getId() {
 		return id;
@@ -182,12 +187,12 @@ public class cookModel {
 		this.username = username;
 	}
 
-	public int getAge() {
-		return age;
+	public Date getBirthDate() {
+		return birthDate;
 	}
 
-	public void setAge(int age) {
-		this.age = age;
+	public void setBirthDate(Date birthDate) {
+		this.birthDate = birthDate;
 	}
 
 	public String getCity() {
@@ -230,11 +235,11 @@ public class cookModel {
 		this.listSpecialty = listSpecialty;
 	}
 
-	public List<culinaryTechniquesModel> getListRecipeTechniques() {
+	public List<culinaryTechniquesModel> getListCulinaryTechniques() {
 		return listCulinaryTechniques;
 	}
 
-	public void setListRecipeTechniques(List<culinaryTechniquesModel> listCulinaryTechniques) {
+	public void setListCulinaryTechniques(List<culinaryTechniquesModel> listCulinaryTechniques) {
 		this.listCulinaryTechniques = listCulinaryTechniques;
 	}
 
@@ -278,12 +283,30 @@ public class cookModel {
 		this.listRecipesFavorites = listRecipesFavorites;
 	}
 
+	public byte[] getImagePerfil() {
+		return imagePerfil;
+	}
+
+	public void setImagePerfil(byte[] imagePerfil) {
+		this.imagePerfil = imagePerfil;
+	}
+
+	public List<byte[]> getImagesCook() {
+		return imagesCook;
+	}
+
+	public void setImagesCook(List<byte[]> imagesCook) {
+		this.imagesCook = imagesCook;
+	}
+
 	@Override
 	public String toString() {
 		return "cookModel [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", nickName=" + nickName
-				+ ", username=" + username + ", age=" + age + ", city=" + city + ", country=" + country + ", password="
-				+ password + ", enabled=" + enabled + ", listSpecialty=" + listSpecialty + ", listCulinaryTechniques="
-				+ listCulinaryTechniques + ", experience=" + experience + ", role=" + role + ", punctuation="
-				+ punctuation + ", listRecipes=" + listRecipes + ", listRecipesFavorites=" + listRecipesFavorites + "]";
+				+ ", username=" + username + ", birthDate=" + birthDate + ", city=" + city + ", country=" + country
+				+ ", password=" + password + ", enabled=" + enabled + ", listSpecialty=" + listSpecialty
+				+ ", listCulinaryTechniques=" + listCulinaryTechniques + ", experience=" + experience + ", role=" + role
+				+ ", punctuation=" + punctuation + ", listRecipes=" + listRecipes + ", listRecipesFavorites="
+				+ listRecipesFavorites + ", imagePerfil=" + Arrays.toString(imagePerfil) + ", imagesCook=" + imagesCook
+				+ "]";
 	}
 }

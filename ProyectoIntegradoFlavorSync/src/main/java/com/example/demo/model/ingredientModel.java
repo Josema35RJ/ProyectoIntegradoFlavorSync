@@ -1,19 +1,15 @@
 package com.example.demo.model;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import lombok.Data;
 
 public class ingredientModel {
 
@@ -25,21 +21,21 @@ public class ingredientModel {
 	//Nombre del ingrediente
 	@Column(name = "name", nullable = false)
 	private String name;
+	
+	// Relación many-to-many usando la clase RecipeIngredient como entidad intermedia
+    @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<recipeIngredientModel> recipes;
 
-	//Cantidad del ingrediente
-	@NotNull
-	@Positive(message = "The cant must be a positive number")
-	private float cant ;
+	public ingredientModel() {
+		super();
+	}
 
-	//En se mide la cantidad, gramos, cucharadas...
-	@NotNull
-	private String unit;
-
-	public ingredientModel(String name, String unit) {
+	public ingredientModel(Integer id, String name,
+			@NotNull @Positive(message = "The cant must be a positive number") float cant, @NotNull String unit,
+			List<recipeIngredientModel> recipes) {
 		super();
 		this.id = id;
-		this.name = name;
-		this.unit = unit;
+		this.recipes = recipes;
 	}
 
 	public Integer getId() {
@@ -58,24 +54,16 @@ public class ingredientModel {
 		this.name = name;
 	}
 
-	public float getCant() {
-		return cant;
+	public List<recipeIngredientModel> getRecipes() {
+		return recipes;
 	}
 
-	public void setCant(float cant) {
-		this.cant = cant;
-	}
-
-	public String getUnit() {
-		return unit;
-	}
-
-	public void setUnit(String unit) {
-		this.unit = unit;
+	public void setRecipes(List<recipeIngredientModel> recipes) {
+		this.recipes = recipes;
 	}
 
 	@Override
 	public String toString() {
-		return "ingredientModel [id=" + id + ", name=" + name + ", cant=" + cant + ", unit=" + unit + "]";
+		return "ingredientModel [id=" + id + ", name=" + name +  "]";
 	}
 }

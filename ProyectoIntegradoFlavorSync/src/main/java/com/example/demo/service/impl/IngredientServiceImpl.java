@@ -31,19 +31,6 @@ public class IngredientServiceImpl implements IngredientService {
 		return true;
 	}
 
-	@Override
-	public boolean updateIngredient(ingredientModel in) {
-		// TODO Auto-generated method 
-        ingredientModel i = ingredientConverter.transform(ingredientRepository.findById(in.getId()).get());
-		if(i.getName().equalsIgnoreCase(in.getName())) {
-			 i.setName(in.getName());
-		}else if (i.getUnit().equals(in.getUnit())){
-			  i.setUnit(in.getUnit());
-		}else if (i.getCant()==in.getCant()) {
-			  i.setCant(in.getCant());
-		}
-		return true;
-	}
 
 	@Override
 	public boolean deleteIngredient(int id) {
@@ -61,6 +48,18 @@ public class IngredientServiceImpl implements IngredientService {
 		}
 		return ListIngredientModel;
 	}
+
+
+	@Override
+	public boolean updateIngredient(ingredientModel in) {
+		// TODO Auto-generated method 
+        ingredientModel i = ingredientConverter.transform(ingredientRepository.findById(in.getId()).get());
+		if(i.getName().equalsIgnoreCase(in.getName())) {
+			 i.setName(in.getName());
+		}
+		return true;
+	}
+
 
 	
 }

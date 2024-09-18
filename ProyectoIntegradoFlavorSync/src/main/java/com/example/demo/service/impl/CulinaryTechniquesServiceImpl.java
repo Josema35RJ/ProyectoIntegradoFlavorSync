@@ -51,6 +51,12 @@ public class CulinaryTechniquesServiceImpl implements CulinaryTechniquesService 
 		}
 		return l;
 	}
+
+	@Override
+	public culinaryTechniquesModel findById(int id) {
+		// TODO Auto-generated method stub
+		return culinaryTechniquesConverter.transform(culinaryTechniquesRepository.findById(id));
+	}
 	  
 
 

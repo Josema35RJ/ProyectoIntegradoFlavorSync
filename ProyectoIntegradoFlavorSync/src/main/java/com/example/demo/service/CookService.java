@@ -21,4 +21,5 @@ public interface CookService {
 	UserDetails loadUserByUsername(String email);
 	cookModel findById(int id);
 	cookModel findByUsername(String username);
+	boolean registrar(cookModel cook, List<String> culinaryTechniquesIds);
 }

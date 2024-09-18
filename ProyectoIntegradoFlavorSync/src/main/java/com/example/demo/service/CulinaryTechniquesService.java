@@ -11,4 +11,5 @@ public interface CulinaryTechniquesService {
 	boolean updateCulinaryTechniques (culinaryTechniquesModel comment);
 	boolean deleteCulinaryTechniques (int id);
 	List<culinaryTechniquesModel> getListCulinaryTechniques();
+	culinaryTechniquesModel findById(int id);
 }

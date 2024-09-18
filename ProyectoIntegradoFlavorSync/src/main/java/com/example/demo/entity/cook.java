@@ -1,13 +1,19 @@
 package com.example.demo.entity;
 
+import java.sql.Date;
+import java.util.ArrayList;
 import java.util.List;
+
+import org.springframework.format.annotation.DateTimeFormat;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
+import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
@@ -55,9 +61,9 @@ public class cook {
 	private String username;
 
 	// edad del cocinero
-	@NotNull(message = "Age is required")
-	@Positive(message = "The height must be a positive number")
-	private int age;
+	@NotNull(message = "birthDate is required")
+	@DateTimeFormat(pattern = "yyyy-MM-dd")
+	private Date birthDate; 
 
 	// ciudad del cocinero
 	@Column(name = "city", nullable = false)
@@ -76,7 +82,6 @@ public class cook {
 	@NotBlank(message = "The password is required")
 	private String password;
 
-	@NotNull
 	private boolean enabled;
 
 	// Que cocinas, postres, dulces...
@@ -87,10 +92,10 @@ public class cook {
 	// restaurante o lugar donde se creo y descripcion o instruccion de como es
 	@NotNull
 	@OneToMany(cascade = CascadeType.PERSIST)
-	private List<culinaryTechniques> listCulinaryTechniques;
+	private List<culinaryTechniques> listCulinaryTechniques = new ArrayList<>();
 
 	// Cuantos años tienes cocinando
-	@Min(value = 0, message = "The experience must be a non-negative number")
+	@Positive(message = "The experience must be a positive number")
 	private int experience;
 
 	// Segun la puntuacion tendra un rol u otro (empezando por aprendiz)
@@ -109,4 +114,16 @@ public class cook {
 	// otros)
 	@OneToMany()
 	private List<recipe> listRecipesFavorites;
+
+	// Imagen del perfil
+	@Lob // Indica que el campo debe ser tratado como un tipo grande
+	@Column(name = "imagePerfil", columnDefinition = "LONGBLOB") // Define el tipo específico de la columna
+	private byte[] imagePerfil;
+
+	// Imagen o imagenes del cocinero guardada en base64
+	@Lob // Indica que el campo debe ser tratado como un tipo grande
+	@Column(name = "imagesCook", columnDefinition = "LONGBLOB") // Define el tipo específico de la columna
+	@ElementCollection
+	private List<byte[]> imagesCook = new ArrayList<>();
+
 }

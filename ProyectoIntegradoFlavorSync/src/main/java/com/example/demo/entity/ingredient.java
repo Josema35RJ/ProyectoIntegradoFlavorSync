@@ -1,15 +1,14 @@
 package com.example.demo.entity;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -27,20 +26,10 @@ public class ingredient {
 
 	//Nombre del ingrediente
 	@Column(name = "name", nullable = false)
-	private String name;
+	private String name;  
 
-	//Cantidad del ingrediente
-	@NotNull
-	@Positive(message = "The cant must be a positive number")
-	private float cant ;
-
-	//En se mide la cantidad, gramos, cucharadas...
-	private String unit ;
-	
-	public ingredient(String name, String unit) {
-		super();
-		this.id = id;
-		this.name = name;
-		this.unit = unit;
-	}
+	// Relación many-to-many usando la clase RecipeIngredient como entidad intermedia
+    @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<recipeIngredient> recipes;
+    
 }

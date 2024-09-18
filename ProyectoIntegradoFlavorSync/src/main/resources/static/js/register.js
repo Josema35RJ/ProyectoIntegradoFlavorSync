@@ -121,14 +121,7 @@ $(document)
 						}
 					});
 		});
-$('#role').change(function() {
-	var role = $(this).val();
-	$('#gymUserFields').toggle(role === 'GymUser');
-	$('#instructorFields').toggle(role === 'Instructor');
-	$('#gymOwnerFields').toggle(role === 'GymOwner');
-}).change();
-// Show the fields for the selected role on page load
-$('#role').change();
+
 $("#dni")
 	.change(
 		function() {
@@ -188,3 +181,24 @@ document.getElementById('countrySelect').addEventListener('change', function() {
 		})
 		.catch(error => console.error('Error al obtener las ciudades:', error));
 });
+document.getElementById('imagenFile').addEventListener('change', function(event) {
+	const file = event.target.files[0];
+	if (file) {
+		const reader = new FileReader();
+		reader.onload = function(e) {
+			// La imagen convertida a Base64 se almacena en el campo oculto
+			document.getElementById('imagePerfil').value = e.target.result.split(',')[1]; // Elimina el encabezado de la URL base64
+		};
+		reader.readAsDataURL(file); // Convierte la imagen a Base64
+	}
+});
+// Obtener la fecha actual y calcular las fechas mínimas y máximas permitidas
+const today = new Date();
+const minAge = 18;
+const maxAge = 80;
+
+const minDate = new Date(today.getFullYear() - maxAge, today.getMonth(), today.getDate());
+const maxDate = new Date(today.getFullYear() - minAge, today.getMonth(), today.getDate());
+
+// Establecer el rango permitido para la fecha de nacimiento
+document.getElementById("birthDate").setAttribute("min", minDate.toISOString().split('T')[0]);

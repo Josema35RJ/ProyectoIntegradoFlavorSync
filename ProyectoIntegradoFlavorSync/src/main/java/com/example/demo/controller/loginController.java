@@ -1,6 +1,8 @@
 package com.example.demo.controller;
 
 import java.security.Principal;
+import java.util.Base64;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -69,7 +71,7 @@ public class loginController {
 		// Retorna la vista de login
 		return LOGIN_VIEW; // Asegúrate de que LOGIN_VIEW sea el nombre correcto de la vista de login
 	}
-
+	
 	@GetMapping("/auth/register")
 	public String registerForm(Model model) {
 		model.addAttribute("cook", new cookModel());
@@ -78,46 +80,60 @@ public class loginController {
 	}
 
 	@PostMapping("/auth/register")
-	public String registerSubmit(@ModelAttribute("cookModel") cookModel cook,
-			@RequestParam("confirmPassword") String confirmPassword, BindingResult result, RedirectAttributes flash) {
-        System.out.println("***************************************************");
-		System.out.println(cook);
-		if (result.hasErrors()) {
-			return REGISTER_VIEW;
-		}
+    public String registerSubmit(
+            @ModelAttribute("cookModel") cookModel cook,
+            @RequestParam("listCulinaryTechniquesIds") List<String> culinaryTechniquesIds,
+            @RequestParam("imagePerfil") String imagenPerfil, // Recibe la imagen en Base64
+            @RequestParam("confirmPassword") String confirmPassword,
+            BindingResult result,
+            RedirectAttributes flash) {
 
-		cook.setUsername(cook.getUsername().toLowerCase());
+        // Validaciones existentes
+        if (result.hasErrors()) {
+            return REGISTER_VIEW;
+        }
+        
+     // Convertir la imagen en Base64 a byte[]
+        if (!imagenPerfil.isEmpty()) {
+            try {
+                byte[] imageBytes = Base64.getDecoder().decode(imagenPerfil);
+                cook.setImagePerfil(imageBytes); // Almacena la imagen en byte[] en la entidad cook
+            } catch (IllegalArgumentException e) {
+                flash.addFlashAttribute("error", "¡Formato de imagen inválido!");
+                return "redirect:" + REGISTER_VIEW;
+            }
+        }
 
-		if (cook.getFirstName().length() > 25) {
-			flash.addFlashAttribute("error", "¡El nombre excede los 25 caracteres!");
-			return "redirect:" + REGISTER_VIEW;
-		} else if (cook.getLastName().length() > 50) {
-			flash.addFlashAttribute("error", "¡Los apellidos excede los 50 caracteres!");
-			return "redirect:" + REGISTER_VIEW;
-		} else if (cook.getExperience() < 0) {
-			flash.addFlashAttribute("error", "¡La experiencia debe ser mayor o igual a 0!");
-			return "redirect:" + REGISTER_VIEW;
-		} else if (cook.getAge() < 18) {
-			flash.addFlashAttribute("error", "¡La edad debe ser mayor o igual a 18!");
-			return "redirect:" + REGISTER_VIEW;
-		} else if (cookService.existeUsername(cook.getUsername())) {
-			flash.addFlashAttribute("error", "Este correo electrónico ya está registrado");
-			return "redirect:" + REGISTER_VIEW;
-		} else if (!isValidEmailAddress(cook.getUsername())) {
-			flash.addFlashAttribute("error", "¡El correo electrónico no tiene un formato válido!");
-			return "redirect:" + REGISTER_VIEW;
-		} else if (!cook.getPassword().equals(confirmPassword)) {
-			flash.addFlashAttribute("error", "¡Las contraseñas no coinciden!");
-			return "redirect:" + REGISTER_VIEW;
-		} else if (cook.getPassword().length() < 6 || cook.getPassword().length() > 18) {
-			flash.addFlashAttribute("error", "¡La contraseña debe tener entre 6 y 18 caracteres!");
-			return "redirect:" + REGISTER_VIEW;
-		} else {
-			cookService.registrar(cook);
-			flash.addFlashAttribute("success", "¡Cocinero registrado exitosamente!");
-			return "redirect:" + LOGIN_VIEW;
-		}
-	}
+        cook.setUsername(cook.getUsername().toLowerCase());
+
+        if (cook.getFirstName().length() > 25) {
+            flash.addFlashAttribute("error", "¡El nombre excede los 25 caracteres!");
+            return "redirect:" + REGISTER_VIEW;
+        } else if (cook.getLastName().length() > 50) {
+            flash.addFlashAttribute("error", "¡Los apellidos exceden los 50 caracteres!");
+            return "redirect:" + REGISTER_VIEW;
+        } else if (cook.getExperience() < 0) {
+            flash.addFlashAttribute("error", "¡La experiencia debe ser mayor o igual a 0!");
+            return "redirect:" + REGISTER_VIEW;
+        } else if (cookService.existeUsername(cook.getUsername())) {
+            flash.addFlashAttribute("error", "Este correo electrónico ya está registrado");
+            return "redirect:" + REGISTER_VIEW;
+        } else if (!isValidEmailAddress(cook.getUsername())) {
+            flash.addFlashAttribute("error", "¡El correo electrónico no tiene un formato válido!");
+            return "redirect:" + REGISTER_VIEW;
+        } else if (!cook.getPassword().equals(confirmPassword)) {
+            flash.addFlashAttribute("error", "¡Las contraseñas no coinciden!");
+            return "redirect:" + REGISTER_VIEW;
+        } else if (cook.getPassword().length() < 6 || cook.getPassword().length() > 18) {
+            flash.addFlashAttribute("error", "¡La contraseña debe tener entre 6 y 18 caracteres!");
+            return "redirect:" + REGISTER_VIEW;
+        }
+        // Registrar el cocinero
+        cookService.registrar(cook, culinaryTechniquesIds);
+        flash.addFlashAttribute("success", "¡Cocinero registrado exitosamente!");
+
+        return "redirect:" + LOGIN_VIEW;
+    }
 
 	private boolean isValidEmailAddress(String email) {
 		// Expresión regular para verificar el formato de un correo electrónico

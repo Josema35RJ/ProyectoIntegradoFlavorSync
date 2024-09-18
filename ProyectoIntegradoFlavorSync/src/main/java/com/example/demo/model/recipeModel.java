@@ -1,20 +1,21 @@
 package com.example.demo.model;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
+import com.example.demo.entity.recipeIngredient;
+import com.example.demo.entity.nutritionalInformation;
+
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.OneToMany;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
 
 public class recipeModel {
 	// Identificador único para cada receta.
@@ -38,13 +39,13 @@ public class recipeModel {
 	// Cuanto se tarda en elaborar la receta, en minutos
 	@Column(name = "preparationTime", nullable = false)
 	@Positive(message = "The preparationTime must be a positive number")
-	private float preparationTime ;
+	private float preparationTime;
 
 	// Si la receta se hace, en horno, microondas
 	private List<String> whereItisDone; // (kitchenappliance)
 
 	// Si la receta es postre, entrante, primer plato...
-	private List<String> category ;
+	private List<String> category;
 
 	// En cada comentario se valora, la receta, de esa media, se otendra esta nota
 	@Positive(message = "The averageRating must be a positive number")
@@ -53,16 +54,14 @@ public class recipeModel {
 	// Cada cocinero podra valorar la receta (menos el creador)
 	private List<commentModel> listComments;
 
-	// lista de ingredientes necesarios
-	private List<ingredientModel> listIngredients;
-
 	// Lista de utensilios
 	private List<String> listkitchenUtensils;
-	
-	 //Tecnicas usadas en la receta
-	//Mas adelante Tecnicas sera otra entidad, con nombre de la tecnica, creador, restaurante o lugar donde se creo y descripcion o instruccion de como es
-    @NotNull
-    private List<culinaryTechniquesModel> listRecipeTechniques;
+
+	// Tecnicas usadas en la receta
+	// Mas adelante Tecnicas sera otra entidad, con nombre de la tecnica, creador,
+	// restaurante o lugar donde se creo y descripcion o instruccion de como es
+	@NotNull
+	private List<culinaryTechniquesModel> listRecipeTechniques;
 
 	// Intrucciones para elaborar la receta
 	@NotNull
@@ -70,13 +69,73 @@ public class recipeModel {
 
 	private String difficulty;
 
+	// : Información sobre posibles ingredientes alérgenos (como gluten, lactosa,
+	// frutos secos) o
+	// si la receta es apta para personas con necesidades dietéticas especiales
+	// (veganos, vegetarianos,
+	// sin gluten, etc.).
+	@Column(name = "AllergensAndDietaryRestrictions", nullable = false)
+	@Size(max = 455, message = "The name cannot exceed 455 characters")
+	private List<String> AllergensAndDietaryRestrictions;
+
+	// Algunas recetas incluyen una tabla con información sobre las calorías,
+	// grasas, carbohidratos,
+	// proteínas y otros nutrientes por porción.
+	@Column(name = "nutritionalInformation")
+	@Size(max = 455, message = "The name cannot exceed 455 characters")
+	private nutritionalInformation nutritionalInformation;
+
+	// Consejos útiles, variantes de la receta, sugerencias de presentación, o
+	// detalles sobre cómo almacenar el platillo.
+	// También pueden incluir recomendaciones para sustituir ingredientes.
+	@Column(name = "Grades")
+	@Size(max = 50, message = "The name cannot exceed 50 characters")
+	private String grades;
+
+	// Si es relevante, la receta puede incluir detalles sobre su origen cultural,
+	// tradicional, o inspiración de algún lugar o persona.
+	// Esto le da un toque especial y contexto histórico al platillo.
+	@Column(name = "History")
+	@Size(max = 455, message = "The name cannot exceed 455 characters")
+	private String History;
+
+	// pais de la receta
+	@Column(name = "country", nullable = false)
+	@Size(max = 100, message = "The country cannot exceed 100 characters")
+	@NotBlank(message = "country is required")
+	private String Country;
+
+	// ciudad de la receta
+	@Column(name = "city", nullable = false)
+	@Size(max = 100, message = "The city cannot exceed 100 characters")
+	@NotBlank(message = "city is required")
+	private String city;
+
+	// Imagen o imagenes de la receta
+	private List<byte[]> imagesRecipe = new ArrayList<>();
+
+	// Video de la elaboracion
+	// private String video;
+	 
+	 // Relación many-to-many usando la clase RecipeIngredient como entidad intermedia
+	    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
+	    private List<recipeIngredient> ingredients;
+
 	public recipeModel(Integer id, @Size(max = 25, message = "The name cannot exceed 25 characters") String name,
 			String level, @Positive(message = "The diners must be a positive number") int diners,
 			@Positive(message = "The preparationTime must be a positive number") float preparationTime,
 			List<String> whereItisDone, List<String> category,
-			@Positive(message = "The punctuation must be a positive number") float averageRating,
-			List<commentModel> listComments, List<ingredientModel> listIngredients, List<String> listkitchenUtensils, List<culinaryTechniquesModel>listRecipeTechniques, 
-			@NotNull String instructions, String difficulty) {
+			@Positive(message = "The averageRating must be a positive number") float averageRating,
+			List<commentModel> listComments, List<String> listkitchenUtensils,
+			@NotNull List<culinaryTechniquesModel> listRecipeTechniques, @NotNull String instructions,
+			String difficulty,
+			@Size(max = 455, message = "The name cannot exceed 455 characters") List<String> allergensAndDietaryRestrictions,
+			com.example.demo.entity.@Size(max = 455, message = "The name cannot exceed 455 characters") nutritionalInformation nutritionalInformation,
+			@Size(max = 50, message = "The name cannot exceed 50 characters") String grades,
+			@Size(max = 455, message = "The name cannot exceed 455 characters") String history,
+			@Size(max = 100, message = "The country cannot exceed 100 characters") @NotBlank(message = "country is required") String country,
+			@Size(max = 100, message = "The city cannot exceed 100 characters") @NotBlank(message = "city is required") String city,
+			List<byte[]> imagesRecipe, List<recipeIngredient> ingredients) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -87,11 +146,18 @@ public class recipeModel {
 		this.category = category;
 		this.averageRating = averageRating;
 		this.listComments = listComments;
-		this.listIngredients = listIngredients;
 		this.listkitchenUtensils = listkitchenUtensils;
 		this.listRecipeTechniques = listRecipeTechniques;
 		this.instructions = instructions;
 		this.difficulty = difficulty;
+		AllergensAndDietaryRestrictions = allergensAndDietaryRestrictions;
+		this.nutritionalInformation = nutritionalInformation;
+		this.grades = grades;
+		History = history;
+		Country = country;
+		this.city = city;
+		this.imagesRecipe = imagesRecipe;
+		this.ingredients = ingredients;
 	}
 
 	public Integer getId() {
@@ -166,14 +232,6 @@ public class recipeModel {
 		this.listComments = listComments;
 	}
 
-	public List<ingredientModel> getListIngredients() {
-		return listIngredients;
-	}
-
-	public void setListIngredients(List<ingredientModel> listIngredients) {
-		this.listIngredients = listIngredients;
-	}
-
 	public List<String> getListkitchenUtensils() {
 		return listkitchenUtensils;
 	}
@@ -206,12 +264,83 @@ public class recipeModel {
 		this.difficulty = difficulty;
 	}
 
+	public List<String> getAllergensAndDietaryRestrictions() {
+		return AllergensAndDietaryRestrictions;
+	}
+
+	public void setAllergensAndDietaryRestrictions(@Size(max = 455, message = "The name cannot exceed 455 characters") List<String> allergensAndDietaryRestrictions) {
+		AllergensAndDietaryRestrictions = allergensAndDietaryRestrictions;
+	}
+
+	public nutritionalInformation getNutritionalInformation() {
+		return nutritionalInformation;
+	}
+
+	public void setNutritionalInformation(nutritionalInformation nutritionalInformation) {
+		this.nutritionalInformation = nutritionalInformation;
+	}
+
+	public String getGrades() {
+		return grades;
+	}
+
+	public void setGrades(String grades) {
+		this.grades = grades;
+	}
+
+	public String getHistory() {
+		return History;
+	}
+
+	public void setOrigin(String history) {
+		History = history;
+	}
+
+	public String getCountry() {
+		return Country;
+	}
+
+	public void setCountry(String country) {
+		Country = country;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public List<byte[]> getImagesRecipe() {
+		return imagesRecipe;
+	}
+
+	public void setImagesRecipe(List<byte[]> imagesRecipe) {
+		this.imagesRecipe = imagesRecipe;
+	}
+
+	public List<recipeIngredient> getIngredients() {
+		return ingredients;
+	}
+
+	public void setIngredients(List<recipeIngredient> ingredients) {
+		this.ingredients = ingredients;
+	}
+
+	public void setHistory(String history) {
+		History = history;
+	}
+
 	@Override
 	public String toString() {
 		return "recipeModel [id=" + id + ", name=" + name + ", level=" + level + ", diners=" + diners
 				+ ", preparationTime=" + preparationTime + ", whereItisDone=" + whereItisDone + ", category=" + category
-				+ ", averageRating=" + averageRating + ", listComments=" + listComments + ", listIngredients="
-				+ listIngredients + ", listkitchenUtensils=" + listkitchenUtensils + ", listRecipeTechniques="
-				+ listRecipeTechniques + ", instructions=" + instructions + ", difficulty=" + difficulty + "]";
+				+ ", averageRating=" + averageRating + ", listComments=" + listComments + ", listkitchenUtensils="
+				+ listkitchenUtensils + ", listRecipeTechniques=" + listRecipeTechniques + ", instructions="
+				+ instructions + ", difficulty=" + difficulty + ", AllergensAndDietaryRestrictions="
+				+ AllergensAndDietaryRestrictions + ", nutritionalInformation=" + nutritionalInformation + ", grades="
+				+ grades + ", History=" + History + ", Country=" + Country + ", city=" + city + ", imagesRecipe="
+				+ imagesRecipe + ", ingredients=" + ingredients + "]";
 	}
 }
