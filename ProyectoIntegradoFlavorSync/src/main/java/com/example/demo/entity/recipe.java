@@ -29,7 +29,7 @@ public class recipe {
 
 	// Nombre de la receta
 	@Column(name = "name", nullable = false)
-	@Size(max = 25, message = "The name cannot exceed 25 characters")
+	@Size(max = 100, message = "The name cannot exceed 100 characters")
 	private String name;
 
 	// Cocinero aprendiz, profesional, chef?

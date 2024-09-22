@@ -182,16 +182,16 @@ document.getElementById('countrySelect').addEventListener('change', function() {
 		.catch(error => console.error('Error al obtener las ciudades:', error));
 });
 document.getElementById('imagenFile').addEventListener('change', function(event) {
-	const file = event.target.files[0];
-	if (file) {
-		const reader = new FileReader();
-		reader.onload = function(e) {
-			// La imagen convertida a Base64 se almacena en el campo oculto
-			document.getElementById('imagePerfil').value = e.target.result.split(',')[1]; // Elimina el encabezado de la URL base64
-		};
-		reader.readAsDataURL(file); // Convierte la imagen a Base64
-	}
-});
+      const file = event.target.files[0];
+      if (file) {
+          const reader = new FileReader();
+          reader.onload = function(e) {
+              // La imagen convertida a Base64 se almacena en el campo oculto
+              document.getElementById('imagenPerfilBase64').value = e.target.result.split(',')[1]; // Elimina el encabezado de la URL base64
+          };
+          reader.readAsDataURL(file); // Convierte la imagen a Base64
+      }
+  });
 // Obtener la fecha actual y calcular las fechas mínimas y máximas permitidas
 const today = new Date();
 const minAge = 18;

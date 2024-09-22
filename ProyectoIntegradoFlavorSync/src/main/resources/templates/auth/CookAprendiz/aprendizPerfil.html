@@ -33,6 +33,10 @@
 						href="/auth/cookAprendiz/aprendizPanel">Home</a></li>
 					<li class="nav-item"><a class="nav-link" href="#">Mis
 							Recetas</a></li>
+					<li class="nav-item"><a class="nav-link"
+						href="/auth/cook/logout"> <i class="fas fa-sign-out-alt"></i>
+							Cerrar Sesión
+					</a></li>
 				</ul>
 			</div>
 		</div>
@@ -47,26 +51,11 @@
 					</div>
 					<div class="card-body">
 						<form class="row g-3 needs-validation" novalidate>
-							<div class="col-md-6 text-center">
-								<label for="profileImage" class="form-label">Imagen de
-									Perfil</label>
-
-								<div>
-    <!-- Mostrar la imagen si existe en base64 -->
-    <img id="profileImage"
-         th:if="${base64Image != null}"
-         th:src="'data:image/' + ${imageType} + ';base64,' + ${base64Image}"
-         class="img-fluid rounded-circle"
-         style="width: 150px; height: 150px; object-fit: cover;">
-    
-    <!-- Mostrar una imagen predeterminada si no hay imagen en base64 -->
-    <img id="profileImage"
-         th:if="${base64Image == null}"
-         src="/path/to/default/image.jpg"
-         class="img-fluid rounded-circle"
-         style="width: 150px; height: 150px; object-fit: cover;">
-</div>
-
+							<!-- Mostrar la imagen si existe en base64 -->
+							<div class="text-center mb-3">
+								<img th:src="${base64Image}"
+									style="width: 150px; height: 150px;  border-radius: 50%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); object-fit: cover;"
+									alt="Imagen de perfil">
 							</div>
 							<div class="col-md-6">
 								<label for="firstName" class="form-label">Nombre</label> <input
@@ -88,7 +77,7 @@
 								<div class="input-group has-validation">
 									<span class="input-group-text" id="inputGroupPrepend">@</span>
 									<input type="text" class="form-control" id="nickname"
-										th:value="${cookPerfil != null ? cookPerfil.firstName : ''}"
+										th:value="${cookPerfil != null ? cookPerfil.nickName : ''}"
 										required>
 									<div class="invalid-feedback">Por favor, elige un apodo
 										de cocinero.</div>
@@ -103,25 +92,14 @@
 									correo electrónico válido.</div>
 							</div>
 							<div class="col-md-6">
-								<label for="age" class="form-label">Edad</label> <input
-									type="number" class="form-control" id="age"
-									th:value="${cookPerfil != null ? cookPerfil.age : ''}" required>
+								<label for="bithDate" class="form-label">Edad</label> <input
+									type="date" class="form-control" id="birthDate"
+									th:value="${cookPerfil != null ? cookPerfil.birthDate : ''}"
+									required>
 								<div class="invalid-feedback">Por favor, proporciona una
 									edad válida.</div>
 							</div>
-							<div class="col-md-6">
-								<label for="password" class="form-label">Contraseña</label>
-								<div class="input-group">
-									<input type="password" class="form-control" id="password"
-										th:value=""
-										required> <span class="input-group-text"
-										onclick="togglePassword()"> <i class="fas fa-eye"
-										id="togglePasswordIcon"></i>
-									</span>
-									<div class="invalid-feedback">Por favor, proporciona una
-										contraseña.</div>
-								</div>
-							</div>
+							<!--  Enlace para cambiar o actualizar contraseña -->
 							<div class="col-md-6">
 								<label for="city" class="form-label">Ciudad</label> <input
 									type="text" class="form-control" id="city"
@@ -131,13 +109,10 @@
 									ciudad válida.</div>
 							</div>
 							<div class="col-md-3">
-								<label for="state" class="form-label">Pais</label> <select
-									class="form-select" id="country" required>
-									<option selected disabled value="">Elige...</option>
-									<option>España</option>
-									<option>Argentina</option>
-									<option>Colombia</option>
-								</select>
+								<label for="state" class="form-label">Pais</label> <input
+									type="text" class="form-control" id="country"
+									th:value="${cookPerfil != null ? cookPerfil.country : ''}"
+									required>
 								<div class="invalid-feedback">Por favor, selecciona un
 									estado válido.</div>
 							</div>

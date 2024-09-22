@@ -145,6 +145,7 @@ public class cookModel {
 		this.experience = experience;
 		this.role = "ROL_COOKAPRENDIZ";
 		this.punctuation = 0;
+		this.imagePerfil = imagePerfil;
 	}
 
 	public Integer getId() {
