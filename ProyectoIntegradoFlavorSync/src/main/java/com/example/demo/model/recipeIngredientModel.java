@@ -1,14 +1,11 @@
 package com.example.demo.model;
 
-import com.example.demo.entity.ingredient;
-import com.example.demo.entity.recipe;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.MapsId;
 
 public class recipeIngredientModel {
 
@@ -19,11 +16,11 @@ public class recipeIngredientModel {
 	
     @ManyToOne
     @JoinColumn(name = "recipe_id")
-    private recipe recipe;
+    private recipeModel recipe;
 
     @ManyToOne
     @JoinColumn(name = "ingredient_id")
-    private ingredient ingredient;
+    private ingredientModel ingredient;
 
     @Column(nullable = false)
     private float cant;  // Cantidad del ingrediente
@@ -34,8 +31,8 @@ public class recipeIngredientModel {
 		super();
 	}
 
-	public recipeIngredientModel(Integer id, com.example.demo.entity.recipe recipe,
-			com.example.demo.entity.ingredient ingredient, float cant, String unit) {
+	public recipeIngredientModel(Integer id, recipeModel recipe,
+			ingredientModel ingredient, float cant, String unit) {
 		super();
 		this.id = id;
 		this.recipe = recipe;
@@ -52,19 +49,19 @@ public class recipeIngredientModel {
 		this.id = id;
 	}
 
-	public recipe getRecipe() {
+	public recipeModel getRecipe() {
 		return recipe;
 	}
 
-	public void setRecipe(recipe recipe) {
+	public void setRecipe(recipeModel recipe) {
 		this.recipe = recipe;
 	}
 
-	public ingredient getIngredient() {
+	public ingredientModel getIngredient() {
 		return ingredient;
 	}
 
-	public void setIngredient(ingredient ingredient) {
+	public void setIngredient(ingredientModel ingredient) {
 		this.ingredient = ingredient;
 	}
 

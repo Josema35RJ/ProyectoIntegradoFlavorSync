@@ -3,15 +3,12 @@ package com.example.demo.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.example.demo.entity.recipeIngredient;
 import com.example.demo.entity.nutritionalInformation;
 
-import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.OneToMany;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -42,26 +39,25 @@ public class recipeModel {
 	private float preparationTime;
 
 	// Si la receta se hace, en horno, microondas
-	private List<String> whereItisDone; // (kitchenappliance)
+	private List<String> whereItisDone = new ArrayList<>(); // (kitchenappliance)
 
 	// Si la receta es postre, entrante, primer plato...
-	private List<String> category;
+	private List<String> category = new ArrayList<>();
 
 	// En cada comentario se valora, la receta, de esa media, se otendra esta nota
-	@Positive(message = "The averageRating must be a positive number")
 	private float averageRating = 0;
 
 	// Cada cocinero podra valorar la receta (menos el creador)
-	private List<commentModel> listComments;
+	private List<commentModel> listComments = new ArrayList<>();
 
 	// Lista de utensilios
-	private List<String> listkitchenUtensils;
+	private List<String> listkitchenUtensils = new ArrayList<>();
 
 	// Tecnicas usadas en la receta
 	// Mas adelante Tecnicas sera otra entidad, con nombre de la tecnica, creador,
 	// restaurante o lugar donde se creo y descripcion o instruccion de como es
 	@NotNull
-	private List<culinaryTechniquesModel> listRecipeTechniques;
+	private List<culinaryTechniquesModel> listRecipeTechniques = new ArrayList<>();
 
 	// Intrucciones para elaborar la receta
 	@NotNull
@@ -76,7 +72,7 @@ public class recipeModel {
 	// sin gluten, etc.).
 	@Column(name = "AllergensAndDietaryRestrictions", nullable = false)
 	@Size(max = 455, message = "The name cannot exceed 455 characters")
-	private List<String> AllergensAndDietaryRestrictions;
+	private List<String> AllergensAndDietaryRestrictions = new ArrayList<>();
 
 	// Algunas recetas incluyen una tabla con información sobre las calorías,
 	// grasas, carbohidratos,
@@ -113,39 +109,28 @@ public class recipeModel {
 
 	// Imagen o imagenes de la receta
 	private List<byte[]> imagesRecipe = new ArrayList<>();
+	
+	//Imagen para la receta que sale en la pantalla principal, imagen perfil de la receta
+	private byte[] imageRecipePerfil;
 
 	// Video de la elaboracion
 	// private String video;
-	 
-	 // Relación many-to-many usando la clase RecipeIngredient como entidad intermedia
-	    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-	    private List<recipeIngredient> ingredients;
 
-	public recipeModel(Integer id, @Size(max = 25, message = "The name cannot exceed 25 characters") String name,
-			String level, @Positive(message = "The diners must be a positive number") int diners,
-			@Positive(message = "The preparationTime must be a positive number") float preparationTime,
-			List<String> whereItisDone, List<String> category,
-			@Positive(message = "The averageRating must be a positive number") float averageRating,
-			List<commentModel> listComments, List<String> listkitchenUtensils,
-			@NotNull List<culinaryTechniquesModel> listRecipeTechniques, @NotNull String instructions,
-			String difficulty,
-			@Size(max = 455, message = "The name cannot exceed 455 characters") List<String> allergensAndDietaryRestrictions,
-			com.example.demo.entity.@Size(max = 455, message = "The name cannot exceed 455 characters") nutritionalInformation nutritionalInformation,
-			@Size(max = 50, message = "The name cannot exceed 50 characters") String grades,
-			@Size(max = 455, message = "The name cannot exceed 455 characters") String history,
-			@Size(max = 100, message = "The country cannot exceed 100 characters") @NotBlank(message = "country is required") String country,
-			@Size(max = 100, message = "The city cannot exceed 100 characters") @NotBlank(message = "city is required") String city,
-			List<byte[]> imagesRecipe, List<recipeIngredient> ingredients) {
+	// Relación many-to-many usando la clase RecipeIngredient como entidad
+	// intermedia
+	private List<recipeIngredientModel> ingredients = new ArrayList<>();
+
+	public recipeModel(Integer id, String name, int diners, float preparationTime, List<String> whereItisDone,
+			List<String> category, List<String> listkitchenUtensils, List<culinaryTechniquesModel> listRecipeTechniques,
+			String instructions, String difficulty, List<String> allergensAndDietaryRestrictions,
+			nutritionalInformation nutritionalInformation, String grades, String history, String country, String city) {
 		super();
 		this.id = id;
 		this.name = name;
-		this.level = level;
 		this.diners = diners;
 		this.preparationTime = preparationTime;
 		this.whereItisDone = whereItisDone;
 		this.category = category;
-		this.averageRating = averageRating;
-		this.listComments = listComments;
 		this.listkitchenUtensils = listkitchenUtensils;
 		this.listRecipeTechniques = listRecipeTechniques;
 		this.instructions = instructions;
@@ -156,8 +141,11 @@ public class recipeModel {
 		History = history;
 		Country = country;
 		this.city = city;
-		this.imagesRecipe = imagesRecipe;
-		this.ingredients = ingredients;
+
+	}
+
+	public recipeModel() {
+		// TODO Auto-generated constructor stub
 	}
 
 	public Integer getId() {
@@ -268,7 +256,8 @@ public class recipeModel {
 		return AllergensAndDietaryRestrictions;
 	}
 
-	public void setAllergensAndDietaryRestrictions(@Size(max = 455, message = "The name cannot exceed 455 characters") List<String> allergensAndDietaryRestrictions) {
+	public void setAllergensAndDietaryRestrictions(
+			@Size(max = 455, message = "The name cannot exceed 455 characters") List<String> allergensAndDietaryRestrictions) {
 		AllergensAndDietaryRestrictions = allergensAndDietaryRestrictions;
 	}
 
@@ -320,16 +309,24 @@ public class recipeModel {
 		this.imagesRecipe = imagesRecipe;
 	}
 
-	public List<recipeIngredient> getIngredients() {
+	public List<recipeIngredientModel> getIngredients() {
 		return ingredients;
 	}
 
-	public void setIngredients(List<recipeIngredient> ingredients) {
+	public void setIngredients(List<recipeIngredientModel> ingredients) {
 		this.ingredients = ingredients;
 	}
 
 	public void setHistory(String history) {
 		History = history;
+	}
+
+	public byte[] getImageRecipePerfil() {
+		return imageRecipePerfil;
+	}
+
+	public void setImageRecipePerfil(byte[] imageRecipePerfil) {
+		this.imageRecipePerfil = imageRecipePerfil;
 	}
 
 	@Override

@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FlavorSync - Crear Receta</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+	rel="stylesheet">
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"
+	rel="stylesheet">
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<div class="container-fluid">
+			<a class="navbar-brand" href="#"><i class="fas fa-utensils"></i>
+				FlavorSync</a>
+			<button class="navbar-toggler" type="button"
+				data-bs-toggle="collapse" data-bs-target="#navbarNav"
+				aria-controls="navbarNav" aria-expanded="false"
+				aria-label="Toggle navigation">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+					<li class="nav-item"><a class="nav-link"
+						href="/auth/cookAprendiz/aprendizPanel">Home</a></li>
+					<li class="nav-item"><a class="nav-link"
+						href="/auth/cookAprendiz/perfilAprendiz">Mi Perfil</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<main class="container mt-4">
+		<h1>Crear/Actualizar Receta</h1>
+		<form id="registerForm" th:action="@{/auth/cook/addRecipe}"
+			method="post" enctype="multipart/form-data">
+			<!-- Campos ocultos para indicar si es una actualización o creación -->
+			<input type="hidden" name="isUpdate"
+				value="${recipe != null && recipe.id != null ? 'true' : 'false'}" />
+			<input type="hidden" name="recipeId"
+				value="${recipe != null && recipe.id != null ? recipe.id : ''}" />
+
+			<!-- Información General -->
+			<div class="card mb-3">
+				<div class="card-header">Información General</div>
+				<div class="card-body">
+					<div class="mb-3">
+						<label for="name" class="form-label">Nombre de la Receta</label> <input
+							type="text" class="form-control" id="name" name="name"
+							maxlength="100" required
+							th:value="${recipe != null && recipe.name != null ? recipe.name : ''}">
+					</div>
+					<div class="mb-3">
+						<label for="diners" class="form-label">Número de
+							Comensales</label> <input type="range" class="form-range" id="diners"
+							name="diners" min="1" max="10"
+							th:value="${recipe != null && recipe.diners != null ? recipe.diners : '5'}"
+							oninput="this.nextElementSibling.value = this.value">
+						<output
+							th:text="${recipe != null && recipe.diners != null ? recipe.diners : '5'}">5</output>
+					</div>
+					<div class="mb-3">
+						<label for="preparationTime" class="form-label">Tiempo de
+							Preparación (minutos)</label> <input type="range" class="form-range"
+							id="preparationTime" name="preparationTime" min="10" max="180"
+							step="5"
+							th:value="${recipe != null && recipe.preparationTime != null ? recipe.preparationTime : '45'}"
+							oninput="this.nextElementSibling.value = this.value">
+						<output
+							th:text="${recipe != null && recipe.preparationTime != null ? recipe.preparationTime : '45'}">45</output>
+					</div>
+					<div class="mb-3">
+						<label for="whereItisDone" class="form-label">Donde se
+							Hace</label> <select class="form-select" id="whereItisDone"
+							name="whereItisDone[]" multiple required>
+							<option value="Horno"
+								th:selected="${recipe != null && recipe.whereItisDone != null && recipe.whereItisDone.contains('Horno')}">Horno</option>
+							<option value="Microondas"
+								th:selected="${recipe != null && recipe.whereItisDone != null && recipe.whereItisDone.contains('Microondas')}">Microondas</option>
+							<option value="Freidora de Aire"
+								th:selected="${recipe != null && recipe.whereItisDone != null && recipe.whereItisDone.contains('Freidora de Aire')}">Freidora
+								de Aire</option>
+							<option value="Plancha"
+								th:selected="${recipe != null && recipe.whereItisDone != null && recipe.whereItisDone.contains('Plancha')}">Plancha</option>
+							<option value="Parrilla"
+								th:selected="${recipe != null && recipe.whereItisDone != null && recipe.whereItisDone.contains('Parrilla')}">Parrilla</option>
+							<option value="Estufa"
+								th:selected="${recipe != null && recipe.whereItisDone != null && recipe.whereItisDone.contains('Estufa')}">Estufa</option>
+							<option value="Vaporera"
+								th:selected="${recipe != null && recipe.whereItisDone != null && recipe.whereItisDone.contains('Vaporera')}">Vaporera</option>
+						</select>
+					</div>
+				</div>
+			</div>
+
+			<!-- Categoría de la Receta -->
+			<div class="card mb-3">
+				<div class="card-header">Categoría de la Receta</div>
+				<div class="card-body">
+					<div class="mb-3">
+						<label for="category" class="form-label">Seleccione la
+							Categoría</label> <select id="category" name="category[]"
+							class="form-select" multiple required>
+							<option value="Postre"
+								th:selected="${recipe != null && recipe.category != null && recipe.category.contains('Postre')}">Postre</option>
+							<option value="Entrante"
+								th:selected="${recipe != null && recipe.category != null && recipe.category.contains('Entrante')}">Entrante</option>
+							<option value="Primer Plato"
+								th:selected="${recipe != null && recipe.category != null && recipe.category.contains('Primer Plato')}">Primer
+								Plato</option>
+							<option value="Segundo Plato"
+								th:selected="${recipe != null && recipe.category != null && recipe.category.contains('Segundo Plato')}">Segundo
+								Plato</option>
+							<option value="Aperitivo"
+								th:selected="${recipe != null && recipe.category != null && recipe.category.contains('Aperitivo')}">Aperitivo</option>
+							<option value="Bebida"
+								th:selected="${recipe != null && recipe.category != null && recipe.category.contains('Bebida')}">Bebida</option>
+							<option value="Sopa"
+								th:selected="${recipe != null && recipe.category != null && recipe.category.contains('Sopa')}">Sopa</option>
+							<option value="Ensalada"
+								th:selected="${recipe != null && recipe.category != null && recipe.category.contains('Ensalada')}">Ensalada</option>
+						</select>
+					</div>
+				</div>
+			</div>
+
+
+			<!-- Ingredientes y Utensilios -->
+			<div class="card mb-3">
+				<div class="card-header">Ingredientes y Utensilios</div>
+				<div class="card-body">
+					<!--   <div class="mb-3">
+                        <label for="ingredients" class="form-label">Ingredientes</label>
+                        <textarea class="form-control" id="ingredients" name="ingredients" rows="5" th:value="${recipe != null && recipe.ingredients != null ? recipe.ingredients : ''}" required></textarea>
+                    </div>-->
+					<div class="mb-3">
+						<label for="listkitchenUtensils" class="form-label">Utensilios
+							de Cocina</label> <select id="listkitchenUtensils"
+							name="listkitchenUtensils[]" class="form-control" multiple
+							required>
+							<option value="Cuchillo"
+								th:selected="${recipe != null && recipe.listkitchenUtensils.contains('Cuchillo')}">Cuchillo</option>
+							<option value="Sartén"
+								th:selected="${recipe != null && recipe.listkitchenUtensils.contains('Sartén')}">Sartén</option>
+							<option value="Olla"
+								th:selected="${recipe != null && recipe.listkitchenUtensils.contains('Olla')}">Olla</option>
+							<option value="Batidora"
+								th:selected="${recipe != null && recipe.listkitchenUtensils.contains('Batidora')}">Batidora</option>
+							<option value="Licuadora"
+								th:selected="${recipe != null && recipe.listkitchenUtensils.contains('Licuadora')}">Licuadora</option>
+							<option value="Colador"
+								th:selected="${recipe != null && recipe.listkitchenUtensils.contains('Colador')}">Colador</option>
+							<option value="Rallador"
+								th:selected="${recipe != null && recipe.listkitchenUtensils.contains('Rallador')}">Rallador</option>
+							<option value="Bandeja para Horno"
+								th:selected="${recipe != null && recipe.listkitchenUtensils.contains('Bandeja para Horno')}">Bandeja
+								para Horno</option>
+							<option value="Cucharón"
+								th:selected="${recipe != null && recipe.listkitchenUtensils.contains('Cucharón')}">Cucharón</option>
+							<option value="Espátula"
+								th:selected="${recipe != null && recipe.listkitchenUtensils.contains('Espátula')}">Espátula</option>
+						</select>
+					</div>
+				</div>
+			</div>
+
+			<!-- Técnicas y Preparación -->
+			<div class="card mb-3">
+				<div class="card-header">Técnicas y Preparación</div>
+				<div class="card-body">
+					<div class="mb-3">
+						<label for="listRecipeTechniquesString" class="form-label">Técnicas
+							Usadas</label> <select id="listRecipeTechniquesString"
+							name="listRecipeTechniquesString[]" class="form-control" multiple
+							required>
+							<option value="Salteado"
+								th:selected="${recipe != null && recipe.listRecipeTechniquesString.contains('Salteado')}">Salteado</option>
+							<option value="Horneado"
+								th:selected="${recipe != null && recipe.listRecipeTechniquesString.contains('Horneado')}">Horneado</option>
+							<option value="Cocción a Fuego Lento"
+								th:selected="${recipe != null && recipe.listRecipeTechniquesString.contains('Cocción a Fuego Lento')}">Cocción
+								a Fuego Lento</option>
+							<option value="Fritura"
+								th:selected="${recipe != null && recipe.listRecipeTechniquesString.contains('Fritura')}">Fritura</option>
+							<option value="Asado"
+								th:selected="${recipe != null && recipe.listRecipeTechniquesString.contains('Asado')}">Asado</option>
+							<option value="Cocido"
+								th:selected="${recipe != null && recipe.listRecipeTechniquesString.contains('Cocido')}">Cocido</option>
+							<option value="Blanqueado"
+								th:selected="${recipe != null && recipe.listRecipeTechniquesString.contains('Blanqueado')}">Blanqueado</option>
+							<option value="Braseado"
+								th:selected="${recipe != null && recipe.listRecipeTechniquesString.contains('Braseado')}">Braseado</option>
+							<option value="Gratinado"
+								th:selected="${recipe != null && recipe.listRecipeTechniquesString.contains('Gratinado')}">Gratinado</option>
+							<option value="A la Parrilla"
+								th:selected="${recipe != null && recipe.listRecipeTechniquesString.contains('A la Parrilla')}">A
+								la Parrilla</option>
+						</select>
+					</div>
+					<div class="mb-3">
+						<label for="instructions" class="form-label">Instrucciones
+							de Preparación</label>
+						<textarea class="form-control" id="instructions"
+							name="instructions" rows="5"
+							th:value="${recipe != null && recipe.instructions != null ? recipe.instructions : ''}"
+							required></textarea>
+					</div>
+				</div>
+			</div>
+
+			<!-- Dificultad -->
+			<div class="mb-3">
+				<label for="difficulty" class="form-label">Dificultad</label> <select
+					class="form-select" id="difficulty" name="difficulty" required>
+					<option value="Fácil"
+						th:selected="${recipe != null && recipe.difficulty == 'Fácil'}">Fácil</option>
+					<option value="Intermedia"
+						th:selected="${recipe != null && recipe.difficulty == 'Intermedia'}">Intermedia</option>
+					<option value="Difícil"
+						th:selected="${recipe != null && recipe.difficulty == 'Difícil'}">Difícil</option>
+				</select>
+			</div>
+
+			<!-- Restricciones Alimentarias -->
+			<div class="mb-3">
+				<label for="AllergensAndDietaryRestrictions" class="form-label">Alergenos
+					y Restricciones Dietéticas</label> <select
+					id="AllergensAndDietaryRestrictions"
+					name="AllergensAndDietaryRestrictions"
+					class="form-control selectpicker" multiple required
+					data-live-search="true">
+					<option value="gluten"
+						th:selected="${recipe != null && recipe.AllergensAndDietaryRestrictions.contains('gluten')}">Sin
+						Gluten</option>
+					<option value="lactose"
+						th:selected="${recipe != null && recipe.AllergensAndDietaryRestrictions.contains('lactose')}">Sin
+						Lactosa</option>
+					<option value="nuts"
+						th:selected="${recipe != null && recipe.AllergensAndDietaryRestrictions.contains('nuts')}">Sin
+						Frutos Secos</option>
+					<option value="soy"
+						th:selected="${recipe != null && recipe.AllergensAndDietaryRestrictions.contains('soy')}">Sin
+						Soja</option>
+					<option value="vegan"
+						th:selected="${recipe != null && recipe.AllergensAndDietaryRestrictions.contains('vegan')}">Vegano</option>
+					<option value="vegetarian"
+						th:selected="${recipe != null && recipe.AllergensAndDietaryRestrictions.contains('vegetarian')}">Vegetariano</option>
+					<option value="halal"
+						th:selected="${recipe != null && recipe.AllergensAndDietaryRestrictions.contains('halal')}">Halal</option>
+					<option value="kosher"
+						th:selected="${recipe != null && recipe.AllergensAndDietaryRestrictions.contains('kosher')}">Kosher</option>
+					<option value="shellfish"
+						th:selected="${recipe != null && recipe.AllergensAndDietaryRestrictions.contains('shellfish')}">Sin
+						Mariscos</option>
+					<option value="egg-free"
+						th:selected="${recipe != null && recipe.AllergensAndDietaryRestrictions.contains('egg-free')}">Sin
+						Huevo</option>
+				</select>
+			</div>
+
+			<!-- Notas -->
+			<div class="mb-3">
+				<label for="grades" class="form-label">Notas</label>
+				<textarea class="form-control" id="grades" name="grades" rows="3"
+					th:value="${recipe != null && recipe.grades != null ? recipe.grades : ''}"
+					required></textarea>
+			</div>
+
+			<!-- Información Nutricional -->
+			<div class="card mb-3">
+				<div class="card-header">Información Nutricional</div>
+				<div class="card-body">
+					<div class="mb-3">
+						<label for="calories" class="form-label">Calorías por
+							Porción</label> <input type="number" class="form-control" id="calories"
+							name="nutritionalInformation.calories" step="0.01" required
+							th:value="${recipe != null && recipe.nutritionalInformation != null ? recipe.nutritionalInformation.calories : ''}">
+					</div>
+					<div class="mb-3">
+						<label for="fat" class="form-label">Grasas (g)</label> <input
+							type="number" class="form-control" id="fat"
+							name="nutritionalInformation.fat" step="0.01" required
+							th:value="${recipe != null && recipe.nutritionalInformation != null ? recipe.nutritionalInformation.fat : ''}">
+					</div>
+					<div class="mb-3">
+						<label for="carbohydrates" class="form-label">Carbohidratos
+							(g)</label> <input type="number" class="form-control" id="carbohydrates"
+							name="nutritionalInformation.carbohydrates" step="0.01" required
+							th:value="${recipe != null && recipe.nutritionalInformation != null ? recipe.nutritionalInformation.carbohydrates : ''}">
+					</div>
+					<div class="mb-3">
+						<label for="proteins" class="form-label">Proteínas (g)</label> <input
+							type="number" class="form-control" id="proteins"
+							name="nutritionalInformation.proteins" step="0.01" required
+							th:value="${recipe != null && recipe.nutritionalInformation != null ? recipe.nutritionalInformation.proteins : ''}">
+					</div>
+					<div class="mb-3">
+						<label for="otherNutrients" class="form-label">Otros
+							Nutrientes</label> <input type="text" class="form-control"
+							id="otherNutrients" name="nutritionalInformation.otherNutrients"
+							th:value="${recipe != null && recipe.nutritionalInformation != null ? recipe.nutritionalInformation.otherNutrients : ''}">
+					</div>
+				</div>
+			</div>
+
+			<!-- Historia de la Receta -->
+			<div class="mb-3">
+				<label for="history" class="form-label">Historia de la
+					Receta</label>
+				<textarea class="form-control" id="history" name="history" rows="3"
+					th:value="${recipe != null && recipe.history != null ? recipe.history : ''}"
+					required></textarea>
+			</div>
+
+			<!-- País de Origen -->
+			<div class="mb-3">
+				<label for="country" class="form-label">País de Origen</label> <select
+					id="countrySelect" name="country" class="form-control" required>
+					<option value="" disabled>Selecciona un país</option>
+					<option th:each="country : ${countries}" th:value="${country.id}"
+						th:text="${country.name}"
+						th:selected="${recipe != null && recipe.country.id == country.id}"></option>
+				</select>
+			</div>
+
+			<!-- Ciudad de Origen -->
+			<div class="mb-3">
+				<label for="city" class="form-label">Ciudad de Origen</label> <select
+					id="citySelect" name="city" class="form-control" required>
+					<option value="" disabled>Selecciona una ciudad</option>
+					<option th:each="city : ${cities}" th:value="${city.id}"
+						th:text="${city.name}"
+						th:selected="${recipe != null && recipe.city.id == city.id}"></option>
+				</select>
+			</div>
+
+			<!-- Imagen de la Receta -->
+			<div class="mb-3">
+				<label for="imagenFile" class="form-label">Imagen de perfil
+					(PNG o JPG):</label> <input type="file" id="imagenFile"
+					name="imagenPerfilFile" class="form-control"
+					accept="image/png, image/jpeg" required>
+
+				<!-- Input oculto para almacenar la imagen en base64 -->
+				<input type="hidden" id="imagenRecipeBase64"
+					name="imagenRecipeBase64">
+			</div>
+
+			<button type="submit" class="btn btn-primary">Guardar Receta</button>
+		</form>
+	</main>
+
+	<script src="/js/formRecipe.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
+
+	<script>
+		$(document)
+				.ready(
+						function() {
+							$(
+									'#whereItisDone, #listkitchenUtensils, #listRecipeTechniquesString, #AllergensAndDietaryRestrictions')
+									.select2();
+						});
+	</script>
+</body>
+</html>

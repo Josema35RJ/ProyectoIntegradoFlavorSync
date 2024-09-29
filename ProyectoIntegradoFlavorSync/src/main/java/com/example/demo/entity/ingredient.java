@@ -1,5 +1,6 @@
 package com.example.demo.entity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -28,8 +29,5 @@ public class ingredient {
 	@Column(name = "name", nullable = false)
 	private String name;  
 
-	// Relación many-to-many usando la clase RecipeIngredient como entidad intermedia
-    @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<recipeIngredient> recipes;
     
 }

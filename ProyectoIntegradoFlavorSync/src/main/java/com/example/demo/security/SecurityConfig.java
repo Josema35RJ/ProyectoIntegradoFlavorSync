@@ -30,10 +30,10 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/", "/imgs/*", "/auth/**", "/webjars/*", "/css/*", "/files/", "/js/*").permitAll()
-                .requestMatchers("/cookChef/*").hasAuthority("ROL_GYMCHEF")
-                .requestMatchers("/cookProfessional/*").hasAuthority("ROL_COOKPROFESSIONAL")
-                .requestMatchers("/cookAprendiz/*").hasAuthority("ROL_COOKAPRENDIZ")
-                .requestMatchers("/cookAmateur/*").hasAuthority("ROL_COOKAMATEUR")
+                .requestMatchers("/cook/*").hasAuthority("ROL_GYMCHEF")
+                .requestMatchers("/cook/*").hasAuthority("ROL_COOKPROFESSIONAL")
+                .requestMatchers("/cook/*").hasAuthority("ROL_COOKAPRENDIZ")
+                .requestMatchers("/cook/*").hasAuthority("ROL_COOKAMATEUR")
                 .anyRequest().authenticated())
                 .formLogin((form) -> form
                         .loginPage("/auth/login")
@@ -43,7 +43,7 @@ public class SecurityConfig {
                                                                 Authentication authentication) throws IOException, ServletException {
                                 Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
                                if (roles.contains("ROL_COOKAPRENDIZ")) {
-                                    response.sendRedirect("cookAprendiz/aprendizPanel");
+                                    response.sendRedirect("cook/cookPanel");
                                 }
                             }
                         }).permitAll())

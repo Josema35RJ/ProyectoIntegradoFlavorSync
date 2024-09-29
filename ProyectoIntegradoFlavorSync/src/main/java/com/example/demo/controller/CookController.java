@@ -9,6 +9,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.model.cookModel;
 import com.example.demo.model.recipeModel;
@@ -19,16 +21,16 @@ import com.example.demo.service.IngredientService;
 import com.example.demo.service.RecipeService;
 
 @Controller
-public class AprendizController {
+public class CookController {
 
-	private static final String PANEL_VIEW = "/auth/cookAprendiz/aprendizPanel";
-	private static final String PANELPERFIL_VIEW = "/auth/cookAprendiz/aprendizPerfil";
-	private static final String FORMRECIPE_VIEW = "/auth/cookAprendiz/formRecipe";
+	private static final String PANEL_VIEW = "/auth/cook/cookPanel";
+	private static final String PANELPERFIL_VIEW = "/auth/cook/cookPerfil";
+	private static final String FORMRECIPE_VIEW = "/auth/cook/formRecipe";
 
 	@Autowired
 	@Qualifier("cookService")
 	private CookService cookService;
-	
+
 	@Autowired
 	@Qualifier("recipeService")
 	private RecipeService recipeService;
@@ -36,18 +38,18 @@ public class AprendizController {
 	@Autowired
 	@Qualifier("ingredientService")
 	private IngredientService ingredientService;
-	
+
 	@Autowired
 	@Qualifier("culinaryTechniquesService")
 	private CulinaryTechniquesService culinaryTechniquesService;
 
-	@GetMapping("/auth/cookAprendiz/aprendizPanel")
-	public String PanelAprendiz() {
+	@GetMapping("/auth/cook/cookPanel")
+	public String PanelCook() {
 		return PANEL_VIEW; // Asegúrate de que LOGIN_VIEW sea el nombre correcto de la vista de login
 	}
 
-	@GetMapping("/auth/cookAprendiz/perfilAprendiz")
-	public String PerfilAprendiz(Model model, Authentication authentication) {
+	@GetMapping("/auth/cook/perfilCook")
+	public String PerfilCook(Model model, Authentication authentication) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		// Ahora puedes obtener la información del usuario logueado desde userDetails
 
@@ -62,7 +64,7 @@ public class AprendizController {
 		return PANELPERFIL_VIEW;
 	}
 
-	@PostMapping("auth/cookAprendiz/UpdatePerfil")
+	@PostMapping("auth/cook/UpdatePerfil")
 	public String UpdateCook(cookModel cNew) {
 		cookModel cOrigin = cookService.findById(cNew.getId());
 		if (!cOrigin.getNickName().equalsIgnoreCase(cNew.getNickName())) {
@@ -79,7 +81,7 @@ public class AprendizController {
 		return PANELPERFIL_VIEW;
 	}
 
-	@GetMapping("/auth/cookAprendiz/formRecipe")
+	@GetMapping("/auth/cook/formRecipe")
 	public String FormRecipe(Model model, Authentication authentication) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		// Ahora puedes obtener la información del usuario logueado desde userDetails
@@ -90,9 +92,14 @@ public class AprendizController {
 	}
 
 	@PostMapping("/auth/cook/addRecipe")
-	public String AddRecipe(recipeModel r) {
-        recipeService.addRecipe(r);
-		return PANEL_VIEW;
+	public String AddRecipe(recipeModel recipe, RedirectAttributes flash, @RequestParam("imagenRecipeBase64") String imagenR) {
+		   // Convertir la imagen en Base64 a byte[]
+	    byte[] imageBytes = Base64.getDecoder().decode(imagenR);
+	    recipe.setImageRecipePerfil(imageBytes); // Almacena la imagen en byte[] en la entidad recipe
+		recipeService.addRecipe(recipe);
+
+		flash.addFlashAttribute("success", "¡Cocinero registrado exitosamente!");
+		return "redirect:" + PANEL_VIEW;
 
 	}
 

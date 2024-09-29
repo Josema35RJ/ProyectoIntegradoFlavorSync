@@ -93,6 +93,7 @@ public class loginController {
 	        return REGISTER_VIEW;
 	    }
 
+	    
 	    // Convertir la imagen en Base64 a byte[]
 	    byte[] imageBytes = Base64.getDecoder().decode(imagenPerfil);
 	    cook.setImagePerfil(imageBytes); // Almacena la imagen en byte[] en la entidad cook

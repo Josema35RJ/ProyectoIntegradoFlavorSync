@@ -2,6 +2,7 @@ package com.example.demo.service;
 
 import java.util.List;
 
+import com.example.demo.model.recipeIngredientModel;
 import com.example.demo.model.recipeModel;
 
 public interface RecipeService {

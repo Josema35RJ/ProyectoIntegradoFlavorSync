@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -13,29 +14,23 @@ import jakarta.validation.constraints.Positive;
 
 public class ingredientModel {
 
-	// Identificador único para cada comentario.
+	// Identificador único para cada Ingrediente.
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
-	//Nombre del ingrediente
+	// Nombre del ingrediente
 	@Column(name = "name", nullable = false)
 	private String name;
-	
-	// Relación many-to-many usando la clase RecipeIngredient como entidad intermedia
-    @OneToMany(mappedBy = "ingredient", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<recipeIngredientModel> recipes;
 
 	public ingredientModel() {
 		super();
 	}
 
-	public ingredientModel(Integer id, String name,
-			@NotNull @Positive(message = "The cant must be a positive number") float cant, @NotNull String unit,
-			List<recipeIngredientModel> recipes) {
+	public ingredientModel(Integer id, String name) {
 		super();
 		this.id = id;
-		this.recipes = recipes;
+		this.name = name;
 	}
 
 	public Integer getId() {
@@ -54,16 +49,8 @@ public class ingredientModel {
 		this.name = name;
 	}
 
-	public List<recipeIngredientModel> getRecipes() {
-		return recipes;
-	}
-
-	public void setRecipes(List<recipeIngredientModel> recipes) {
-		this.recipes = recipes;
-	}
-
 	@Override
 	public String toString() {
-		return "ingredientModel [id=" + id + ", name=" + name +  "]";
+		return "ingredientModel [id=" + id + ", name=" + name + "]";
 	}
 }

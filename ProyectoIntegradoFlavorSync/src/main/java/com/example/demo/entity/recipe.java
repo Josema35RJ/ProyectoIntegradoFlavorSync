@@ -2,16 +2,18 @@ package com.example.demo.entity;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -46,33 +48,34 @@ public class recipe {
 	private float preparationTime;
 
 	// Si la receta se hace, en horno, microondas
-	private List<String> whereItisDone;
+	private List<String> whereItisDone = new ArrayList<>();
 
 	// Si la receta es postre, entrante, primer plato...
 	private String category;
 
 	// En cada comentario se valora, la receta, de esa media, se otendra esta nota
-	@Positive(message = "The punctuation must be a positive number")
+	@Min(value = 0, message = "The averageRating must be a non-negative number")
+	@Max(value = 10, message = "The averageRating must not exceed 10")
 	private float averageRating = 0;
 
 	// Cada cocinero podra valorar la receta (menos el creador)
 	@OneToMany(cascade = CascadeType.ALL)
-	private List<comment> listComments;
+	private List<comment> listComments = new ArrayList<>();
 
 	// lista de ingredientes necesarios
 	@OneToMany(cascade = CascadeType.ALL)
 	@NotNull
-	private List<ingredient> listIngredients;
+	private List<ingredient> listIngredients = new ArrayList<>();
 
 	// Lista de utensilios
-	private List<String> listkitchenUtensils;
+	private List<String> listkitchenUtensils = new ArrayList<>();
 
 	// Tecnicas usadas en la receta
 	// Mas adelante Tecnicas sera otra entidad, con nombre de la tecnica, creador,
 	// restaurante o lugar donde se creo y descripcion o instruccion de como es
 	@NotNull
 	@OneToMany(cascade = CascadeType.PERSIST)
-	private List<culinaryTechniques> listRecipeTechniques;
+	private List<culinaryTechniques> listRecipeTechniques = new ArrayList<>();
 
 	// Intrucciones para elaborar la receta
 	@NotNull
@@ -91,7 +94,7 @@ public class recipe {
 	// sin gluten, etc.).
 	@Column(name = "AllergensAndDietaryRestrictions", nullable = false)
 	@Size(max = 455, message = "The name cannot exceed 455 characters")
-	private List<String> AllergensAndDietaryRestrictions;
+	private List<String> AllergensAndDietaryRestrictions = new ArrayList<>();
 
 	// Algunas recetas incluyen una tabla con información sobre las calorías,
 	// grasas, carbohidratos,
@@ -135,6 +138,11 @@ public class recipe {
 
 	// Relación many-to-many usando la clase RecipeIngredient como entidad
 	// intermedia
-	@OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, orphanRemoval = true)
-	private List<recipeIngredient> ingredients;
+    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private List<recipeIngredient> ingredients  = new ArrayList<>();
+	
+	//Imagen de perfil de la receta
+	@NotNull
+	@Column(name = "imagenRecipePerfil", nullable = false)
+	private byte[] imageRecipePerfil;
 }
