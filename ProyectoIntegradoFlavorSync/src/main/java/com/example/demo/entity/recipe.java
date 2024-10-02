@@ -10,6 +10,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
@@ -130,6 +131,8 @@ public class recipe {
 	private String city;
 
 	// Imagen o imagenes de la receta guardada en base 64
+	@Lob // Indica que el campo debe ser tratado como un tipo grande
+	@Column(name = "imagesRecipe", columnDefinition = "LONGBLOB") // Define el tipo específico de la columna
 	@ElementCollection
 	private List<byte[]> imagesRecipe = new ArrayList<>();
 
@@ -138,11 +141,11 @@ public class recipe {
 
 	// Relación many-to-many usando la clase RecipeIngredient como entidad
 	// intermedia
-    @OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private List<recipeIngredient> ingredients  = new ArrayList<>();
-	
-	//Imagen de perfil de la receta
-	@NotNull
-	@Column(name = "imagenRecipePerfil", nullable = false)
+	@OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+	private List<recipeIngredient> ingredients = new ArrayList<>();
+
+	// Imagen de perfil de la receta
+	@Lob // Indica que el campo debe ser tratado como un tipo grande
+	@Column(name = "imagenRecipePerfil", columnDefinition = "LONGBLOB") // Define el tipo específico de la columna
 	private byte[] imageRecipePerfil;
 }

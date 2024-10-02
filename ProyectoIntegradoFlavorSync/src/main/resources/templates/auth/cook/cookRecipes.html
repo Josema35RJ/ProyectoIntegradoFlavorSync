@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FlavorSync - Mis Recetas</title>
+    <!-- CSS de Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome para iconos -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <!-- CSS personalizado (si tienes alguno adicional) -->
+    <link rel="stylesheet" href="/css/panels.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#"><i class="fas fa-utensils"></i> FlavorSync</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a href="/auth/cook/formRecipe" class="btn btn-success me-3"><i class="fas fa-plus"></i> Crear Receta</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/auth/cook/cookPerfil"><i class="fas fa-user"></i> Mi Perfil</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/auth/cook/logout"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Contenido Principal -->
+    <main class="container my-5">
+        <!-- Título -->
+        <div class="row mb-4">
+            <div class="col text-center">
+                <h1>Mis Recetas</h1>
+                <p class="text-muted">Aquí puedes ver todas las recetas que has creado.</p>
+            </div>
+        </div>
+
+        <!-- Tabla de Recetas -->
+        <div class="row">
+            <div class="col">
+                <table class="table table-hover align-middle">
+                    <thead class="table-dark">
+                        <tr>
+                            <th scope="col">#</th>
+                            <th scope="col">Nombre de la Receta</th>
+                            <th scope="col">Fecha de Creación</th>
+                            <th scope="col">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Ejemplo de recetas, estos datos deben venir desde el backend -->
+                        <tr>
+                            <th scope="row">1</th>
+                            <td>Tarta de Manzana</td>
+                            <td>2024-09-28</td>
+                            <td>
+                                <a href="/auth/cook/viewRecipe/1" class="btn btn-info btn-sm me-1"><i class="fas fa-eye"></i> Ver</a>
+                                <a href="/auth/cook/editRecipe/1" class="btn btn-warning btn-sm me-1"><i class="fas fa-edit"></i> Editar</a>
+                                <a href="/auth/cook/deleteRecipe/1" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Eliminar</a>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th scope="row">2</th>
+                            <td>Ensalada César</td>
+                            <td>2024-09-15</td>
+                            <td>
+                                <a href="/auth/cook/viewRecipe/2" class="btn btn-info btn-sm me-1"><i class="fas fa-eye"></i> Ver</a>
+                                <a href="/auth/cook/editRecipe/2" class="btn btn-warning btn-sm me-1"><i class="fas fa-edit"></i> Editar</a>
+                                <a href="/auth/cook/deleteRecipe/2" class="btn btn-danger btn-sm"><i class="fas fa-trash-alt"></i> Eliminar</a>
+                            </td>
+                        </tr>
+                        <!-- Agrega más recetas según sea necesario -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Botón para crear nueva receta, también arriba en el navbar -->
+        <div class="row mt-4">
+            <div class="col text-center">
+                <a href="/auth/cook/formRecipe" class="btn btn-success btn-lg"><i class="fas fa-plus"></i> Crear Nueva Receta</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer mt-auto py-3 bg-dark text-light">
+        <div class="container text-center">
+            <span>© 2024 FlavorSync - Todos los derechos reservados</span>
+        </div>
+    </footer>
+
+    <!-- JS de Bootstrap 5 -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

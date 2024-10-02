@@ -26,6 +26,7 @@ public class CookController {
 	private static final String PANEL_VIEW = "/auth/cook/cookPanel";
 	private static final String PANELPERFIL_VIEW = "/auth/cook/cookPerfil";
 	private static final String FORMRECIPE_VIEW = "/auth/cook/formRecipe";
+	private static final String COOKRECIPES_VIEW = "/auth/cook/cookRecipes";
 
 	@Autowired
 	@Qualifier("cookService")
@@ -44,7 +45,14 @@ public class CookController {
 	private CulinaryTechniquesService culinaryTechniquesService;
 
 	@GetMapping("/auth/cook/cookPanel")
-	public String PanelCook() {
+	public String PanelCook(Model model, Authentication authentication) {
+		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+		// Ahora puedes obtener la información del usuario logueado desde userDetails
+
+		cookModel c = cookService.findById(userDetails.getId());
+		model.addAttribute("cook", c.getNickName());
+		model.addAttribute("imageCook", c.getImagePerfil());
+		model.addAttribute("recipes", recipeService.getListRecipe());
 		return PANEL_VIEW; // Asegúrate de que LOGIN_VIEW sea el nombre correcto de la vista de login
 	}
 
@@ -60,7 +68,6 @@ public class CookController {
 		model.addAttribute("base64Image", "data:image/jpeg;base64," + base64Image);
 
 		model.addAttribute("cookPerfil", c);
-		model.addAttribute("passwordCook", c.getPassword());
 		return PANELPERFIL_VIEW;
 	}
 
@@ -92,14 +99,21 @@ public class CookController {
 	}
 
 	@PostMapping("/auth/cook/addRecipe")
-	public String AddRecipe(recipeModel recipe, RedirectAttributes flash, @RequestParam("imagenRecipeBase64") String imagenR) {
-		   // Convertir la imagen en Base64 a byte[]
+	public String AddRecipe(recipeModel recipe, RedirectAttributes flash, @RequestParam("imagenRecipeBase64") String imagenR, Authentication authentication) {
+		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+		// Ahora puedes obtener la información del usuario logueado desde userDetails
+
+		cookModel c = cookService.findById(userDetails.getId());
+		// Convertir la imagen en Base64 a byte[]
 	    byte[] imageBytes = Base64.getDecoder().decode(imagenR);
 	    recipe.setImageRecipePerfil(imageBytes); // Almacena la imagen en byte[] en la entidad recipe
+	    String[] level=c.getRole().toString().split("K");
+	    recipe.setLevel(level[1]);
+	    recipe.setName(recipe.getName().toUpperCase());
 		recipeService.addRecipe(recipe);
 
 		flash.addFlashAttribute("success", "¡Cocinero registrado exitosamente!");
-		return "redirect:" + PANEL_VIEW;
+		return  COOKRECIPES_VIEW;
 
 	}
 
