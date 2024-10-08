@@ -1,6 +1,8 @@
 package com.example.demo.model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import com.example.demo.entity.nutritionalInformation;
@@ -77,9 +79,8 @@ public class recipeModel {
 	// Algunas recetas incluyen una tabla con información sobre las calorías,
 	// grasas, carbohidratos,
 	// proteínas y otros nutrientes por porción.
-	@Column(name = "nutritionalInformation")
 	@Size(max = 455, message = "The name cannot exceed 455 characters")
-	private nutritionalInformation nutritionalInformation;
+	private nutritionalInformationModel nutritionalInformation;
 
 	// Consejos útiles, variantes de la receta, sugerencias de presentación, o
 	// detalles sobre cómo almacenar el platillo.
@@ -119,11 +120,17 @@ public class recipeModel {
 	// Relación many-to-many usando la clase RecipeIngredient como entidad
 	// intermedia
 	private List<recipeIngredientModel> ingredients = new ArrayList<>();
+	
+	//Fecha de creacion de la receta 
+	private LocalDate createDate;
+	
+	//Fecha de la actualizacion de esta receta
+	private LocalDate updateDate;
 
 	public recipeModel(Integer id, String name, int diners, float preparationTime, List<String> whereItisDone,
 			List<String> category, List<String> listkitchenUtensils, List<culinaryTechniquesModel> listRecipeTechniques,
 			String instructions, String difficulty, List<String> allergensAndDietaryRestrictions,
-			nutritionalInformation nutritionalInformation, String grades, String history, String country, String city) {
+			nutritionalInformationModel nutritionalInformation, String grades, String history, String country, String city) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -141,6 +148,7 @@ public class recipeModel {
 		History = history;
 		Country = country;
 		this.city = city;
+		this.createDate = LocalDate.now();
 
 	}
 
@@ -261,11 +269,11 @@ public class recipeModel {
 		AllergensAndDietaryRestrictions = allergensAndDietaryRestrictions;
 	}
 
-	public nutritionalInformation getNutritionalInformation() {
+	public nutritionalInformationModel getNutritionalInformation() {
 		return nutritionalInformation;
 	}
 
-	public void setNutritionalInformation(nutritionalInformation nutritionalInformation) {
+	public void setNutritionalInformation(nutritionalInformationModel nutritionalInformation) {
 		this.nutritionalInformation = nutritionalInformation;
 	}
 
@@ -327,6 +335,22 @@ public class recipeModel {
 
 	public void setImageRecipePerfil(byte[] imageRecipePerfil) {
 		this.imageRecipePerfil = imageRecipePerfil;
+	}
+
+	public LocalDate getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(LocalDate createDate) {
+		this.createDate = createDate;
+	}
+
+	public LocalDate getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(LocalDate updateDate) {
+		this.updateDate = updateDate;
 	}
 
 	@Override

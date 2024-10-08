@@ -4,8 +4,8 @@ import java.util.List;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
-import com.example.demo.entity.cook;
 import com.example.demo.model.cookModel;
+import com.example.demo.model.recipeModel;
 
 public interface CookService {
 

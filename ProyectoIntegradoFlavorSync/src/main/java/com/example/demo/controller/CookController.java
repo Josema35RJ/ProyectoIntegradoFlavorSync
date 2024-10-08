@@ -8,6 +8,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -26,6 +27,7 @@ public class CookController {
 	private static final String PANEL_VIEW = "/auth/cook/cookPanel";
 	private static final String PANELPERFIL_VIEW = "/auth/cook/cookPerfil";
 	private static final String FORMRECIPE_VIEW = "/auth/cook/formRecipe";
+	private static final String UPDATERECIPE_VIEW = "/auth/cook/updateRecipe";
 	private static final String COOKRECIPES_VIEW = "/auth/cook/cookRecipes";
 
 	@Autowired
@@ -55,8 +57,22 @@ public class CookController {
 		model.addAttribute("recipes", recipeService.getListRecipe());
 		return PANEL_VIEW; // Asegúrate de que LOGIN_VIEW sea el nombre correcto de la vista de login
 	}
+	
+	@GetMapping("/auth/cook/cookRecipes")
+	public String RecipesCook(Model model, Authentication authentication) {
+		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+		// Ahora puedes obtener la información del usuario logueado desde userDetails
 
-	@GetMapping("/auth/cook/perfilCook")
+		cookModel c = cookService.findById(userDetails.getId());
+		model.addAttribute("cook", c.getNickName());
+		byte[] imageBytes = c.getImagePerfil();
+		String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+		model.addAttribute("base64Image","data:image/jpeg;base64," +  base64Image);
+		model.addAttribute("recipes", c.getListRecipes());
+		return  COOKRECIPES_VIEW; // Asegúrate de que LOGIN_VIEW sea el nombre correcto de la vista de login
+	}
+
+	@GetMapping("/auth/cook/cookPerfil")
 	public String PerfilCook(Model model, Authentication authentication) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		// Ahora puedes obtener la información del usuario logueado desde userDetails
@@ -72,7 +88,7 @@ public class CookController {
 	}
 
 	@PostMapping("auth/cook/UpdatePerfil")
-	public String UpdateCook(cookModel cNew) {
+	public String UpdateCook(cookModel cNew,  RedirectAttributes flash) {
 		cookModel cOrigin = cookService.findById(cNew.getId());
 		if (!cOrigin.getNickName().equalsIgnoreCase(cNew.getNickName())) {
 			cOrigin.setNickName(cNew.getNickName());
@@ -85,6 +101,8 @@ public class CookController {
 		} else if (cOrigin.getBirthDate() != cNew.getBirthDate()) {
 			cOrigin.setBirthDate(cNew.getBirthDate());
 		}
+		
+		flash.addFlashAttribute("success", "¡Cocinero Actualizado exitosamente!");
 		return PANELPERFIL_VIEW;
 	}
 
@@ -105,16 +123,29 @@ public class CookController {
 
 		cookModel c = cookService.findById(userDetails.getId());
 		// Convertir la imagen en Base64 a byte[]
-	    byte[] imageBytes = Base64.getDecoder().decode(imagenR);
+		byte[] imageBytes = Base64.getDecoder().decode(imagenR);
 	    recipe.setImageRecipePerfil(imageBytes); // Almacena la imagen en byte[] en la entidad recipe
-	    String[] level=c.getRole().toString().split("K");
-	    recipe.setLevel(level[1]);
-	    recipe.setName(recipe.getName().toUpperCase());
-		recipeService.addRecipe(recipe);
+	   
+		recipeService.addRecipe(recipe, c);
+		
+		flash.addFlashAttribute("success", "¡Receta registrada exitosamente!");
+		return "redirect:" + COOKRECIPES_VIEW;
 
-		flash.addFlashAttribute("success", "¡Cocinero registrado exitosamente!");
-		return  COOKRECIPES_VIEW;
-
+	}
+	
+	@GetMapping("/auth/cook/updateRecipe/{id}")
+	public String UpdateRecipe(@PathVariable("id") Integer id, Model model, Authentication authentication, RedirectAttributes flash) {
+		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+		recipeModel r =  recipeService.getRecipeById(id);
+		// Ahora puedes obtener la información del usuario logueado desde userDetails
+		model.addAttribute("cookPerfil", cookService.findById(userDetails.getId()));
+		model.addAttribute("ingredients", ingredientService.getListIngredients());
+		model.addAttribute("recipeTechniques", culinaryTechniquesService.getListCulinaryTechniques());
+		model.addAttribute("recipe", r);
+		String n = Base64.getEncoder().encodeToString(r.getImageRecipePerfil());
+		model.addAttribute("imageRecipePerfil", n);
+		flash.addFlashAttribute("success", "¡Receta Actualizada exitosamente!");
+		return UPDATERECIPE_VIEW;
 	}
 
 }

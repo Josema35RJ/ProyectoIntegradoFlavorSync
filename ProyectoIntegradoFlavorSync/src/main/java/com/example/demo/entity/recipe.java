@@ -1,7 +1,9 @@
 package com.example.demo.entity;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -10,8 +12,10 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -52,7 +56,7 @@ public class recipe {
 	private List<String> whereItisDone = new ArrayList<>();
 
 	// Si la receta es postre, entrante, primer plato...
-	private String category;
+	private List<String> category = new ArrayList<>();
 
 	// En cada comentario se valora, la receta, de esa media, se otendra esta nota
 	@Min(value = 0, message = "The averageRating must be a non-negative number")
@@ -100,9 +104,9 @@ public class recipe {
 	// Algunas recetas incluyen una tabla con información sobre las calorías,
 	// grasas, carbohidratos,
 	// proteínas y otros nutrientes por porción.
-	@Column(name = "nutritionalInformation")
-	@Size(max = 455, message = "The name cannot exceed 455 characters")
-	private String nutritionalInformation;
+	@OneToOne(cascade = CascadeType.ALL)
+	   @JoinColumn(name = "nutritional_information_id")
+	private nutritionalInformation nutritionalInformation;
 
 	// Consejos útiles, variantes de la receta, sugerencias de presentación, o
 	// detalles sobre cómo almacenar el platillo.
@@ -148,4 +152,10 @@ public class recipe {
 	@Lob // Indica que el campo debe ser tratado como un tipo grande
 	@Column(name = "imagenRecipePerfil", columnDefinition = "LONGBLOB") // Define el tipo específico de la columna
 	private byte[] imageRecipePerfil;
+	
+	@Column(name = "createDate") 
+	private LocalDate createDate;
+	
+	@Column(name = "updateDate") 
+	private LocalDate updateDate;
 }

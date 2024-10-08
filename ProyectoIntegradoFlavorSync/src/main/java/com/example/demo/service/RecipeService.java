@@ -2,12 +2,12 @@ package com.example.demo.service;
 
 import java.util.List;
 
-import com.example.demo.model.recipeIngredientModel;
+import com.example.demo.model.cookModel;
 import com.example.demo.model.recipeModel;
 
 public interface RecipeService {
 
-	boolean addRecipe (recipeModel re);
+	boolean addRecipe (recipeModel re, cookModel c);
 	boolean updateRecipe (recipeModel re);
 	boolean deleteRecipe (int id);
 	List<recipeModel> getListRecipe();
@@ -18,4 +18,5 @@ public interface RecipeService {
 	List<recipeModel> getListFindByMedioRecipe();
 	List<recipeModel> getListFindByExpertoRecipe();
 	List<recipeModel> getListFindByIngredientsRecipe();
+	recipeModel getRecipeById(int id);
 }

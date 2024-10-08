@@ -107,12 +107,12 @@ public class cook {
 	private int punctuation;
 
 	// Lista de recetas elaboradas o creadas por este cocinero
-	@OneToMany()
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<recipe> listRecipes;
 
 	// Lista de recetas favoritas de este cocinero (pueden ser recetas suyas o de
 	// otros)
-	@OneToMany()
+	@OneToMany(cascade = CascadeType.ALL)
 	private List<recipe> listRecipesFavorites;
 
 	// Imagen del perfil

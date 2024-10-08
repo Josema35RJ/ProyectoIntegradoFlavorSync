@@ -38,7 +38,18 @@
 						<h2>Bienvenido a FlavorSync</h2>
 					</div>
 					<div class="card-body">
-						<!-- Alertas de Bootstrap para mensajes de error o éxito -->
+						<!-- Mensaje de éxito -->
+						<div th:if="${success}" class="alert alert-success" role="alert">
+							<span th:text="${success}"></span>
+							<!-- Muestra el mensaje flash de éxito -->
+						</div>
+
+						<!-- Mensaje de error -->
+						<div th:if="${error}" class="alert alert-danger" role="alert">
+							<span th:text="${error}"></span>
+							<!-- Muestra el mensaje flash de error -->
+						</div>
+            			<!-- Alertas de Bootstrap para mensajes de error o éxito -->
 						<div th:if="${loginError != null and !loginError.isEmpty()}"
 							class="alert alert-danger" role="alert">
 							<p th:text="${loginError}">Error de inicio de sesión. Por

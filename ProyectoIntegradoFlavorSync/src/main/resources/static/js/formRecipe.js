@@ -38,7 +38,7 @@ document.getElementById('countrySelect').addEventListener('change', function() {
 		})
 		.catch(error => console.error('Error al obtener las ciudades:', error));
 });
-$(document).ready(function() {
+/*$(document).ready(function() {
 	// Inicializar select2
 	$('#ingredientsIntegers').select2({
 		placeholder: 'Selecciona los ingredientes',
@@ -71,8 +71,8 @@ $(document).ready(function() {
 			container.appendChild(ingredientDiv);
 		});
 	});
-});
-document.getElementById('imagenFile').addEventListener('change', function(event) {
+});*/
+document.getElementById('imagenPerfilFile').addEventListener('change', function(event) {
       const file = event.target.files[0];
       if (file) {
           const reader = new FileReader();

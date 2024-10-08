@@ -1,0 +1,194 @@
+/* Estilo general */
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f8f9fa;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+/* Navbar */
+.navbar {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-brand {
+    font-weight: bold;
+    font-size: 1.5rem;
+}
+
+.nav-link {
+    font-size: 1rem;
+    margin-right: 1rem;
+}
+
+.navbar .btn {
+    font-size: 0.9rem;
+    padding: 0.5rem 1rem;
+}
+
+.navbar .btn-success {
+    background-color: #28a745;
+    border: none;
+}
+
+.navbar .btn-success:hover {
+    background-color: #218838;
+}
+
+/* Título principal */
+h1 {
+    font-size: 2.5rem;
+    color: #343a40;
+    margin-bottom: 1rem;
+}
+
+h3 {
+    font-size: 1.5rem;
+    color: #6c757d;
+    margin-bottom: 1rem;
+}
+
+/* Estilo de la imagen de perfil */
+img[alt="Imagen de perfil"] {
+    transition: transform 0.3s ease-in-out;
+}
+
+img[alt="Imagen de perfil"]:hover {
+    transform: scale(1.05);
+}
+
+/* Tablas de recetas */
+.table-hover tbody tr:hover {
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.table-dark {
+    background-color: #343a40;
+    color: #fff;
+}
+
+.table-dark th {
+    font-size: 1.1rem;
+    letter-spacing: 0.05rem;
+}
+
+.table td, .table th {
+    vertical-align: middle;
+}
+
+/* Botones de acción en la tabla */
+.btn-sm {
+    padding: 0.25rem 0.75rem;
+    font-size: 0.875rem;
+    border-radius: 0.2rem;
+    transition: all 0.2s ease-in-out;
+}
+
+.btn-info {
+    background-color: #17a2b8;
+    border: none;
+}
+
+.btn-info:hover {
+    background-color: #138496;
+}
+
+.btn-warning {
+    background-color: #ffc107;
+    border: none;
+    color: #212529;
+}
+
+.btn-warning:hover {
+    background-color: #e0a800;
+    color: #fff;
+}
+
+.btn-danger {
+    background-color: #dc3545;
+    border: none;
+}
+
+.btn-danger:hover {
+    background-color: #c82333;
+}
+
+/* Mensajes de éxito y error */
+.alert {
+    padding: 1rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    font-size: 1rem;
+}
+
+.alert-success {
+    background-color: #d4edda;
+    border-color: #c3e6cb;
+    color: #155724;
+}
+
+.alert-danger {
+    background-color: #f8d7da;
+    border-color: #f5c6cb;
+    color: #721c24;
+}
+
+/* Tabla */
+.table {
+    background-color: #fff;
+    border-radius: 0.5rem;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.table th, .table td {
+    text-align: center;
+    padding: 1rem;
+}
+
+.table thead th {
+    background-color: #343a40;
+    color: white;
+}
+
+.table-hover tbody tr {
+    transition: background-color 0.2s ease-in-out;
+}
+
+/* Footer */
+footer.footer {
+    background-color: #343a40;
+    color: #f8f9fa;
+    box-shadow: 0 -4px 6px rgba(0, 0, 0, 0.1);
+    padding: 1rem 0;
+}
+
+footer span {
+    font-size: 0.875rem;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    h1 {
+        font-size: 2rem;
+    }
+
+    h3 {
+        font-size: 1.25rem;
+    }
+
+    .table th, .table td {
+        padding: 0.75rem;
+    }
+
+    .navbar-brand {
+        font-size: 1.25rem;
+    }
+
+    .navbar .btn {
+        font-size: 0.85rem;
+        padding: 0.4rem 0.9rem;
+    }
+}
+

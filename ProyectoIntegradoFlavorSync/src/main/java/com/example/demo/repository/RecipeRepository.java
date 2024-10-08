@@ -8,6 +8,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.demo.entity.ingredient;
 import com.example.demo.entity.recipe;
+import com.example.demo.model.recipeModel;
 
 @Repository("recipeRepository")
 public interface RecipeRepository extends JpaRepository<recipe, Serializable> {
@@ -17,7 +18,7 @@ public interface RecipeRepository extends JpaRepository<recipe, Serializable> {
     List<recipe> findByLevel (String level);
     List<recipe> findByPreparationTime (double preparationTime);
     List<recipe> findByWhereItisDone (List<String> whereItisDone);
-    List<recipe> findByCategory (String category);
+    List<recipe> findByCategory (List<String> category);
     List<recipe> findByAverageRating (float averageRating);
     List<recipe> findByDifficulty (String difficulty);
     List<recipe> findBylistkitchenUtensils (List<String> listkitchenUtensils);

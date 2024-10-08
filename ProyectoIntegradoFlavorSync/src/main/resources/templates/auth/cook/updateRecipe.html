@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Actualizar Receta</title>
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<link rel="stylesheet" href="/css/panels.css">
+</head>
+<body>
+	<div class="container mt-5">
+		<h2 class="text-center">Actualizar Receta</h2>
+		<form action="#" th:action="@{/updateRecipe/{id}(id=${recipe.id})}"
+			method="post" enctype="multipart/form-data">
+			<div class="mb-3">
+				<label for="name" class="form-label">Nombre de la Receta:</label> <input
+					type="text" class="form-control" id="name" name="name" required
+					th:value="${recipe != null ? recipe.name : ''}">
+			</div>
+
+			<div class="mb-3">
+				<label for="level" class="form-label">Nivel:</label> <input
+					type="text" class="form-control" id="level" name="level"
+					th:value="${recipe != null ? recipe.level : ''}">
+			</div>
+
+			<div class="mb-3">
+				<label for="diners" class="form-label">Número de Personas:</label> <input
+					type="number" class="form-control" id="diners" name="diners"
+					required th:value="${recipe != null ? recipe.diners : ''}">
+			</div>
+
+			<div class="mb-3">
+				<label for="preparationTime" class="form-label">Tiempo de
+					Preparación (min):</label> <input type="number" class="form-control"
+					id="preparationTime" name="preparationTime" required
+					th:value="${recipe != null ? recipe.preparationTime : ''}">
+			</div>
+
+			<div class="mb-3">
+				<label for="whereItisDone" class="form-label">¿Dónde se
+					Elabora? (separar por comas):</label> <input type="text"
+					class="form-control" id="whereItisDone" name="whereItisDone"
+					required th:value="${recipe != null ? recipe.whereItisDone : ''}">
+			</div>
+
+			<div class="mb-3">
+				<label for="category" class="form-label">Categoría (separar
+					por comas):</label> <input type="text" class="form-control" id="category"
+					name="category" th:value="${recipe != null ? recipe.category : ''}">
+			</div>
+
+			<div class="mb-3">
+				<label for="instructions" class="form-label">Instrucciones:</label>
+				<textarea class="form-control" id="instructions" name="instructions"
+					rows="3" required
+					th:text="${recipe != null ? recipe.instructions : ''}"></textarea>
+			</div>
+
+			<div class="mb-3">
+				<label for="difficulty" class="form-label">Dificultad:</label> <input
+					type="text" class="form-control" id="difficulty" name="difficulty"
+					th:value="${recipe != null ? recipe.difficulty : ''}">
+			</div>
+
+			<div class="card mb-3">
+				<div class="card-header">Información Nutricional</div>
+				<div class="card-body">
+					<div class="mb-3">
+						<label for="calories" class="form-label">Calorías por
+							Porción</label> <input type="number" class="form-control" id="calories"
+							name="nutritionalInformation.calories" step="0.01" required
+							th:value="${recipe != null && recipe.nutritionalInformation != null ? recipe.nutritionalInformation.calories : ''}">
+					</div>
+					<div class="mb-3">
+						<label for="fat" class="form-label">Grasas (g)</label> <input
+							type="number" class="form-control" id="fat"
+							name="nutritionalInformation.fat" step="0.01" required
+							th:value="${recipe != null && recipe.nutritionalInformation != null ? recipe.nutritionalInformation.fat : ''}">
+					</div>
+					<div class="mb-3">
+						<label for="carbohydrates" class="form-label">Carbohidratos
+							(g)</label> <input type="number" class="form-control" id="carbohydrates"
+							name="nutritionalInformation.carbohydrates" step="0.01" required
+							th:value="${recipe != null && recipe.nutritionalInformation != null ? recipe.nutritionalInformation.carbohydrates : ''}">
+					</div>
+					<div class="mb-3">
+						<label for="proteins" class="form-label">Proteínas (g)</label> <input
+							type="number" class="form-control" id="proteins"
+							name="nutritionalInformation.proteins" step="0.01" required
+							th:value="${recipe != null && recipe.nutritionalInformation != null ? recipe.nutritionalInformation.proteins : ''}">
+					</div>
+					<div class="mb-3">
+						<label for="otherNutrients" class="form-label">Otros
+							Nutrientes</label> <input type="text" class="form-control"
+							id="otherNutrients" name="nutritionalInformation.otherNutrients"
+							th:value="${recipe != null && recipe.nutritionalInformation != null ? recipe.nutritionalInformation.otherNutrients : ''}">
+					</div>
+				</div>
+			</div>
+
+			<div class="mb-3">
+				<label for="grades" class="form-label">Consejos/Notas:</label> <input
+					type="text" class="form-control" id="grades" name="grades"
+					th:value="${recipe != null ? recipe.grades : ''}">
+			</div>
+
+			<div class="mb-3">
+				<label for="history" class="form-label">Historia:</label> <input
+					type="text" class="form-control" id="history" name="history"
+					th:value="${recipe != null ? recipe.history : ''}">
+			</div>
+
+			<div class="mb-3">
+				<label for="country" class="form-label">País:</label> <input
+					type="text" class="form-control" id="country" name="country"
+					required th:value="${recipe != null ? recipe.country : ''}">
+			</div>
+
+			<div class="mb-3">
+				<label for="city" class="form-label">Ciudad:</label> <input
+					type="text" class="form-control" id="city" name="city" required
+					th:value="${recipe != null ? recipe.city : ''}">
+			</div>
+
+			<div class="mb-3">
+				<label class="form-label">Imagen de la Receta:</label>
+				<div>
+					<img th:src="'data:image/png;base64,' + ${imageRecipePerfil}"
+						alt="Imagen de la Receta" class="img-fluid" />
+				</div>
+			</div>
+
+			<div class="mb-3">
+				<label for="ingredients" class="form-label">Ingredientes:</label>
+				<div id="ingredientList">
+					<div th:each="ingredient, iterStat : ${availableIngredients}">
+						<div class="input-group mb-2">
+							<input type="checkbox" th:id="'ingredient_' + ${ingredient.id}"
+								th:value="${ingredient.id}"
+								th:field="*{ingredients[iterStat.index].ingredient.id}" /> <label
+								th:for="'ingredient_' + ${ingredient.id}" class="form-control">
+								<span th:text="${ingredient.name}"></span>
+							</label> <input type="number" class="form-control"
+								th:field="*{ingredients[iterStat.index].quantity}"
+								placeholder="Cantidad" min="1" />
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<button type="submit" class="btn btn-primary">Actualizar
+				Receta</button>
+		</form>
+	</div>
+
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

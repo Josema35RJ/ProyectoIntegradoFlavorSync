@@ -4,50 +4,59 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel de Cocina</title>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"> <!-- Bootstrap -->
-  <link rel="stylesheet" href="/css/panels.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"> <!-- FontAwesome para íconos -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/panels.css">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <div class="container-fluid">
-            <a class="navbar-brand" href="#"><i class="fas fa-utensils"></i> FlavorSync</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <a class="navbar-brand" href="#">FlavorSync</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-          
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
-                  <a href="/auth/cook/formRecipe" class="btn btn-success"><i class="fas fa-plus"></i> Crear Receta</a>
-                    <!--  <li class="nav-item"><a class="nav-link" href="#">Mis Recetas</a></li>-->
-                    <li class="nav-item"><a class="nav-link" href="/auth/cook/cookPerfil">Mi Perfil</a></li>
-                <li class="nav-item"><a class="nav-link" href="/auth/cook/logout"> <i
-							class="fas fa-sign-out-alt"></i> Cerrar Sesión
-					</a></li>
+                    <li class="nav-item"><a href="/auth/cook/formRecipe" class="btn btn-success me-3">
+                        <i class="fas fa-plus"></i> Crear Receta</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/auth/cook/cookPerfil">
+                        <i class="fas fa-user"></i> Mi Perfil</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/auth/cook/logout">
+                        <i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
                 </ul>
             </div>
         </div>
     </nav>
+
+    <!-- Encabezado central -->
     <header class="text-center py-4">
         <h1>Panel de Cocina</h1>
     </header>
-    
-    <main class="container">
-        <!-- Primer Carrusel -->
-        <div id="recipeCarousel1" class="carousel slide mb-4" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                <div class="carousel-item active" th:each="recipe, iterStat : ${recipes}">
-                    <img th:src="@{${recipe.imageRecipePerfil}}" class="d-block w-100" alt="Imagen de la receta" />
-                    <div class="carousel-caption d-none d-md-block">
+
+    <!-- Mensajes -->
+    <main class="container-fluid">
+        <!-- Mensaje de éxito -->
+        <div th:if="${success}" class="alert alert-success" role="alert">
+            <span th:text="${success}"></span>
+        </div>
+
+        <!-- Mensaje de error -->
+        <div th:if="${error}" class="alert alert-danger" role="alert">
+            <span th:text="${error}"></span>
+        </div>
+
+        <!-- Carrusel mejorado -->
+        <div id="recipeCarousel1" class="carousel slide mb-5" data-bs-ride="carousel">
+            <div class="carousel-inner" th:each="recipe, iterStat : ${recipes}">
+                <div th:classappend="${iterStat.index == 0} ? 'active'" class="carousel-item">
+                    <img th:src="@{${recipe.imageRecipePerfil}}" class="d-block w-100 rounded" alt="Imagen de la receta">
+                    <div class="carousel-caption d-md-block bg-dark bg-opacity-75 rounded p-3">
                         <h5 th:text="${recipe.name}">Nombre de la Receta</h5>
-                        <p th:text="${recipe.instructions}">Instrucciones breves...</p>
-                    </div>
-                </div>
-                <div class="carousel-item" th:each="recipe, iterStat : ${recipes}">
-                    <img th:src="@{${recipe.imageRecipePerfil}}" class="d-block w-100" alt="Imagen de la receta" />
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5 th:text="${recipe.name}">Nombre de la Receta</h5>
-                        <p th:text="${recipe.instructions}">Instrucciones breves...</p>
+                        <p th:text="'Instrucciones: ' + ${recipe.instructions}">Instrucciones breves...</p>
+                        <p th:text="'Tiempo de preparación: ' + ${recipe.preparationTime} + ' minutos'"></p>
+                        <p th:text="'Comensales: ' + ${recipe.diners}"></p>
+                        <p th:text="'Dificultad: ' + ${recipe.difficulty}"></p>
                     </div>
                 </div>
             </div>
@@ -61,55 +70,36 @@
             </button>
         </div>
 
-        <!-- Segundo Carrusel -->
-        <div id="recipeCarousel2" class="carousel slide mb-4" data-bs-ride="carousel">
-            <div class="carousel-inner">
-                <div class="carousel-item active" th:each="recipe, iterStat : ${recipes}">
-                    <img th:src="@{${recipe.imageRecipePerfil}}" class="d-block w-100" alt="Imagen de la receta" />
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5 th:text="${recipe.name}">Nombre de la Receta</h5>
-                        <p th:text="${recipe.instructions}">Instrucciones breves...</p>
-                    </div>
-                </div>
-                <div class="carousel-item" th:each="recipe, iterStat : ${recipes}">
-                    <img th:src="@{${recipe.imageRecipePerfil}}" class="d-block w-100" alt="Imagen de la receta" />
-                    <div class="carousel-caption d-none d-md-block">
-                        <h5 th:text="${recipe.name}">Nombre de la Receta</h5>
-                        <p th:text="${recipe.instructions}">Instrucciones breves...</p>
-                    </div>
-                </div>
-            </div>
-            <button class="carousel-control-prev" type="button" data-bs-target="#recipeCarousel2" data-bs-slide="prev">
-                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Anterior</span>
-            </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#recipeCarousel2" data-bs-slide="next">
-                <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                <span class="visually-hidden">Siguiente</span>
-            </button>
-        </div>
-
-        <!-- Tarjetas de Recetas -->
-        <div class="row">
-            <div class="col-md-4 mb-4" th:each="recipe : ${recipes}">
-                <div class="card">
-                    <img th:src="@{${recipe.imageRecipePerfil}}" class="card-img-top" alt="Imagen de la receta" />
-                    <div class="card-body">
-                        <h5 class="card-title" th:text="${recipe.name}">Nombre de la Receta</h5>
-                        <p class="card-text" th:text="${recipe.instructions}">Instrucciones breves...</p>
-                        <p class="card-text"><small class="text-muted" th:text="'Dificultad: ' + ${recipe.difficulty}">Dificultad: Fácil</small></p>
-                      <!--   <a th:href="@{/auth/cook/recipeDetail(id=${recipe.id})}" class="btn btn-primary">Ver Detalles</a>-->
+        <!-- Sección de recetas en tarjetas -->
+        <section>
+            <div class="row g-4">
+                <div class="col-md-4" th:each="recipe : ${recipes}">
+                    <div class="card shadow-sm h-100">
+                        <img th:src="@{${recipe.imageRecipePerfil}}" class="card-img-top rounded-top" alt="Imagen de la receta">
+                        <div class="card-body">
+                            <h5 class="card-title" th:text="${recipe.name}">Nombre de la Receta</h5>
+                            <p class="card-text" th:text="${recipe.instructions}">Instrucciones breves...</p>
+                            <p class="card-text"><strong>Tiempo:</strong> <span th:text="${recipe.preparationTime} + ' minutos'"></span></p>
+                            <p class="card-text"><strong>Comensales:</strong> <span th:text="${recipe.diners}"></span></p>
+                            <p class="card-text"><strong>Dificultad:</strong> <span th:text="${recipe.difficulty}"></span></p>
+                            <p class="card-text"><strong>Valoración:</strong> <span th:text="${recipe.averageRating}"></span></p>
+                        </div>
+                        <div class="card-footer bg-light">
+                            <small class="text-muted">Publicado el: <span th:text="${recipe.createDate}"></span></small>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     </main>
 
-   <footer class="footer mt-auto">
-        <div class="container">
-            <span class="text-muted">© 2024 FlavorSync</span>
-        </div>
-   <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <!-- Pie de página -->
+    <footer class="footer">
+            <span class="text-muted">© 2024 FlavorSync</span>   
+    </footer>
+
+    <!-- Scripts de Bootstrap -->
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>

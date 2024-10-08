@@ -1,3 +1,4 @@
+/* General */
 html, body {
     height: 100%;
     margin: 0;
@@ -6,94 +7,164 @@ html, body {
     background-size: cover;
     background-position: center;
     color: #333;
+    line-height: 1.6;
 }
 
+/* Navbar */
 .navbar {
-    background-color: #343a40; /* Fondo oscuro */
-    padding: 10px 20px;
-    border-radius: 0;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    background-color: #343a40;
+    padding: 15px 20px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: background-color 0.3s ease;
+}
+
+.navbar-brand {
+    font-weight: 700;
+    font-size: 1.4rem;
+}
+
+.navbar-brand::before, .nav-link::before {
+    content: "\f2e7"; /* Icono FontAwesome */
+    font-family: 'Font Awesome 5 Free';
+    font-weight: 900;
+    margin-right: 8px;
 }
 
 .navbar-brand, .nav-link {
     color: #fff !important;
-    font-weight: 500;
 }
 
 .nav-link:hover {
-    color: #ffc107 !important; /* Color de hover */
+    color: #ffc107 !important;
 }
 
-.container-fluid {
-    height: calc(100% - 56px - 40px); /* Altura total menos la altura de la navbar y el footer */
-    padding: 20px;
-    border-radius: 8px;
-}
-
+/* Footer */
 .footer {
     background-color: #ff7043;
     color: #fff;
     text-align: center;
-    padding: 10px 0;
+    padding: 20px;
+    box-shadow: 0 -4px 10px rgba(0, 0, 0, 0.1);
 }
 
 .footer .text-muted {
     color: #ffe0b2 !important;
 }
 
+/* Container principal */
+.container-fluid {
+    padding: 20px;
+    height: calc(100% - 56px - 40px); /* Ajuste navbar y footer */
+    background-color: rgba(255, 255, 255, 0.8); /* Fondo blanco semitransparente */
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+/* Estilo de las tarjetas */
 .card {
     border: none;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 12px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
     margin-bottom: 20px;
+}
+
+.card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
 }
 
 .card-body {
     background-color: #fff;
-    padding: 20px;
+    padding: 25px;
+    border-radius: 12px;
 }
 
 .card-title {
     color: #ff7043;
+    font-size: 1.5rem;
     font-weight: bold;
 }
 
 .card-text {
     color: #666;
+    font-size: 1rem;
 }
 
+/* Iconos */
 .icon {
     color: #ff7043;
-    margin-right: 5px;
+    margin-right: 8px;
+    font-size: 1.25rem;
 }
 
-.navbar-brand::before {
-    content: "\f2e7";
-    font-family: 'Font Awesome 5 Free';
-    font-weight: 900;
-    margin-right: 10px;
-}
-
-.nav-link::before {
-    content: "\f2e7";
-    font-family: 'Font Awesome 5 Free';
-    font-weight: 900;
-    margin-right: 5px;
-}
-
-.content {
-    width: 100%; /* Ajusta el ancho al 100% del contenedor */
-    height: auto; /* Ajusta la altura automáticamente */
-    background-image: url('/imgs/kitchenAm.jpg'); /* Asegúrate de que la ruta de la imagen sea correcta */
+/* Fondo de la clase main */
+.container {
+    width: 90%;
+    background-image: url('/imgs/kitchenAm.jpg');
     background-size: cover;
     background-position: center;
-    padding: 30%; /* Ajusta el padding según sea necesario */
-    border-radius: 0px;
+    padding: 10vh;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
+/* Carrusel */
 .carousel-item img {
-    width: 100%; /* Ajusta el ancho de la imagen al 100% del contenedor */
-    height: auto; /* Ajusta la altura automáticamente */
+    width: 100%;
+    height: auto;
+    object-fit: cover;
+    max-height: 450px;
 }
 
+.carousel-control-prev-icon, .carousel-control-next-icon {
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+}
 
+/* Estilos responsive */
+@media (max-width: 768px) {
+    .container-fluid {
+        padding: 15px;
+    }
+
+    .navbar {
+        padding: 10px 15px;
+    }
+
+    .card {
+        margin-bottom: 15px;
+    }
+
+    .main {
+        padding: 8vh;
+    }
+
+    .footer {
+        padding: 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .carousel-item img {
+        max-height: 350px;
+    }
+
+    .card-body {
+        padding: 15px;
+    }
+
+    .card-title {
+        font-size: 1.25rem;
+    }
+
+    .card-text {
+        font-size: 0.9rem;
+    }
+
+    .navbar-toggler {
+        padding: 0.25rem 0.75rem;
+    }
+}
