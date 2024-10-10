@@ -67,11 +67,6 @@ public class recipe {
 	@OneToMany(cascade = CascadeType.ALL)
 	private List<comment> listComments = new ArrayList<>();
 
-	// lista de ingredientes necesarios
-	@OneToMany(cascade = CascadeType.ALL)
-	@NotNull
-	private List<ingredient> listIngredients = new ArrayList<>();
-
 	// Lista de utensilios
 	private List<String> listkitchenUtensils = new ArrayList<>();
 
@@ -143,10 +138,7 @@ public class recipe {
 	// Video de la elaboracion guardado en base 64
 	// private byte[] video;
 
-	// Relación many-to-many usando la clase RecipeIngredient como entidad
-	// intermedia
-	@OneToMany(mappedBy = "recipe", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-	private List<recipeIngredient> ingredients = new ArrayList<>();
+	private List<String> listIngredients = new ArrayList<>();
 
 	// Imagen de perfil de la receta
 	@Lob // Indica que el campo debe ser tratado como un tipo grande

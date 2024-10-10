@@ -17,6 +17,5 @@ public interface RecipeService {
 	List<recipeModel> getListFindByDificilRecipe();
 	List<recipeModel> getListFindByMedioRecipe();
 	List<recipeModel> getListFindByExpertoRecipe();
-	List<recipeModel> getListFindByIngredientsRecipe();
 	recipeModel getRecipeById(int id);
 }

@@ -9,13 +9,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.converter.CookConverter;
-import com.example.demo.converter.IngredientConverter;
 import com.example.demo.converter.RecipeConverter;
 import com.example.demo.entity.recipe;
 import com.example.demo.model.cookModel;
 import com.example.demo.model.recipeModel;
 import com.example.demo.repository.CookRepository;
-import com.example.demo.repository.IngredientRepository;
 import com.example.demo.repository.RecipeRepository;
 import com.example.demo.service.RecipeService;
 
@@ -37,14 +35,6 @@ public class RecipeServiceImpl implements RecipeService {
 	@Autowired
 	@Qualifier("recipeConverter")
 	private RecipeConverter recipeConverter;
-
-	@Autowired
-	@Qualifier("ingredientRepository")
-	private IngredientRepository ingredientRepository;
-
-	@Autowired
-	@Qualifier("ingredientConverter")
-	private IngredientConverter ingredientConverter;
 
 	@Override
 	public boolean addRecipe(recipeModel recipe, cookModel cook) {
@@ -131,11 +121,6 @@ public class RecipeServiceImpl implements RecipeService {
 		return null;
 	}
 
-	@Override
-	public List<recipeModel> getListFindByIngredientsRecipe() {
-		// TODO Auto-generated method stub
-		return null;
-	}
 	@Override
 	public recipeModel getRecipeById(int id) {
 		// TODO Auto-generated method stub

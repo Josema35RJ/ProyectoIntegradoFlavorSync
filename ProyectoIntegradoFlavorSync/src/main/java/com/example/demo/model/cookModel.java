@@ -124,12 +124,9 @@ public class cookModel {
 			@NotBlank(message = "Age is required") @Positive(message = "The height must be a positive number") Date birthDate,
 			@Size(max = 100, message = "The city cannot exceed 100 characters") @NotBlank(message = "city is required") String city,
 			@Size(max = 100, message = "The country cannot exceed 100 characters") @NotBlank(message = "country is required") String country,
-			@NotBlank(message = "The password is required") String password,
-			@NotBlank(message = "The enabled is required") boolean enabled, List<String> listSpecialty,
+			@NotBlank(message = "The password is required") String password, List<String> listSpecialty,
 			List<culinaryTechniquesModel> listCulinaryTechniques,
-			@Positive(message = "The experience must be a positive number") int experience, String role,
-			@Positive(message = "The punctuaction must be a positive number") int punctuation,
-			List<recipeModel> listRecipes, List<recipeModel> listRecipesFavorites, byte[] imagePerfil) {
+			@Positive(message = "The experience must be a positive number") int experience, byte[] imagePerfil) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;

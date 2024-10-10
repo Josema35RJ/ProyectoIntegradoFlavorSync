@@ -22,7 +22,6 @@ import com.example.demo.converter.CulinaryTechniquesConverter;
 import com.example.demo.entity.cook;
 import com.example.demo.entity.culinaryTechniques;
 import com.example.demo.model.cookModel;
-import com.example.demo.model.recipeModel;
 import com.example.demo.repository.CookRepository;
 import com.example.demo.repository.CulinaryTechniquesRepository;
 import com.example.demo.security.CustomUserDetails;

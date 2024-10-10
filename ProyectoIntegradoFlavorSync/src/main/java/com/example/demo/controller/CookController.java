@@ -18,7 +18,6 @@ import com.example.demo.model.recipeModel;
 import com.example.demo.security.CustomUserDetails;
 import com.example.demo.service.CookService;
 import com.example.demo.service.CulinaryTechniquesService;
-import com.example.demo.service.IngredientService;
 import com.example.demo.service.RecipeService;
 
 @Controller
@@ -37,10 +36,6 @@ public class CookController {
 	@Autowired
 	@Qualifier("recipeService")
 	private RecipeService recipeService;
-
-	@Autowired
-	@Qualifier("ingredientService")
-	private IngredientService ingredientService;
 
 	@Autowired
 	@Qualifier("culinaryTechniquesService")
@@ -111,7 +106,6 @@ public class CookController {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		// Ahora puedes obtener la información del usuario logueado desde userDetails
 		model.addAttribute("cookPerfil", cookService.findById(userDetails.getId()));
-		model.addAttribute("ingredients", ingredientService.getListIngredients());
 		model.addAttribute("recipeTechniques", culinaryTechniquesService.getListCulinaryTechniques());
 		return FORMRECIPE_VIEW;
 	}
@@ -139,7 +133,7 @@ public class CookController {
 		recipeModel r =  recipeService.getRecipeById(id);
 		// Ahora puedes obtener la información del usuario logueado desde userDetails
 		model.addAttribute("cookPerfil", cookService.findById(userDetails.getId()));
-		model.addAttribute("ingredients", ingredientService.getListIngredients());
+
 		model.addAttribute("recipeTechniques", culinaryTechniquesService.getListCulinaryTechniques());
 		model.addAttribute("recipe", r);
 		String n = Base64.getEncoder().encodeToString(r.getImageRecipePerfil());
