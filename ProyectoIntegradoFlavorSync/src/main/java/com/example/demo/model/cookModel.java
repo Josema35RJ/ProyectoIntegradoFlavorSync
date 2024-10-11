@@ -1,5 +1,6 @@
 package com.example.demo.model;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -110,6 +111,10 @@ public class cookModel {
 
 	// Imagen o imagenes del cocinero guardada en base64
 	private List<byte[]> imagesCook = new ArrayList<>();
+	 
+	private LocalDate createDate;
+	
+	private LocalDate updateDate;
 
 	public cookModel() {
 		super();
@@ -297,6 +302,22 @@ public class cookModel {
 		this.imagesCook = imagesCook;
 	}
 
+	public LocalDate getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(LocalDate createDate) {
+		this.createDate = createDate;
+	}
+
+	public LocalDate getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(LocalDate updateDate) {
+		this.updateDate = updateDate;
+	}
+
 	@Override
 	public String toString() {
 		return "cookModel [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", nickName=" + nickName
@@ -305,6 +326,6 @@ public class cookModel {
 				+ ", listCulinaryTechniques=" + listCulinaryTechniques + ", experience=" + experience + ", role=" + role
 				+ ", punctuation=" + punctuation + ", listRecipes=" + listRecipes + ", listRecipesFavorites="
 				+ listRecipesFavorites + ", imagePerfil=" + Arrays.toString(imagePerfil) + ", imagesCook=" + imagesCook
-				+ "]";
+				+ ", createDate=" + createDate + ", updateDate=" + updateDate + "]";
 	}
 }

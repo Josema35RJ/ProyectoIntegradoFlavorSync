@@ -1,6 +1,9 @@
 package com.example.demo.controller;
 
+import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -11,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.example.demo.model.cookModel;
@@ -111,7 +115,7 @@ public class CookController {
 	}
 
 	@PostMapping("/auth/cook/addRecipe")
-	public String AddRecipe(recipeModel recipe, RedirectAttributes flash, @RequestParam("imagenRecipeBase64") String imagenR, Authentication authentication) {
+	public String AddRecipe(recipeModel recipe, RedirectAttributes flash,@RequestParam("recipeImages") MultipartFile[] files, @RequestParam("imagenRecipeBase64") String imagenR, Authentication authentication) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		// Ahora puedes obtener la información del usuario logueado desde userDetails
 
@@ -119,7 +123,18 @@ public class CookController {
 		// Convertir la imagen en Base64 a byte[]
 		byte[] imageBytes = Base64.getDecoder().decode(imagenR);
 	    recipe.setImageRecipePerfil(imageBytes); // Almacena la imagen en byte[] en la entidad recipe
-	   
+	    List<byte[]> images = new ArrayList<>();
+        for (MultipartFile file : files) {
+            try {
+                // Convertir la imagen a un byte array
+                byte[] bytes = file.getBytes();
+                images.add(bytes);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        recipe.setImagesRecipe(images);
+        
 		recipeService.addRecipe(recipe, c);
 		
 		flash.addFlashAttribute("success", "¡Receta registrada exitosamente!");

@@ -1,5 +1,6 @@
 package com.example.demo.service.impl;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -70,6 +71,7 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 		} else if (cook.getBirthDate() == c.getBirthDate()) {
 			c.setBirthDate(cook.getBirthDate());
 		}
+		c.setUpdateDate(LocalDate.now());
 		return true;
 	}
 
@@ -201,6 +203,7 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 		cook.setRole("ROL_COOKAPRENDIZ");
 		cook c = cookConverter.transform(cook);
 		c.setListCulinaryTechniques(l);
+		c.setCreateDate(LocalDate.now());
 		cookRepository.save(c);
 		return true;
 	}

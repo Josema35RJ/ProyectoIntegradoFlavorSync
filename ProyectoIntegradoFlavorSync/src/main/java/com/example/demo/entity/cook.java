@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -125,5 +126,11 @@ public class cook {
 	@Column(name = "imagesCook", columnDefinition = "LONGBLOB") // Define el tipo específico de la columna
 	@ElementCollection
 	private List<byte[]> imagesCook = new ArrayList<>();
+	
+	@Column(name = "createDate") 
+	private LocalDate createDate;
+	
+	@Column(name = "updateDate") 
+	private LocalDate updateDate;
 
 }

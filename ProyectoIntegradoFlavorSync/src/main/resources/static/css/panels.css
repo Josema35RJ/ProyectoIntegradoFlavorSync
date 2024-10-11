@@ -30,10 +30,6 @@ html, body {
     margin-right: 8px;
 }
 
-.navbar-brand, .nav-link {
-    color: #fff !important;
-}
-
 .nav-link:hover {
     color: #ffc107 !important;
 }
@@ -51,14 +47,6 @@ html, body {
     color: #ffe0b2 !important;
 }
 
-/* Container principal */
-.container-fluid {
-    padding: 20px;
-    height: calc(100% - 56px - 40px); /* Ajuste navbar y footer */
-    background-color: rgba(255, 255, 255, 0.8); /* Fondo blanco semitransparente */
-    border-radius: 12px;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-}
 
 /* Estilo de las tarjetas */
 .card {

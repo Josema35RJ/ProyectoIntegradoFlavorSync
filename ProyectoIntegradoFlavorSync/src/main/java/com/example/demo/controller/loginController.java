@@ -43,7 +43,7 @@ public class loginController {
 
 	@GetMapping("/auth/login")
 	public String login(Model model, @RequestParam(name = "error", required = false) String error,
-			@RequestParam(name = "logout", required = false) String logout, Principal principal) {
+			@RequestParam(name = "logout", required = false) String logout,RedirectAttributes flash, Principal principal) {
 
 		// Redirige a la página principal si el usuario ya inició sesión
 		if (principal != null) {
@@ -72,6 +72,7 @@ public class loginController {
 		}
 
 		// Retorna la vista de login
+		flash.addFlashAttribute("success", "¡Inicio de sesion exitosamente!");
 		return LOGIN_VIEW; // Asegúrate de que LOGIN_VIEW sea el nombre correcto de la vista de login
 	}
 
@@ -128,7 +129,7 @@ public class loginController {
 	    cookService.registrar(cook, culinaryTechniquesIds);
 	    flash.addFlashAttribute("success", "¡Cocinero registrado exitosamente!");
 
-	    return "redirect:" + LOGIN_VIEW;
+	    return LOGIN_VIEW;
 	}
 	
 	@GetMapping("/auth/cook/logout")

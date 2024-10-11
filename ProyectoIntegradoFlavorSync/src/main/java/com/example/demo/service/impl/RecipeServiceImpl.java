@@ -65,6 +65,7 @@ public class RecipeServiceImpl implements RecipeService {
 		} else if (re.getDiners() != r.getDiners()) {
 			r.setDiners(re.getDiners());
 		}
+		r.setUpdateDate(LocalDate.now());
 		return true;
 	}
 

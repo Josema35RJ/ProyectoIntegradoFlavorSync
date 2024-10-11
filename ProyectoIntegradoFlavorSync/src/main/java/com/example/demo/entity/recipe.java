@@ -107,7 +107,7 @@ public class recipe {
 	// detalles sobre cómo almacenar el platillo.
 	// También pueden incluir recomendaciones para sustituir ingredientes.
 	@Column(name = "Grades")
-	@Size(max = 50, message = "The name cannot exceed 50 characters")
+	@Size(max = 255, message = "The name cannot exceed 50 characters")
 	private String grades;
 
 	// Si es relevante, la receta puede incluir detalles sobre su origen cultural,
