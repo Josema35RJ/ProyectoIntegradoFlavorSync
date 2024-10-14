@@ -73,13 +73,46 @@ document.getElementById('countrySelect').addEventListener('change', function() {
 	});
 });*/
 document.getElementById('imagenPerfilFile').addEventListener('change', function(event) {
-      const file = event.target.files[0];
-      if (file) {
-          const reader = new FileReader();
-          reader.onload = function(e) {
-              // La imagen convertida a Base64 se almacena en el campo oculto
-              document.getElementById('imagenRecipeBase64').value = e.target.result.split(',')[1]; // Elimina el encabezado de la URL base64
-          };
-          reader.readAsDataURL(file); // Convierte la imagen a Base64
-      }
-  });
+    const file = event.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            const img = new Image();
+            img.src = e.target.result;
+            img.onload = function() {
+                // Crear un canvas y dibujar la imagen con la nueva resolución
+                const canvas = document.createElement('canvas');
+                const maxWidth = 300; // Ancho máximo
+                const maxHeight = 300; // Alto máximo
+                let width = img.width;
+                let height = img.height;
+
+                // Mantener la relación de aspecto
+                if (width > height) {
+                    if (width > maxWidth) {
+                        height = Math.round((maxWidth / width) * height);
+                        width = maxWidth;
+                    }
+                } else {
+                    if (height > maxHeight) {
+                        width = Math.round((maxHeight / height) * width);
+                        height = maxHeight;
+                    }
+                }
+
+                canvas.width = width;
+                canvas.height = height;
+
+                // Dibujar la imagen redimensionada
+                const ctx = canvas.getContext('2d');
+                ctx.drawImage(img, 0, 0, width, height);
+
+                // Obtener la imagen comprimida en base64
+                const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7); // Calidad al 70%
+                // Almacenar la imagen en el campo oculto (sin el encabezado base64)
+                document.getElementById('imagenRecipeBase64').value = compressedBase64.split(',')[1];
+            };
+        };
+        reader.readAsDataURL(file);
+    }
+});

@@ -1,11 +1,13 @@
 package com.example.demo.controller;
 
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -43,7 +45,8 @@ public class loginController {
 
 	@GetMapping("/auth/login")
 	public String login(Model model, @RequestParam(name = "error", required = false) String error,
-			@RequestParam(name = "logout", required = false) String logout,RedirectAttributes flash, Principal principal) {
+			@RequestParam(name = "logout", required = false) String logout, RedirectAttributes flash,
+			Principal principal) {
 
 		// Redirige a la página principal si el usuario ya inició sesión
 		if (principal != null) {
@@ -79,59 +82,59 @@ public class loginController {
 	@GetMapping("/auth/register")
 	public String registerForm(Model model) {
 		model.addAttribute("cook", new cookModel());
-		model.addAttribute("listCulinaryTechniques", culinaryTechniquesService.getListCulinaryTechniques());
+		model.addAttribute("recipeTechniques", culinaryTechniquesService.getListCulinaryTechniques());
 		return REGISTER_VIEW;
 	}
 
 	@PostMapping("/auth/register")
-	public String registerSubmit(@ModelAttribute("cookModel") cookModel cook,
-	                             @RequestParam("listCulinaryTechniquesIds") List<String> culinaryTechniquesIds,
-	                             @RequestParam("imagenPerfil") String imagenPerfil, // Recibe la imagen en Base64
-	                             @RequestParam("confirmPassword") String confirmPassword, BindingResult result, RedirectAttributes flash) {
+	public String registerSubmit(cookModel cook,
+			@RequestParam("culinaryTechniquesIds") List<String> listCulinaryTechniques,
+			@RequestParam(value="cookImagesBase64", required = false) String[] ImagesBase64,
+			@RequestParam("imagenPerfilBase64") String imagenPerfil, // Recibe la imagen en Base64
+			@RequestParam("confirmPassword") String confirmPassword, BindingResult result, RedirectAttributes flash) {
 
-	    // Validaciones existentes
-	    if (result.hasErrors()) {
-	        return REGISTER_VIEW;
-	    }
+		// Validaciones existentes
+		if (result.hasErrors()) {
+			return REGISTER_VIEW;
+		}
 
-	    
-	    // Convertir la imagen en Base64 a byte[]
-	    byte[] imageBytes = Base64.getDecoder().decode(imagenPerfil);
-	    cook.setImagePerfil(imageBytes); // Almacena la imagen en byte[] en la entidad cook
+		// Convertir la imagen en Base64 a byte[]
+		byte[] imageBytes = Base64.getDecoder().decode(imagenPerfil);
+		cook.setImagePerfil(imageBytes); // Almacena la imagen en byte[] en la entidad cook
 
-	    // Restante de la lógica de validación
-	    cook.setUsername(cook.getUsername().toLowerCase());
+		// Restante de la lógica de validación
+		cook.setUsername(cook.getUsername().toLowerCase());
 
-	    if (cook.getFirstName().length() > 25) {
-	        flash.addFlashAttribute("error", "¡El nombre excede los 25 caracteres!");
-	        return "redirect:" + REGISTER_VIEW;
-	    } else if (cook.getLastName().length() > 50) {
-	        flash.addFlashAttribute("error", "¡Los apellidos exceden los 50 caracteres!");
-	        return "redirect:" + REGISTER_VIEW;
-	    } else if (cook.getExperience() < 0) {
-	        flash.addFlashAttribute("error", "¡La experiencia debe ser mayor o igual a 0!");
-	        return "redirect:" + REGISTER_VIEW;
-	    } else if (cookService.existeUsername(cook.getUsername())) {
-	        flash.addFlashAttribute("error", "Este correo electrónico ya está registrado");
-	        return "redirect:" + REGISTER_VIEW;
-	    } else if (!isValidEmailAddress(cook.getUsername())) {
-	        flash.addFlashAttribute("error", "¡El correo electrónico no tiene un formato válido!");
-	        return "redirect:" + REGISTER_VIEW;
-	    } else if (!cook.getPassword().equals(confirmPassword)) {
-	        flash.addFlashAttribute("error", "¡Las contraseñas no coinciden!");
-	        return "redirect:" + REGISTER_VIEW;
-	    } else if (cook.getPassword().length() < 6 || cook.getPassword().length() > 18) {
-	        flash.addFlashAttribute("error", "¡La contraseña debe tener entre 6 y 18 caracteres!");
-	        return "redirect:" + REGISTER_VIEW;
-	    }
-	    
-	    // Registrar el cocinero
-	    cookService.registrar(cook, culinaryTechniquesIds);
-	    flash.addFlashAttribute("success", "¡Cocinero registrado exitosamente!");
+		if (cook.getFirstName().length() > 25) {
+			flash.addFlashAttribute("error", "¡El nombre excede los 25 caracteres!");
+			return "redirect:" + REGISTER_VIEW;
+		} else if (cook.getLastName().length() > 50) {
+			flash.addFlashAttribute("error", "¡Los apellidos exceden los 50 caracteres!");
+			return "redirect:" + REGISTER_VIEW;
+		} else if (cook.getExperience() < 0) {
+			flash.addFlashAttribute("error", "¡La experiencia debe ser mayor o igual a 0!");
+			return "redirect:" + REGISTER_VIEW;
+		} else if (cookService.existeUsername(cook.getUsername())) {
+			flash.addFlashAttribute("error", "Este correo electrónico ya está registrado");
+			return "redirect:" + REGISTER_VIEW;
+		} else if (!isValidEmailAddress(cook.getUsername())) {
+			flash.addFlashAttribute("error", "¡El correo electrónico no tiene un formato válido!");
+			return "redirect:" + REGISTER_VIEW;
+		} else if (!cook.getPassword().equals(confirmPassword)) {
+			flash.addFlashAttribute("error", "¡Las contraseñas no coinciden!");
+			return "redirect:" + REGISTER_VIEW;
+		} else if (cook.getPassword().length() < 6 || cook.getPassword().length() > 18) {
+			flash.addFlashAttribute("error", "¡La contraseña debe tener entre 6 y 18 caracteres!");
+			return "redirect:" + REGISTER_VIEW;
+		}
 
-	    return LOGIN_VIEW;
+		// Registrar el cocinero
+		cookService.registrar(cook,listCulinaryTechniques);
+		flash.addFlashAttribute("success", "¡Cocinero registrado exitosamente!");
+
+		return "redirect:" + LOGIN_VIEW;
 	}
-	
+
 	@GetMapping("/auth/cook/logout")
 	public String logout(HttpServletRequest request, HttpServletResponse response) {
 		// Invalida la sesión actual
@@ -139,7 +142,6 @@ public class loginController {
 		// Redirige a la página de inicio de sesión
 		return "redirect:" + LOGIN_VIEW;
 	}
-
 
 	private boolean isValidEmailAddress(String email) {
 		// Expresión regular para verificar el formato de un correo electrónico

@@ -60,18 +60,21 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 	public boolean updateCook(cookModel cook) {
 		// TODO Auto-generated method stub
 		cookModel c = cookConverter.transform(cookRepository.findById(cook.getId()).get());
-		if (!cook.getFirstName().equals(c.getFirstName())) {
+		if (!cook.getNickName().equals(c.getNickName())) {
+			c.setNickName(cook.getNickName());
+		} else if (!cook.getFirstName().equals(c.getFirstName())) {
 			c.setFirstName(cook.getFirstName());
-		} else if (cook.getLastName().equals(c.getLastName())) {
+		} else if (!cook.getLastName().equals(c.getLastName())) {
 			c.setLastName(cook.getLastName());
-		} else if (cook.getUsername().equals(c.getUsername())) {
+		} else if (!cook.getUsername().equals(c.getUsername())) {
 			c.setUsername(cook.getUsername());
-		} else if (cook.getListSpecialty().equals(c.getListSpecialty())) {
+		} else if (!cook.getListSpecialty().equals(c.getListSpecialty())) {
 			c.setListSpecialty(cook.getListSpecialty());
-		} else if (cook.getBirthDate() == c.getBirthDate()) {
+		} else if (cook.getBirthDate() != c.getBirthDate()) {
 			c.setBirthDate(cook.getBirthDate());
 		}
 		c.setUpdateDate(LocalDate.now());
+		cookRepository.save(cookConverter.transform(c));
 		return true;
 	}
 
@@ -166,17 +169,6 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 		if (cookRepository.findByUsername(username) == null)
 			return false;
 		return true;
-	}
-
-	@Override
-	public void registrar(cookModel cook) {
-		// TODO Auto-generated method stub
-
-		cook.setPassword(passwordEncoder().encode(cook.getPassword()));
-		cook.setEnabled(true);
-		if (cook.getRole() == null)
-			cook.setRole("ROL_COOKAPRENDIZ");
-		cookRepository.save(cookConverter.transform(cook));
 	}
 
 	@Override

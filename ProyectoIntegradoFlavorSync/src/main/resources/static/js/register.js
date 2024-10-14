@@ -181,17 +181,104 @@ document.getElementById('countrySelect').addEventListener('change', function() {
 		})
 		.catch(error => console.error('Error al obtener las ciudades:', error));
 });
-document.getElementById('imagenFile').addEventListener('change', function(event) {
-      const file = event.target.files[0];
-      if (file) {
-          const reader = new FileReader();
-          reader.onload = function(e) {
-              // La imagen convertida a Base64 se almacena en el campo oculto
-              document.getElementById('imagenPerfilBase64').value = e.target.result.split(',')[1]; // Elimina el encabezado de la URL base64
-          };
-          reader.readAsDataURL(file); // Convierte la imagen a Base64
-      }
-  });
+document.getElementById('imagenPerfilFile').addEventListener('change', function(event) {
+	const file = event.target.files[0];
+	if (file) {
+		const reader = new FileReader();
+		reader.onload = function(e) {
+			const img = new Image();
+			img.src = e.target.result;
+			img.onload = function() {
+				// Crear un canvas y dibujar la imagen con la nueva resolución
+				const canvas = document.createElement('canvas');
+				const maxWidth = 300; // Ancho máximo
+				const maxHeight = 300; // Alto máximo
+				let width = img.width;
+				let height = img.height;
+
+				// Mantener la relación de aspecto
+				if (width > height) {
+					if (width > maxWidth) {
+						height = Math.round((maxWidth / width) * height);
+						width = maxWidth;
+					}
+				} else {
+					if (height > maxHeight) {
+						width = Math.round((maxHeight / height) * width);
+						height = maxHeight;
+					}
+				}
+
+				canvas.width = width;
+				canvas.height = height;
+
+				// Dibujar la imagen redimensionada
+				const ctx = canvas.getContext('2d');
+				ctx.drawImage(img, 0, 0, width, height);
+
+				// Obtener la imagen comprimida en base64
+				const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7); // Calidad al 70%
+				// Almacenar la imagen en el campo oculto (sin el encabezado base64)
+				document.getElementById('imagenPerfilBase64').value = compressedBase64.split(',')[1];
+			};
+		};
+		reader.readAsDataURL(file);
+	}
+});
+document
+	.getElementById('cookImages')
+	.addEventListener('change', function(event) {
+		const files = event.target.files; // Get the list of files
+		const base64Images = []; // Array to store Base64 strings
+
+		Array.from(files).forEach(file => {
+			if (file) {
+				const reader = new FileReader();
+				reader.onload = function(e) {
+					const img = new Image();
+					img.src = e.target.result;
+					img.onload = function() {
+						// Create a canvas and draw the image with the new resolution
+						const canvas = document.createElement('canvas');
+						const maxWidth = 300; // Maximum width
+						const maxHeight = 300; // Maximum height
+						let width = img.width;
+						let height = img.height;
+
+						// Maintain the aspect ratio
+						if (width > height) {
+							if (width > maxWidth) {
+								height = Math.round((maxWidth / width) * height);
+								width = maxWidth;
+							}
+						} else {
+							if (height > maxHeight) {
+								width = Math.round((maxHeight / height) * width);
+								height = maxHeight;
+							}
+						}
+
+						canvas.width = width;
+						canvas.height = height;
+
+						// Draw the resized image
+						const ctx = canvas.getContext('2d');
+						ctx.drawImage(img, 0, 0, width, height);
+
+						// Get the compressed image in base64
+						const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7); // Quality at 70%
+
+						// Store the image in the base64Images array (without the base64 header)
+						base64Images.push(compressedBase64.split(',')[1]);
+
+						// Update a hidden input with all Base64 images, if desired
+						document.getElementById('cookImagesBase64').value = base64Images.join(',');
+					};
+				};
+				reader.readAsDataURL(file);
+			}
+		});
+	});
 // Obtener la fecha actual y calcular las fechas mínimas y máximas permitidas
 const today = new Date();
 const minAge = 18;
@@ -202,3 +289,4 @@ const maxDate = new Date(today.getFullYear() - minAge, today.getMonth(), today.g
 
 // Establecer el rango permitido para la fecha de nacimiento
 document.getElementById("birthDate").setAttribute("min", minDate.toISOString().split('T')[0]);
+

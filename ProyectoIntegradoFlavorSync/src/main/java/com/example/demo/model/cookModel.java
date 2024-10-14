@@ -42,9 +42,6 @@ public class cookModel {
 	private String lastName;
 
 	// apodo del cocinero
-	@Column(name = "nickName", nullable = false)
-	@Size(max = 100, message = "The nickName cannot exceed 100 characters")
-	@NotBlank(message = "nickName is required")
 	private String nickName;
 
 	// correo para que entre en su cuenta
@@ -129,8 +126,7 @@ public class cookModel {
 			@NotBlank(message = "Age is required") @Positive(message = "The height must be a positive number") Date birthDate,
 			@Size(max = 100, message = "The city cannot exceed 100 characters") @NotBlank(message = "city is required") String city,
 			@Size(max = 100, message = "The country cannot exceed 100 characters") @NotBlank(message = "country is required") String country,
-			@NotBlank(message = "The password is required") String password, List<String> listSpecialty,
-			List<culinaryTechniquesModel> listCulinaryTechniques,
+			@NotBlank(message = "The password is required") String password, List<String> listSpecialty,List<culinaryTechniquesModel> listRecipeTechniques,
 			@Positive(message = "The experience must be a positive number") int experience, byte[] imagePerfil) {
 		super();
 		this.firstName = firstName;
@@ -143,7 +139,7 @@ public class cookModel {
 		this.password = password;
 		this.enabled = true;
 		this.listSpecialty = listSpecialty;
-		this.listCulinaryTechniques = listCulinaryTechniques;
+		this.listCulinaryTechniques = listRecipeTechniques;
 		this.experience = experience;
 		this.role = "ROL_COOKAPRENDIZ";
 		this.punctuation = 0;

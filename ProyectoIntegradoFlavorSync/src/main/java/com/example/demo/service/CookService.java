@@ -17,7 +17,6 @@ public interface CookService {
 	List<cookModel> getFindByCooksAprendiz();
 	List<cookModel> getFindByCooksAmateurs();
 	boolean existeUsername(String username);
-	void registrar(cookModel cook);
 	UserDetails loadUserByUsername(String email);
 	cookModel findById(int id);
 	cookModel findByUsername(String username);

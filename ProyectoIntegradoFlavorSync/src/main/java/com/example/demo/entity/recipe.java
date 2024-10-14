@@ -8,7 +8,6 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -53,6 +52,7 @@ public class recipe {
 	private float preparationTime;
 
 	// Si la receta se hace, en horno, microondas
+	@Column(name = "whereItisDone", nullable = false)
 	private List<String> whereItisDone = new ArrayList<>();
 
 	// Si la receta es postre, entrante, primer plato...
@@ -68,6 +68,7 @@ public class recipe {
 	private List<comment> listComments = new ArrayList<>();
 
 	// Lista de utensilios
+	@Column(name = "listkitchenUtensils", nullable = false)
 	private List<String> listkitchenUtensils = new ArrayList<>();
 
 	// Tecnicas usadas en la receta
@@ -138,7 +139,7 @@ public class recipe {
 	// Video de la elaboracion guardado en base 64
 	// private byte[] video;
 
-	private List<String> listIngredients = new ArrayList<>();
+	private String Ingredients;
 
 	// Imagen de perfil de la receta
 	@Lob // Indica que el campo debe ser tratado como un tipo grande

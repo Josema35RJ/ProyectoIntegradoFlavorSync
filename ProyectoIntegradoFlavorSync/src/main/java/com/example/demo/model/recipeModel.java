@@ -72,8 +72,6 @@ public class recipeModel {
 	// si la receta es apta para personas con necesidades dietéticas especiales
 	// (veganos, vegetarianos,
 	// sin gluten, etc.).
-	@Column(name = "AllergensAndDietaryRestrictions", nullable = false)
-	@Size(max = 455, message = "The name cannot exceed 455 characters")
 	private List<String> AllergensAndDietaryRestrictions = new ArrayList<>();
 
 	// Algunas recetas incluyen una tabla con información sobre las calorías,
@@ -119,16 +117,39 @@ public class recipeModel {
 
 	// Relación many-to-many usando la clase RecipeIngredient como entidad
 	// intermedia
-	private List<String> listIngredients = new ArrayList<>();
+	private String Ingredients;
 	
 	//Fecha de creacion de la receta 
 	private LocalDate createDate;
 	
 	//Fecha de la actualizacion de esta receta
 	private LocalDate updateDate;
+	
+	public recipeModel(Integer id, String name, int diners, float preparationTime, List<String> whereItisDone,
+			List<String> category, String Ingredients, List<String> listkitchenUtensils,
+			String instructions, String difficulty, List<String> allergensAndDietaryRestrictions,
+			nutritionalInformationModel nutritionalInformation, String country, String city) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.diners = diners;
+		this.preparationTime = preparationTime;
+		this.whereItisDone = whereItisDone;
+		this.category = category;
+		this.listkitchenUtensils = listkitchenUtensils;
+		this.instructions = instructions;
+		this.difficulty = difficulty;
+		this.Ingredients = Ingredients;
+		this.AllergensAndDietaryRestrictions = allergensAndDietaryRestrictions;
+		this.nutritionalInformation = nutritionalInformation;
+	    this.Country= country;
+		this.city = city;
+		this.createDate = LocalDate.now();
+
+	}
 
 	public recipeModel(Integer id, String name, int diners, float preparationTime, List<String> whereItisDone,
-			List<String> category, List<String> listkitchenUtensils, List<culinaryTechniquesModel> listRecipeTechniques,
+			List<String> category, List<String> listkitchenUtensils,
 			String instructions, String difficulty, List<String> allergensAndDietaryRestrictions,
 			nutritionalInformationModel nutritionalInformation, String grades, String history, String country, String city) {
 		super();
@@ -139,7 +160,6 @@ public class recipeModel {
 		this.whereItisDone = whereItisDone;
 		this.category = category;
 		this.listkitchenUtensils = listkitchenUtensils;
-		this.listRecipeTechniques = listRecipeTechniques;
 		this.instructions = instructions;
 		this.difficulty = difficulty;
 		AllergensAndDietaryRestrictions = allergensAndDietaryRestrictions;
@@ -317,12 +337,12 @@ public class recipeModel {
 		this.imagesRecipe = imagesRecipe;
 	}
 
-	public List<String> getIngredients() {
-		return listIngredients;
+	public String getIngredients() {
+		return Ingredients;
 	}
 
-	public void setIngredients(List<String> listIngredients) {
-		this.listIngredients = listIngredients;
+	public void setIngredients(String Ingredients) {
+		this.Ingredients = Ingredients;
 	}
 
 	public void setHistory(String history) {
@@ -362,6 +382,6 @@ public class recipeModel {
 				+ instructions + ", difficulty=" + difficulty + ", AllergensAndDietaryRestrictions="
 				+ AllergensAndDietaryRestrictions + ", nutritionalInformation=" + nutritionalInformation + ", grades="
 				+ grades + ", History=" + History + ", Country=" + Country + ", city=" + city + ", imagesRecipe="
-				+ imagesRecipe + ", listIngredients=" + listIngredients + "]";
+				+ imagesRecipe + ", Ingredientes=" + Ingredients + "]";
 	}
 }

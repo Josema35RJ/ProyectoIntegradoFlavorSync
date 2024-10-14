@@ -43,7 +43,8 @@ public class RecipeServiceImpl implements RecipeService {
 	    recipe.setLevel(level[1]);
 	    recipe.setName(recipe.getName().toUpperCase());
 	    recipe.setCreateDate(LocalDate.now());
-
+        System.out.println("/*******************************************");
+        System.out.println(recipe);
 	    // Luego agregarla a la lista de recetas del cocinero y guardar la entidad cook
 	    cook.getListRecipes().add(recipe);
 	    cookRepository.save(cookConverter.transform(cook));

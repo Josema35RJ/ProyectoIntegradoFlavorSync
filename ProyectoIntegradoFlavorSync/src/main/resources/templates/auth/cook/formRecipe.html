@@ -105,20 +105,20 @@ button[type="submit"]:hover {
 
 	<main class="container mt-5">
 		<h1>Crear/Actualizar Receta</h1>
-		<form id="registerForm" th:action="@{/auth/cook/addRecipe}" method="post"
-			enctype="multipart/form-data">
+		<form id="registerForm" th:action="@{/auth/cook/addRecipe}"
+			method="post" enctype="multipart/form-data">
 			<!-- Información General -->
 			<div class="card mb-4">
 				<div class="card-header">Información General</div>
 				<div class="card-body">
 					<div class="mb-3">
-						<label for="name" class="form-label">Nombre de la Receta</label> <input
-							type="text" class="form-control" id="name" name="name"
+						<label for="name" class="form-label">*Nombre de la Receta</label>
+						<input type="text" class="form-control" id="name" name="name"
 							maxlength="100" required>
 					</div>
 
 					<div class="mb-3">
-						<label for="diners" class="form-label">Número de
+						<label for="diners" class="form-label">*Número de
 							Comensales</label> <input type="range" class="form-range" id="diners"
 							name="diners" min="1" max="10"
 							oninput="document.getElementById('dinersOutput').value = this.value">
@@ -126,7 +126,7 @@ button[type="submit"]:hover {
 					</div>
 
 					<div class="mb-3">
-						<label for="preparationTime" class="form-label">Tiempo de
+						<label for="preparationTime" class="form-label">*Tiempo de
 							Preparación (minutos)</label> <input type="range" class="form-range"
 							id="preparationTime" name="preparationTime" min="10" max="180"
 							step="5"
@@ -135,7 +135,7 @@ button[type="submit"]:hover {
 					</div>
 
 					<div class="mb-3">
-						<label for="whereItisDone" class="form-label">Donde se
+						<label for="whereItisDone" class="form-label">*Donde se
 							Hace</label> <select class="form-select" id="whereItisDone"
 							name="whereItisDone[]" multiple required>
 							<option value="Horno">Horno</option>
@@ -157,7 +157,7 @@ button[type="submit"]:hover {
 				<div class="card-header">Categoría de la Receta</div>
 				<div class="card-body">
 					<div class="mb-3">
-						<label for="category" class="form-label">Seleccione la
+						<label for="category" class="form-label">*Seleccione la
 							Categoría</label> <select id="category" name="category[]"
 							class="form-select" multiple required>
 							<option value="Postre">Postre</option>
@@ -178,7 +178,7 @@ button[type="submit"]:hover {
 				<div class="card-header">Técnicas y Preparación</div>
 				<div class="card-body">
 					<div class="mb-3">
-						<label for="listkitchenUtensils" class="form-label">Utensilios
+						<label for="listkitchenUtensils" class="form-label">*Utensilios
 							de Cocina</label> <select id="listkitchenUtensils"
 							name="listkitchenUtensils[]" class="form-control" multiple
 							required>
@@ -190,16 +190,17 @@ button[type="submit"]:hover {
 					</div>
 
 					<div class="mb-3">
-						<label for="culinaryTechniques" class="form-label">Seleccione
-							las Técnicas Culinarias</label> <select id="culinaryTechniques"
-							name="culinaryTechniques" class="form-control" multiple required>
+						<label for="RecipeTechniques" class="form-label">*Seleccione
+							las Técnicas Culinarias</label> <select id="RecipeTechniques"
+							name="RecipeTechniques" class="form-control" multiple
+							required>
 							<option th:each="technique : ${recipeTechniques}"
-								th:value="${technique}" th:text="${technique.name}"></option>
+								th:value="${technique.id}" th:text="${technique.name}"></option>
 						</select>
 					</div>
 
 					<div class="mb-3">
-						<label for="instructions" class="form-label">Instrucciones
+						<label for="instructions" class="form-label">*Instrucciones
 							de Preparación</label>
 						<textarea class="form-control" id="instructions"
 							name="instructions" rows="5" required></textarea>
@@ -211,7 +212,7 @@ button[type="submit"]:hover {
 			<div class="card mb-4">
 				<div class="card-header">Dificultad</div>
 				<div class="card-body">
-					<label for="difficulty" class="form-label">Dificultad</label> <select
+					<label for="difficulty" class="form-label">*Dificultad</label> <select
 						class="form-select" id="difficulty" name="difficulty" required>
 						<option value="Fácil">Fácil</option>
 						<option value="Intermedia">Intermedia</option>
@@ -225,15 +226,67 @@ button[type="submit"]:hover {
 				<div class="card-header">Lista Ingredientes</div>
 				<div class="card-body">
 					<div class="mb-3">
-						<label for="listIngredients" class="form-label">Ingredientes</label>
-						<textarea class="form-control" id="listIngredients"
-							name="listIngredients" rows="4" required></textarea>
+						<label for="Ingredients" class="form-label">*Ingredientes</label>
+						<textarea class="form-control" id="Ingredients" name="Ingredients"
+							rows="4" required></textarea>
 					</div>
 
 					<div class="mb-3">
 						<label for="grades" class="form-label">Notas / Consejos</label>
-						<textarea class="form-control" id="grades" name="grades" rows="4"
-							></textarea>
+						<textarea class="form-control" id="grades" name="grades" rows="4"></textarea>
+					</div>
+
+					<div class="card mb-3">
+						<div class="card-header">Información Nutricional</div>
+						<div class="card-body">
+							<div class="mb-3">
+								<label for="calories" class="form-label">Calorías por
+									Porción</label> <input type="number" class="form-control" id="calories"
+									name="nutritionalInformation.calories" step="0.01" required
+									th:value="${recipe != null && recipe.nutritionalInformation != null ? recipe.nutritionalInformation.calories : ''}">
+							</div>
+							<div class="mb-3">
+								<label for="fat" class="form-label">Grasas (g)</label> <input
+									type="number" class="form-control" id="fat"
+									name="nutritionalInformation.fat" step="0.01" required
+									th:value="${recipe != null && recipe.nutritionalInformation != null ? recipe.nutritionalInformation.fat : ''}">
+							</div>
+							<div class="mb-3">
+								<label for="carbohydrates" class="form-label">Carbohidratos
+									(g)</label> <input type="number" class="form-control"
+									id="carbohydrates" name="nutritionalInformation.carbohydrates"
+									step="0.01" required
+									th:value="${recipe != null && recipe.nutritionalInformation != null ? recipe.nutritionalInformation.carbohydrates : ''}">
+							</div>
+							<div class="mb-3">
+								<label for="proteins" class="form-label">Proteínas (g)</label> <input
+									type="number" class="form-control" id="proteins"
+									name="nutritionalInformation.proteins" step="0.01" required
+									th:value="${recipe != null && recipe.nutritionalInformation != null ? recipe.nutritionalInformation.proteins : ''}">
+							</div>
+							<div class="mb-3">
+								<label for="otherNutrients" class="form-label">Otros
+									Nutrientes</label> <input type="text" class="form-control"
+									id="otherNutrients"
+									name="nutritionalInformation.otherNutrients"
+									th:value="${recipe != null && recipe.nutritionalInformation != null ? recipe.nutritionalInformation.otherNutrients : ''}">
+							</div>
+						</div>
+					</div>
+					<div class="mb-3">
+						<label for="AllergensAndDietaryRestrictions" class="form-label">*Seleccione
+							los Alérgenos y Restricciones Dietéticas</label> <select
+							id="AllergensAndDietaryRestrictions"
+							name="AllergensAndDietaryRestrictions" class="form-control"
+							multiple required>
+							<option value="gluten">Gluten</option>
+							<option value="lactosa">Lactosa</option>
+							<option value="frutos_secos">Frutos Secos</option>
+							<option value="vegan">Vegan</option>
+							<option value="vegetarian">Vegetarian</option>
+							<option value="sin_gluten">Sin Gluten</option>
+							<option value="sin_lactosa">Sin Lactosa</option>
+						</select>
 					</div>
 				</div>
 			</div>
@@ -243,14 +296,14 @@ button[type="submit"]:hover {
 				<div class="card-header">Origen Receta</div>
 				<div class="card-body">
 					<div class="mb-3">
-						<label for="recipeHistory" class="form-label">Historia</label>
-						<textarea class="form-control" id="recipeHistory"
-							name="recipeHistory" rows="4" required></textarea>
+						<label for="history" class="form-label">Historia</label>
+						<textarea class="form-control" id="history" name="history"
+							rows="4"></textarea>
 					</div>
 
 					<div class="mb-3">
-						<label for="countrySelect" class="form-label">País</label>  <select
-							id="countrySelect" name="city" class="form-control" required>
+						<label for="countrySelect" class="form-label">*País</label> <select
+							id="countrySelect" name="country" class="form-control" required>
 							<option value="" disabled>Selecciona un Pais</option>
 							<option th:each="country : ${countries}" th:value="${country.id}"
 								th:text="${country.name}"
@@ -258,7 +311,7 @@ button[type="submit"]:hover {
 						</select>
 					</div>
 					<div class="mb-3">
-						<label for="citySelect" class="form-label">Ciudad</label>  <select
+						<label for="citySelect" class="form-label">*Ciudad</label> <select
 							id="citySelect" name="city" class="form-control" required>
 							<option value="" disabled>Selecciona una ciudad</option>
 							<option th:each="city : ${cities}" th:value="${city.id}"
@@ -274,15 +327,22 @@ button[type="submit"]:hover {
 				<div class="card-header">Imagen</div>
 				<div class="card-body">
 					<div class="mb-3">
-						<label for="imageRecipePerfil" class="form-label">Subir
-							Imagen Perfil Receta</label> <input class="form-control" type="file"
-							id="imageRecipePerfil" name="imageRecipePerfil">
+						<label for="imagenPerfilFile" class="form-label">*Imagen
+							de perfil (PNG o JPG):</label> <input type="file" id="imagenPerfilFile"
+							name="imagenPerfilFile" class="form-control"
+							accept="image/png, image/jpeg" required>
+
+						<!-- Input oculto para almacenar la imagen en base64 -->
+						<input type="hidden" id="imagenRecipeBase64"
+							name="imagenRecipeBase64">
 					</div>
 					<div class="mb-3">
 						<label for="recipeImages" class="form-label">Subir
 							Imágenes de la Receta (PNG o JPG):</label> <input type="file"
 							id="recipeImages" name="recipeImages" class="form-control"
-							accept="image/png, image/jpeg" multiple required>
+							accept="image/png, image/jpeg" multiple> <input
+							type="hidden" id="recipeImagesBase64" name="recipeImagesBase64">
+
 					</div>
 				</div>
 			</div>
@@ -309,9 +369,119 @@ button[type="submit"]:hover {
 				.ready(
 						function() {
 							$(
-									'#culinaryTechniques, #whereItisDone, #listkitchenUtensils, #listRecipeTechniquesString, #AllergensAndDietaryRestrictions')
+									'#RecipeTechniques, #category, #whereItisDone, #listkitchenUtensils, #listRecipeTechniquesString, #AllergensAndDietaryRestrictions')
 									.select2();
 						});
+		document
+				.getElementById('imagenPerfilFile')
+				.addEventListener(
+						'change',
+						function(event) {
+							const file = event.target.files[0];
+							if (file) {
+								const reader = new FileReader();
+								reader.onload = function(e) {
+									const img = new Image();
+									img.src = e.target.result;
+									img.onload = function() {
+										// Crear un canvas y dibujar la imagen con la nueva resolución
+										const canvas = document
+												.createElement('canvas');
+										const maxWidth = 300; // Ancho máximo
+										const maxHeight = 300; // Alto máximo
+										let width = img.width;
+										let height = img.height;
+
+										// Mantener la relación de aspecto
+										if (width > height) {
+											if (width > maxWidth) {
+												height = Math
+														.round((maxWidth / width)
+																* height);
+												width = maxWidth;
+											}
+										} else {
+											if (height > maxHeight) {
+												width = Math
+														.round((maxHeight / height)
+																* width);
+												height = maxHeight;
+											}
+										}
+
+										canvas.width = width;
+										canvas.height = height;
+
+										// Dibujar la imagen redimensionada
+										const ctx = canvas.getContext('2d');
+										ctx.drawImage(img, 0, 0, width, height);
+
+										// Obtener la imagen comprimida en base64
+										const compressedBase64 = canvas
+												.toDataURL('image/jpeg', 0.7); // Calidad al 70%
+										// Almacenar la imagen en el campo oculto (sin el encabezado base64)
+										document
+												.getElementById('imagenRecipeBase64').value = compressedBase64
+												.split(',')[1];
+									};
+								};
+								reader.readAsDataURL(file);
+							}
+						});
+		document
+	    .getElementById('recipeImages')
+	    .addEventListener('change', function(event) {
+	        const files = event.target.files; // Get the list of files
+	        const base64Images = []; // Array to store Base64 strings
+
+	        Array.from(files).forEach(file => {
+	            if (file) {
+	                const reader = new FileReader();
+	                reader.onload = function(e) {
+	                    const img = new Image();
+	                    img.src = e.target.result;
+	                    img.onload = function() {
+	                        // Create a canvas and draw the image with the new resolution
+	                        const canvas = document.createElement('canvas');
+	                        const maxWidth = 300; // Maximum width
+	                        const maxHeight = 300; // Maximum height
+	                        let width = img.width;
+	                        let height = img.height;
+
+	                        // Maintain the aspect ratio
+	                        if (width > height) {
+	                            if (width > maxWidth) {
+	                                height = Math.round((maxWidth / width) * height);
+	                                width = maxWidth;
+	                            }
+	                        } else {
+	                            if (height > maxHeight) {
+	                                width = Math.round((maxHeight / height) * width);
+	                                height = maxHeight;
+	                            }
+	                        }
+
+	                        canvas.width = width;
+	                        canvas.height = height;
+
+	                        // Draw the resized image
+	                        const ctx = canvas.getContext('2d');
+	                        ctx.drawImage(img, 0, 0, width, height);
+
+	                        // Get the compressed image in base64
+	                        const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7); // Quality at 70%
+	                        
+	                        // Store the image in the base64Images array (without the base64 header)
+	                        base64Images.push(compressedBase64.split(',')[1]);
+	                        
+	                        // Update a hidden input with all Base64 images, if desired
+	                        document.getElementById('recipeImagesBase64').value = base64Images.join(',');
+	                    };
+	                };
+	                reader.readAsDataURL(file);
+	            }
+	        });
+	    });
 	</script>
 </body>
 </html>
