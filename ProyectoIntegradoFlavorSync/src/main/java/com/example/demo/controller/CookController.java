@@ -3,9 +3,12 @@ package com.example.demo.controller;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Base64;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -63,13 +66,19 @@ public class CookController {
 	public String RecipesCook(Model model, Authentication authentication) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		// Ahora puedes obtener la información del usuario logueado desde userDetails
-
+		List<String> imagesRecipes = new ArrayList<>();
 		cookModel c = cookService.findById(userDetails.getId());
 		model.addAttribute("cook", c.getNickName());
 		byte[] imageBytes = c.getImagePerfil();
+		for (recipeModel r : c.getListRecipes()) {
+
+			imagesRecipes.add("data:image/jpeg;base64," +Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
+		}
 		String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+		model.addAttribute("base64listImage",  imagesRecipes);
 		model.addAttribute("base64Image", "data:image/jpeg;base64," + base64Image);
 		model.addAttribute("recipes", c.getListRecipes());
+
 		return COOKRECIPES_VIEW; // Asegúrate de que LOGIN_VIEW sea el nombre correcto de la vista de login
 	}
 
@@ -79,12 +88,19 @@ public class CookController {
 		// Ahora puedes obtener la información del usuario logueado desde userDetails
 
 		cookModel c = cookService.findById(userDetails.getId());
+		List<Integer> selectedTechniques = c.getListCulinaryTechniques().stream().map(technique -> technique.getId()) // Asegurarse
+		// de
+// IDs
+				.collect(Collectors.toList());
 
 		byte[] imageBytes = c.getImagePerfil();
 		String base64Image = Base64.getEncoder().encodeToString(imageBytes);
 		model.addAttribute("base64Image", "data:image/jpeg;base64," + base64Image);
 		LocalDate birthDate = LocalDate.of(1990, 5, 20); // Ejemplo de fecha de nacimiento
 		int age = calculateAge(birthDate);
+		model.addAttribute("selectedTechniques", selectedTechniques); // Lista de IDs seleccionados
+		model.addAttribute("country", c.getCountry());
+		model.addAttribute("city", c.getCity());
 		model.addAttribute("recipeTechniques", culinaryTechniquesService.getListCulinaryTechniques());
 		model.addAttribute("age", age);
 		model.addAttribute("cookPerfil", c);
@@ -92,28 +108,49 @@ public class CookController {
 	}
 
 	@PostMapping("auth/cook/UpdatePerfil")
-	public String UpdateCook(cookModel cNew, @RequestParam("imagenPerfilBase64") String imagenPerfil,
-			Authentication authentication, RedirectAttributes flash) {
+	public String UpdateCook(cookModel cNew, @RequestParam("culinaryTechniquesIds") List<String> listCulinaryTechniques,
+			@RequestParam("imagenPerfilBase64") String imagenPerfil, Authentication authentication,
+			RedirectAttributes flash) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		// Ahora puedes obtener la información del usuario logueado desde userDetails
-
 		cookModel cOrigin = cookService.findById(userDetails.getId());
 		if (!cOrigin.getNickName().equalsIgnoreCase(cNew.getNickName())) {
 			cOrigin.setNickName(cNew.getNickName());
-		} else if (!cOrigin.getFirstName().equalsIgnoreCase(cNew.getFirstName())) {
+		}
+		if (!cOrigin.getFirstName().equalsIgnoreCase(cNew.getFirstName())) {
 			cOrigin.setFirstName(cNew.getFirstName());
-		} else if (!cOrigin.getLastName().equalsIgnoreCase(cNew.getLastName())) {
+		}
+		if (!cOrigin.getLastName().equalsIgnoreCase(cNew.getLastName())) {
 			cOrigin.setLastName(cNew.getLastName());
-		} else if (!cOrigin.getUsername().equalsIgnoreCase(cNew.getUsername())) {
+		}
+		if (!cOrigin.getUsername().equalsIgnoreCase(cNew.getUsername())) {
 			cOrigin.setUsername(cNew.getUsername());
-		} else if (cOrigin.getBirthDate() != cNew.getBirthDate()) {
+		}
+		// Comparar fechas correctamente usando equals
+		if (!cOrigin.getBirthDate().equals(cNew.getBirthDate())) {
 			cOrigin.setBirthDate(cNew.getBirthDate());
+		}
+		// Asegurarse de que experience sea un tipo primitivo o usar equals() para
+		// objetos
+		if (cOrigin.getExperience() != cNew.getExperience()) {
+			cOrigin.setExperience(cNew.getExperience());
+		}
+		// Comparar listas correctamente
+		if (!new HashSet<>(cOrigin.getListSpecialty()).equals(new HashSet<>(cNew.getListSpecialty()))) {
+			cOrigin.setListSpecialty(cNew.getListSpecialty());
+		}
+		if (!cOrigin.getCountry().equals(cNew.getCountry())) {
+			cOrigin.setCountry(cNew.getCountry());
+		}
+		if (!cOrigin.getCity().equals(cNew.getCity())) {
+			cOrigin.setCity(cNew.getCity());
 		}
 
 		byte[] imageBytes = Base64.getDecoder().decode(imagenPerfil);
-		cOrigin.setImagePerfil(imageBytes); // Almacena la imagen en byte[] en la entidad cook
-
-		cookService.updateCook(cOrigin);
+		if (imageBytes.length > 0) {
+			cOrigin.setImagePerfil(imageBytes); // Almacena la imagen en byte[] en la entidad cook
+		}
+		cookService.updateCook(cOrigin, listCulinaryTechniques);
 		flash.addFlashAttribute("success", "¡Cocinero Actualizado exitosamente!");
 		return "redirect:" + PANELPERFIL_VIEW;
 	}
@@ -146,11 +183,11 @@ public class CookController {
 			images.add(imageBytesRecipe);
 		}
 		List<culinaryTechniquesModel> l = new ArrayList<>();
-		for(String i : listTechniques) {
+		for (String i : listTechniques) {
 			l.add(culinaryTechniquesService.findById(Integer.valueOf(i)));
 		}
 		recipe.setImagesRecipe(images);
-        recipe.setListRecipeTechniques(l);
+		recipe.setListRecipeTechniques(l);
 		recipeService.addRecipe(recipe, c);
 
 		flash.addFlashAttribute("success", "¡Receta registrada exitosamente!");
@@ -166,7 +203,17 @@ public class CookController {
 		cookModel c = cookService.findById(userDetails.getId());
 		// Ahora puedes obtener la información del usuario logueado desde userDetails
 		model.addAttribute("cookPerfil", c);
-		model.addAttribute("selectedTechniques", r.getListRecipeTechniques());
+		// Obtener los IDs de las técnicas culinarias seleccionadas previamente en la
+		// receta
+		List<Integer> selectedTechniques = r.getListRecipeTechniques().stream().map(technique -> technique.getId()) // Asegurarse
+																													// de
+				// IDs
+				.collect(Collectors.toList());
+
+		// Añadir las técnicas seleccionadas y las técnicas disponibles al modelo
+		model.addAttribute("country", r.getCountry());
+		model.addAttribute("city", r.getCity());
+		model.addAttribute("selectedTechniques", selectedTechniques); // Lista de IDs seleccionados
 		model.addAttribute("recipeTechniques", culinaryTechniquesService.getListCulinaryTechniques());
 		model.addAttribute("recipe", r);
 

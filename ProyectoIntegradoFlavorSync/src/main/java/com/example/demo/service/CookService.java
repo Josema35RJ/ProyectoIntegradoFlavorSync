@@ -10,7 +10,7 @@ import com.example.demo.model.recipeModel;
 public interface CookService {
 
 	boolean deletedCook (int id);
-	boolean updateCook (cookModel cook);
+	boolean updateCook (cookModel cook, List<String> l);
 	List<cookModel> getAllCooks();
 	List<cookModel> getFindByCooksChefs();
 	List<cookModel> getFindByCooksProfessionals();

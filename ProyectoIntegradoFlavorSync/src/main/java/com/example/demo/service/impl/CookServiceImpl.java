@@ -57,24 +57,17 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 	}
 
 	@Override
-	public boolean updateCook(cookModel cook) {
+	public boolean updateCook(cookModel cook, List<String> culinaryTechniquesIds) {
 		// TODO Auto-generated method stub
-		cookModel c = cookConverter.transform(cookRepository.findById(cook.getId()).get());
-		if (!cook.getNickName().equals(c.getNickName())) {
-			c.setNickName(cook.getNickName());
-		} else if (!cook.getFirstName().equals(c.getFirstName())) {
-			c.setFirstName(cook.getFirstName());
-		} else if (!cook.getLastName().equals(c.getLastName())) {
-			c.setLastName(cook.getLastName());
-		} else if (!cook.getUsername().equals(c.getUsername())) {
-			c.setUsername(cook.getUsername());
-		} else if (!cook.getListSpecialty().equals(c.getListSpecialty())) {
-			c.setListSpecialty(cook.getListSpecialty());
-		} else if (cook.getBirthDate() != c.getBirthDate()) {
-			c.setBirthDate(cook.getBirthDate());
+		List<culinaryTechniques> l = new ArrayList<>();
+		for (String x : culinaryTechniquesIds) {
+			l.add(culinaryTechniquesRepository.findById(x).get());
 		}
-		c.setUpdateDate(LocalDate.now());
-		cookRepository.save(cookConverter.transform(c));
+		
+		cook.setUpdateDate(LocalDate.now());
+		cook c = cookConverter.transform(cook);
+		c.setListCulinaryTechniques(l);
+		cookRepository.save(c);
 		return true;
 	}
 

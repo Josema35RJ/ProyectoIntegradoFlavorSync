@@ -120,18 +120,17 @@ button[type="submit"]:hover {
 					<div class="mb-3">
 						<label for="diners" class="form-label">*Número de
 							Comensales</label> <input type="range" class="form-range" id="diners"
-							name="diners" th:value="${recipe.diners}" min="1" max="10"
+							name="diners" min="1" max="10"
 							oninput="document.getElementById('dinersOutput').value = this.value">
-						<output id="dinersOutput">5</output>
+						<output id="dinersOutput" th:text="${recipe.diners}"></output>
 					</div>
 
 					<div class="mb-3">
 						<label for="preparationTime" class="form-label">*Tiempo de
 							Preparación (minutos)</label> <input type="range" class="form-range"
-							id="preparationTime" name="preparationTime"
-							th:value="${recipe.preparationTime}" min="10" max="180" step="5"
+							id="preparationTime" name="" min="10" max="180" step="5"
 							oninput="document.getElementById('prepTimeOutput').value = this.value">
-						<output id="prepTimeOutput">45</output>
+						<output id="prepTimeOutput" th:text="${recipe.preparationTime}"></output>
 					</div>
 
 					<div class="mb-3">
@@ -216,12 +215,13 @@ button[type="submit"]:hover {
 					<div class="mb-3">
 						<label for="RecipeTechniques" class="form-label">*Seleccione
 							las Técnicas Culinarias</label> <select id="RecipeTechniques"
-							name="RecipeTechniques" class="form-control" multiple
+							name="listRecipeTechniques" class="form-control" multiple
 							required>
 							<option th:each="technique : ${recipeTechniques}"
 								th:value="${technique.id}" th:text="${technique.name}"
-								th:selected="${recipe.listRecipeTechniques.contains(technique.name)}">
+								th:selected="${selectedTechniques.contains(technique.id)}">
 							</option>
+						</select>
 					</div>
 
 					<div class="mb-3">
@@ -348,20 +348,16 @@ button[type="submit"]:hover {
 					<div class="mb-3">
 						<label for="countrySelect" class="form-label">*País</label> <select
 							id="countrySelect" name="country" class="form-control" required>
-							<option value="" disabled>Selecciona un país</option>
-							<!-- Opciones de países se llenan desde JavaScript -->
+							<option th:text="*{country}"></option>
 						</select>
 					</div>
 
 					<div class="mb-3">
 						<label for="citySelect" class="form-label">*Ciudad</label> <select
-							id="citySelect" name="city" class="form-control" required
-							data-selected-city="${recipe.city.name}">
-							<option value="" disabled>Selecciona una ciudad</option>
-							<!-- Opciones de ciudades se llenan desde JavaScript -->
+							id="citySelect" name="city" class="form-control" required>
+							<option th:text="*{city}"></option>
 						</select>
 					</div>
-
 				</div>
 			</div>
 
@@ -387,7 +383,7 @@ button[type="submit"]:hover {
 				.ready(
 						function() {
 							$(
-									'#culinaryTechniques, #category, #whereItisDone, #listkitchenUtensils, #listRecipeTechniquesString, #AllergensAndDietaryRestrictions')
+									'#culinaryTechniques, #category, #whereItisDone, #listkitchenUtensils, #RecipeTechniques, #allergensAndDietaryRestrictions')
 									.select2();
 						});
 		// Rellenar el selector de países
@@ -437,6 +433,14 @@ button[type="submit"]:hover {
 		    })
 		    .catch(error => console.error('Error al obtener las ciudades:', error));
 		});
+		function updateDinersValue(value) {
+		    document.getElementById('dinersCurrentValue').innerText = value;
+		}
+
+		function updatePrepTimeValue(value) {
+		    document.getElementById('prepTimeCurrentValue').innerText = value;
+		}
+		
 	</script>
 </body>
 </html>

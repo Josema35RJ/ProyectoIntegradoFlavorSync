@@ -109,7 +109,8 @@
 							</div>
 							<div class="col-md-6">
 								<label for="firstName" class="form-label">Nombre</label> <input
-									type="text" class="form-control" id="firstName" name="firstName"
+									type="text" class="form-control" id="firstName"
+									name="firstName"
 									th:value="${cookPerfil != null ? cookPerfil.firstName : ''}"
 									required>
 								<div class="valid-feedback">¡Se ve bien!</div>
@@ -123,7 +124,8 @@
 							</div>
 							<div class="col-md-6">
 								<label for="email" class="form-label">Correo Electrónico</label>
-								<input type="email" class="form-control" id="username" name="username"
+								<input type="email" class="form-control" id="username"
+									name="username"
 									th:value="${cookPerfil != null ? cookPerfil.username : ''}"
 									required>
 								<div class="invalid-feedback">Por favor, proporciona un
@@ -195,11 +197,24 @@
 									required>
 									<option th:each="technique : ${recipeTechniques}"
 										th:value="${technique.id}"
-										th:selected="${cookPerfil != null && cookPerfil.listCulinaryTechniques.contains(technique.name)}"
+										th:selected="${selectedTechniques.contains(technique.id)}"
 										th:text="${technique.name}"></option>
 								</select>
 							</div>
 
+							<div class="mb-3">
+								<label for="countrySelect" class="form-label">*País</label> <select
+									id="countrySelect" name="country" class="form-control" required>
+									<option th:text="*{country}"></option>
+								</select>
+							</div>
+
+							<div class="mb-3">
+								<label for="citySelect" class="form-label">*Ciudad</label> <select
+									id="citySelect" name="city" class="form-control" required>
+									<option th:text="*{city}"></option>
+								</select>
+							</div>
 
 							<div class="col-12">
 								<button class="btn btn-primary" type="submit">Guardar

@@ -49,7 +49,7 @@
 							<span th:text="${error}"></span>
 							<!-- Muestra el mensaje flash de error -->
 						</div>
-            			<!-- Alertas de Bootstrap para mensajes de error o éxito -->
+						<!-- Alertas de Bootstrap para mensajes de error o éxito -->
 						<div th:if="${loginError != null and !loginError.isEmpty()}"
 							class="alert alert-danger" role="alert">
 							<p th:text="${loginError}">Error de inicio de sesión. Por
@@ -94,16 +94,108 @@
 							<div class="form-group">
 								<a href="/auth/register" class="btn btn-secondary btn-block">Registrarse</a>
 							</div>
+
+							<button type="button" class="btn btn-primary" data-toggle="modal"
+								data-target="#recoverPasswordModal">Recuperar
+								Contraseña</button>
+
 						</form>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
+
+	<!-- Modal -->
+	<div class="modal fade" id="recoverPasswordModal" tabindex="-1"
+		role="dialog" aria-labelledby="recoverPasswordModalLabel"
+		aria-hidden="true">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="recoverPasswordModalLabel">Recuperar
+						Contraseña</h5>
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+				</div>
+				<div class="modal-body">
+					<form id="recoverPasswordForm">
+						<div class="form-group">
+							<label for="recoverEmail">Correo Electrónico:</label> <input
+								type="email" class="form-control" id="recoverEmail"
+								name="recoverEmail" required>
+						</div>
+						<div class="alert alert-success" id="successMessage"
+							style="display: none;"></div>
+						<div class="alert alert-danger" id="errorMessage"
+							style="display: none;"></div>
+						<button type="submit" class="btn btn-primary">Enviar</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
 	<footer class="footer bg-dark text-white mt-5 p-4 text-center">
 		© 2024 FlavorSync. Todos los derechos reservados. </footer>
 	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 	<script
 		src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+	<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+	<script>
+		$(document)
+				.ready(
+						function() {
+							$('#recoverPasswordForm')
+									.on(
+											'submit',
+											function(e) {
+												e.preventDefault(); // Prevenir el comportamiento por defecto del formulario
+
+												var email = $('#recoverEmail')
+														.val(); // Obtener el valor del campo de correo
+
+												$
+														.ajax({
+															url : '/auth/recover-password', // La URL a la que se enviará la solicitud
+															type : 'POST',
+															data : {
+																recoverEmail : email
+															},
+															success : function(
+																	response) {
+																// Mostrar mensaje de éxito
+																$(
+																		'#successMessage')
+																		.text(
+																				"Se ha enviado un enlace de recuperación a tu correo.")
+																		.show();
+																$(
+																		'#errorMessage')
+																		.hide();
+																$(
+																		'#recoverPasswordModal')
+																		.modal(
+																				'hide'); // Cerrar el modal
+															},
+															error : function(
+																	xhr) {
+																// Mostrar mensaje de error
+																$(
+																		'#errorMessage')
+																		.text(
+																				xhr.responseText)
+																		.show();
+																$(
+																		'#successMessage')
+																		.hide();
+															}
+														});
+											});
+						});
+	</script>
 </body>
 </html>
