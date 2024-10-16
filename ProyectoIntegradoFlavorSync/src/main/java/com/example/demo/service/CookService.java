@@ -21,4 +21,5 @@ public interface CookService {
 	cookModel findById(int id);
 	cookModel findByUsername(String username);
 	boolean registrar(cookModel cook, List<String> culinaryTechniquesIds);
+	boolean updatePassword(String newP, cookModel cook);
 }

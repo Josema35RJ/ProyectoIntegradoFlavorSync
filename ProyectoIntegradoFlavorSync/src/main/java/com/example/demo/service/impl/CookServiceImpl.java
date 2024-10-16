@@ -63,7 +63,7 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 		for (String x : culinaryTechniquesIds) {
 			l.add(culinaryTechniquesRepository.findById(x).get());
 		}
-		
+
 		cook.setUpdateDate(LocalDate.now());
 		cook c = cookConverter.transform(cook);
 		c.setListCulinaryTechniques(l);
@@ -190,6 +190,14 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 		c.setListCulinaryTechniques(l);
 		c.setCreateDate(LocalDate.now());
 		cookRepository.save(c);
+		return true;
+	}
+
+	@Override
+	public boolean updatePassword(String newP, cookModel cook) {
+		// TODO Auto-generated method stub
+		cook.setPassword(passwordEncoder().encode(newP));
+		cookRepository.save(cookConverter.transform(cook));
 		return true;
 	}
 

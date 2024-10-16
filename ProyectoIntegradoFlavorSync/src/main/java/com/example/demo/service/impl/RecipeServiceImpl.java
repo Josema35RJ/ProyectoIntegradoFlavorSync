@@ -88,45 +88,28 @@ public class RecipeServiceImpl implements RecipeService {
 	}
 
 	@Override
-	public List<recipeModel> getListFindByPostreRecipe() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<recipeModel> getListFindByEntrantsRecipe() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<recipeModel> getListFindByFacilRecipe() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<recipeModel> getListFindByDificilRecipe() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<recipeModel> getListFindByMedioRecipe() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public List<recipeModel> getListFindByExpertoRecipe() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public recipeModel getRecipeById(int id) {
 		// TODO Auto-generated method stub
 		return recipeConverter.transform(recipeRepository.findById(id));
+	}
+	@Override
+	public List<recipeModel> getListFindByCategory(String category) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public List<recipeModel> getListFindByDificulty(String dificulty) {
+		// TODO Auto-generated method stub
+		List<recipeModel> m = new ArrayList<>();
+		for(recipe r :recipeRepository.findByDifficulty(dificulty)) {
+			m.add(recipeConverter.transform(r));
+		}
+		return m;
+	}
+	@Override
+	public List<recipeModel> getListFindByLevel(String level) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

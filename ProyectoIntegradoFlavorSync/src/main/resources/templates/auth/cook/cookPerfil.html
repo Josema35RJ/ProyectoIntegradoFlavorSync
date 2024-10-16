@@ -215,18 +215,61 @@
 									<option th:text="*{city}"></option>
 								</select>
 							</div>
-
 							<div class="col-12">
 								<button class="btn btn-primary" type="submit">Guardar
 									Cambios</button>
 								<button class="btn btn-secondary" type="button">Cancelar</button>
+
+								<!-- Botón para abrir el modal de cambio de contraseña -->
+								<button class="btn btn-warning" type="button"
+									data-bs-toggle="modal" data-bs-target="#changePasswordModal">Cambiar
+									Contraseña</button>
 							</div>
+
 						</form>
 					</div>
 				</div>
 			</div>
 		</div>
 	</main>
+
+	<div class="modal fade" id="changePasswordModal" tabindex="-1"
+		aria-labelledby="changePasswordModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="changePasswordModalLabel">Cambiar
+						Contraseña</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form id="changePasswordForm" action="/auth/cook/updatePassword"
+						method="post" onsubmit="return validatePassword()">
+						<div class="mb-3">
+							<label for="newPassword" class="form-label">Nueva
+								Contraseña</label> <input type="password" class="form-control"
+								id="newPassword" name="newPassword" required>
+						</div>
+						<div class="mb-3">
+							<label for="confirmPassword" class="form-label">Confirmar
+								Contraseña</label> <input type="password" class="form-control"
+								id="confirmPassword" name="confirmPassword" required>
+						</div>
+						<div class="invalid-feedback" id="passwordError"
+							style="display: none; color: red;">Las contraseñas no
+							coinciden.</div>
+						<div class="modal-footer">
+							<button type="button" class="btn btn-secondary"
+								data-bs-dismiss="modal">Cancelar</button>
+							<button type="submit" class="btn btn-primary">Guardar
+								Contraseña</button>
+						</div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
 
 	<footer class="footer mt-auto">
 		<div class="container">
@@ -325,6 +368,19 @@
 				placeholder : "Selecciona una o más especialidades"
 			});
 		});
+		function validatePassword() {
+			const newPassword = document.getElementById("newPassword").value;
+			const confirmPassword = document.getElementById("confirmPassword").value;
+			const passwordError = document.getElementById("passwordError");
+
+			if (newPassword !== confirmPassword) {
+				passwordError.style.display = "block";
+				return false; // Previene el envío del formulario si no coinciden
+			} else {
+				passwordError.style.display = "none";
+				return true; // Envía el formulario si coinciden
+			}
+		}
 	</script>
 </body>
 </html>

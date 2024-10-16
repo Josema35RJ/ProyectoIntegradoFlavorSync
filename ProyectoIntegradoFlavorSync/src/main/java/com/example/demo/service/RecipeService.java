@@ -11,11 +11,8 @@ public interface RecipeService {
 	boolean updateRecipe (recipeModel re);
 	boolean deleteRecipe (int id);
 	List<recipeModel> getListRecipe();
-	List<recipeModel> getListFindByPostreRecipe();
-	List<recipeModel> getListFindByEntrantsRecipe();
-	List<recipeModel> getListFindByFacilRecipe();
-	List<recipeModel> getListFindByDificilRecipe();
-	List<recipeModel> getListFindByMedioRecipe();
-	List<recipeModel> getListFindByExpertoRecipe();
+	List<recipeModel> getListFindByCategory(String category);
+	List<recipeModel> getListFindByDificulty(String dificulty);
+	List<recipeModel> getListFindByLevel(String level);
 	recipeModel getRecipeById(int id);
 }

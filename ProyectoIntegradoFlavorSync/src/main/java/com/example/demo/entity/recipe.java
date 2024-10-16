@@ -13,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
@@ -75,7 +76,7 @@ public class recipe {
 	// Mas adelante Tecnicas sera otra entidad, con nombre de la tecnica, creador,
 	// restaurante o lugar donde se creo y descripcion o instruccion de como es
 	@NotNull
-	@OneToMany(cascade = CascadeType.PERSIST)
+	@ManyToMany(cascade = CascadeType.PERSIST)
 	private List<culinaryTechniques> listRecipeTechniques = new ArrayList<>();
 
 	// Intrucciones para elaborar la receta
