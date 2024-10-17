@@ -36,12 +36,14 @@ public class CommentServiceImpl implements CommentService {
 	    private RecipeConverter recipeConverter;
 
 	@Override
-	public boolean addComment(commentModel comment) {
+	public boolean addComment(commentModel comment, int RecipeId) {
 		// TODO Auto-generated method stub
 		if(comment.getDescription().isBlank() || comment.getDescription().isEmpty())
 		commentRepository.save(commentConverter.transform(comment));
-		recipeModel r = recipeConverter.transform(recipeRepository.findById(comment.getId()).get());
+		recipeModel r = recipeConverter.transform(recipeRepository.findById(RecipeId));
 		r.setAverageRating((float) ((r.getAverageRating()+comment.getPunctuation())/2));
+		r.getListComments().add(comment);
+		recipeRepository.save(recipeConverter.transform(r));
 		return true;
 	}
 
@@ -60,22 +62,7 @@ public class CommentServiceImpl implements CommentService {
 
 	@Override
 	public boolean deleteComment(int id) {
-	    // Encuentra el comentario por su ID
-	    comment c = commentRepository.findById(id);
-	    
-	    // Encuentra la receta asociada al comentario
-	    recipeModel r = recipeConverter.transform(recipeRepository.findById(c.getRecipeId()));
-	    
-	    // Calcula la nueva nota media restando la puntuación del comentario a borrar
-	    float newAverageRating = (float) ((r.getAverageRating() * r.getListComments().size() - c.getPunctuation()) / (r.getListComments().size() - 1));
-	    r.setAverageRating(newAverageRating);
-	    
-	    // Guarda los cambios en la receta
-	    recipeRepository.save(recipeConverter.transform(r));
-	    
-	    // Borra el comentario
-	    commentRepository.delete(c);
-	    
+	 
 	    return true;
 	}
 
@@ -92,23 +79,13 @@ public class CommentServiceImpl implements CommentService {
 
 	//Obtener lista de comentarios en base al id de la receta y la puntuacion
 	@Override
-	public List<commentModel> getListCommentsFindByRecipeIdAndPunctuation(int recipeId, int punctuation) {
+	public List<commentModel> getListCommentsFindByPunctuation( int punctuation) {
 		// TODO Auto-generated method stub
-				List<commentModel> ListCommentByRecipeIdAndPunctuation = new ArrayList<>();
-				for(comment c : commentRepository.findByRecipeIdAndPunctuation(recipeId, punctuation)) {
-					ListCommentByRecipeIdAndPunctuation.add(commentConverter.transform(c));
+				List<commentModel> ListCommentByPunctuation = new ArrayList<>();
+				for(comment c : commentRepository.findByPunctuation(punctuation)) {
+					ListCommentByPunctuation.add(commentConverter.transform(c));
 				}
-				return ListCommentByRecipeIdAndPunctuation;
+				return ListCommentByPunctuation;
 	}
 	
-	//Obtener lista de comentarios en base al id de la receta
-	@Override
-	public List<commentModel> getListCommentsFindByRecipeId(int recipeId) {
-		// TODO Auto-generated method stub
-		List<commentModel> ListCommentByRecipeId = new ArrayList<>();
-		for(comment c : commentRepository.findByRecipeId(recipeId)){
-			ListCommentByRecipeId.add(commentConverter.transform(c));
-		}
-		return ListCommentByRecipeId;
-	}
 }

@@ -4,8 +4,10 @@ import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +21,12 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.model.commentModel;
 import com.example.demo.model.cookModel;
 import com.example.demo.model.culinaryTechniquesModel;
 import com.example.demo.model.recipeModel;
 import com.example.demo.security.CustomUserDetails;
+import com.example.demo.service.CommentService;
 import com.example.demo.service.CookService;
 import com.example.demo.service.CulinaryTechniquesService;
 import com.example.demo.service.RecipeService;
@@ -45,6 +49,10 @@ public class CookController {
 	private CookService cookService;
 
 	@Autowired
+	@Qualifier("commentService")
+	private CommentService commentService;
+
+	@Autowired
 	@Qualifier("recipeService")
 	private RecipeService recipeService;
 
@@ -64,15 +72,16 @@ public class CookController {
 		// LISTADO DE RECETAS NUEVAS
 		List<recipeModel> recetasN = recipeService.getListRecipe();
 		List<recipeModel> recetasFacil = recipeService.getListFindByDificulty("Fácil");
-		List<String> imagesRecipes = new ArrayList<>();
+		Map<Integer, String> imagesRecipes = new HashMap<>();
 		for (recipeModel r : recetasN) {
-			imagesRecipes.add("data:image/jpeg;base64," + Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
+			imagesRecipes.put(r.getId(),
+					"data:image/jpeg;base64," + Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
 		}
 		model.addAttribute("base64listImage", imagesRecipes);
-		List<String> imagesRecipesNew = new ArrayList<>();
+		Map<Integer, String> imagesRecipesNew = new HashMap<>();
 		for (recipeModel r : recetasFacil) {
-			imagesRecipesNew
-					.add("data:image/jpeg;base64," + Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
+			imagesRecipesNew.put(r.getId(),
+					"data:image/jpeg;base64," + Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
 		}
 		model.addAttribute("base64listImageEasy", imagesRecipesNew);
 		model.addAttribute("cook", c.getNickName());
@@ -215,6 +224,19 @@ public class CookController {
 
 	}
 
+	@PostMapping("/auth/cook/AddComment")
+	public String AddComment(RedirectAttributes flash, @RequestParam(value = "id") String recipeId,
+			@RequestParam(value = "commentText") String comment, @RequestParam(value = "rating") String ra) {
+		commentModel com = new commentModel(comment, Integer.valueOf(ra));
+		recipeModel r = recipeService.getRecipeById(Integer.valueOf(recipeId));
+		commentService.addComment(com, Integer.valueOf(recipeId));
+		r.getListComments().add(com);
+		recipeService.updateRecipe(r);
+		flash.addFlashAttribute("success", "¡Comentario registrado exitosamente!");
+		return "redirect:" + PANEL_VIEW;
+
+	}
+
 	@GetMapping("/auth/cook/updateRecipe/{id}")
 	public String UpdateRecipe(@PathVariable("id") Integer id, Model model, Authentication authentication,
 			RedirectAttributes flash) {
@@ -255,33 +277,30 @@ public class CookController {
 	}
 
 	@PostMapping("/auth/resetPassword")
-	public String resetPassword(@RequestParam("token") String token,
-			@RequestParam("newPassword") String newPassword, @RequestParam("confirmPassword") String confirmPassword,
-			RedirectAttributes flash) {
+	public String resetPassword(@RequestParam("token") String token, @RequestParam("newPassword") String newPassword,
+			@RequestParam("confirmPassword") String confirmPassword, RedirectAttributes flash) {
 
 		// Check if the new password and confirm password match
 		if (!newPassword.equals(confirmPassword)) {
 			flash.addFlashAttribute("error", "Las contraseñas no coinciden.");
 			return "redirect:/auth/reset-password?token=" + token; // Redirect back to the reset password page
 		}
-		 System.out.println("vaaaaaaaaaaaaaaa");
 		String email = tokenService.getEmailFromToken(token);
 		// Validate the token
 		if (tokenService.isTokenValid(token)) {
 			flash.addFlashAttribute("error", "Token inválido o expirado.");
 			return "redirect:/auth/login"; // Redirect to login or another appropriate page
 		}
-             System.out.println("holaaaaaaaaaaaaaaaaaaa");
 		// Update the password using the UserService
 		cookService.updatePassword(newPassword, cookService.findByUsername(email)); // Implement this method in
 																					// UserService
-         tokenService.cleanupExpiredTokens();
+		tokenService.cleanupExpiredTokens();
 		flash.addFlashAttribute("success", "¡Contraseña actualizada exitosamente!");
 		return "redirect:/auth/login"; // Redirect to login after successful password update
 	}
 
 	@GetMapping("/auth/resetPassword/{token}")
-	public String ResetRecipe(@PathVariable("token") String token, Model model,RedirectAttributes flash) {
+	public String ResetRecipe(@PathVariable("token") String token, Model model, RedirectAttributes flash) {
 		model.addAttribute("token", token);
 		return RESETPASSWORD_VIEW;
 	}

@@ -1,33 +1,17 @@
 package com.example.demo.model;
 
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
-
 import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.Table;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
-import lombok.Data;
 
 public class commentModel {
 	// Identificador único para cada comentario.
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
-
-	// Id del cocinero, que escribe el comentario
-	@Column(name = "cookId", nullable = false)
-	private int cookId;
-
-	// Id de la receta del comentario
-	@Column(name = "recipeId", nullable = false)
-	private int recipeId;
 
 	// El comentario que escribe
 	@Column(name = "Description", nullable = false)
@@ -40,13 +24,12 @@ public class commentModel {
 	@Positive(message = "The punctuation must be a positive number")
 	private int punctuation;
 
-	public commentModel(Integer id, int cookId, int recipeId,
-			@Size(max = 255, message = "The description cannot exceed 255 characters") String description,
-			@Positive(message = "The punctuation must be a positive number") int punctuation) {
+	public commentModel() {
 		super();
-		this.id = id;
-		this.cookId = cookId;
-		this.recipeId = recipeId;
+	}
+
+	public commentModel( String description, int punctuation) {
+		super();
 		Description = description;
 		this.punctuation = punctuation;
 	}
@@ -57,22 +40,6 @@ public class commentModel {
 
 	public void setId(Integer id) {
 		this.id = id;
-	}
-
-	public int getCookId() {
-		return cookId;
-	}
-
-	public void setCookId(int cookId) {
-		this.cookId = cookId;
-	}
-
-	public int getRecipeId() {
-		return recipeId;
-	}
-
-	public void setRecipeId(int recipeId) {
-		this.recipeId = recipeId;
 	}
 
 	public String getDescription() {
@@ -93,7 +60,7 @@ public class commentModel {
 
 	@Override
 	public String toString() {
-		return "commentModel [id=" + id + ", cookId=" + cookId + ", recipeId=" + recipeId + ", Description="
+		return "commentModel [id=" + id + ", Description="
 				+ Description + ", punctuation=" + punctuation + "]";
 	}
 	

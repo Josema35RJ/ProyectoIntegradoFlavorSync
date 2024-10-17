@@ -24,14 +24,6 @@ public class comment {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
-	// Id del cocinero, que escribe el comentario
-	@Column(name = "cookId", nullable = false)
-	private int cookId;
-
-	// Id de la receta del comentario
-	@Column(name = "recipeId", nullable = false)
-	private int recipeId;
-
 	// El comentario que escribe
 	@Column(name = "Description", nullable = false)
 	@Size(max = 255, message = "The description cannot exceed 255 characters")

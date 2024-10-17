@@ -13,7 +13,6 @@ import com.example.demo.model.commentModel;
 public interface CommentRepository extends JpaRepository<comment, Serializable> {
 
 	comment findById(int CommnetId);
-	List<comment> findByRecipeId (int recipeId);
-	List<comment> findByRecipeIdAndPunctuation(int recipeId, int Punctuaction);
+	List<comment> findByPunctuation( int Punctuaction);
 
 }
