@@ -8,9 +8,11 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import com.example.demo.converter.CommentConverter;
+import com.example.demo.converter.CookConverter;
 import com.example.demo.converter.RecipeConverter;
 import com.example.demo.entity.comment;
 import com.example.demo.model.commentModel;
+import com.example.demo.model.cookModel;
 import com.example.demo.model.recipeModel;
 import com.example.demo.repository.CommentRepository;
 import com.example.demo.repository.RecipeRepository;
@@ -26,6 +28,10 @@ public class CommentServiceImpl implements CommentService {
 	  @Autowired
 	    @Qualifier("commentConverter")
 	    private CommentConverter commentConverter;
+	  
+	  @Autowired
+	    @Qualifier("cookConverter")
+	    private CookConverter cookConverter;
 	  
 	  @Autowired
 	    @Qualifier("recipeRepository")
@@ -86,6 +92,15 @@ public class CommentServiceImpl implements CommentService {
 					ListCommentByPunctuation.add(commentConverter.transform(c));
 				}
 				return ListCommentByPunctuation;
+	}
+
+	@Override
+	public boolean findByUserId(cookModel c) {
+		// TODO Auto-generated method stub
+		if(commentRepository.findByUserId(cookConverter.transform(c)).isEmpty()) {
+			return true;
+		}
+		return false;
 	}
 	
 }

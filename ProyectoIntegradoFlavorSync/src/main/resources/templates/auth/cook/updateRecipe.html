@@ -111,6 +111,7 @@ button[type="submit"]:hover {
 			<div class="card mb-4">
 				<div class="card-header">Información General</div>
 				<div class="card-body">
+				    <input type="hidden" id="id" name="id" th:value="${recipe.id}">
 					<div class="mb-3">
 						<label for="name" class="form-label">*Nombre de la Receta</label>
 						<input type="text" class="form-control" id="name" name="name"
@@ -128,7 +129,7 @@ button[type="submit"]:hover {
 					<div class="mb-3">
 						<label for="preparationTime" class="form-label">*Tiempo de
 							Preparación (minutos)</label> <input type="range" class="form-range"
-							id="preparationTime" name="" min="10" max="180" step="5"
+							id="preparationTime" name="preparationTime" min="10" max="180" step="5"
 							oninput="document.getElementById('prepTimeOutput').value = this.value">
 						<output id="prepTimeOutput" th:text="${recipe.preparationTime}"></output>
 					</div>
@@ -215,7 +216,7 @@ button[type="submit"]:hover {
 					<div class="mb-3">
 						<label for="RecipeTechniques" class="form-label">*Seleccione
 							las Técnicas Culinarias</label> <select id="RecipeTechniques"
-							name="listRecipeTechniques" class="form-control" multiple
+							name="RecipeTechniques" class="form-control" multiple
 							required>
 							<option th:each="technique : ${recipeTechniques}"
 								th:value="${technique.id}" th:text="${technique.name}"
@@ -256,83 +257,92 @@ button[type="submit"]:hover {
 				<div class="card-header">Lista Ingredientes</div>
 				<div class="card-body">
 					<div class="mb-3">
-						<label for="Ingredients" class="form-label">*Ingredientes</label>
-						<textarea class="form-control" id="Ingredients" name="Ingredients"
-							th:text="${recipe.Ingredients}" rows="4" required></textarea>
-						<small class="form-text text-muted">Ingresa los
-							ingredientes separados saltos de línea.</small>
-					</div>
-
-
-					<div class="mb-3">
-						<label for="grades" class="form-label">Notas / Consejos</label>
-						<textarea class="form-control" id="grades" name="grades"
-							th:text="${recipe.grades}" rows="4"></textarea>
-					</div>
-
-					<div class="card mb-3">
-						<div class="card-header">Información Nutricional</div>
-						<div class="card-body">
-							<div class="mb-3">
-								<label for="calories" class="form-label">Calorías por
-									Porción</label> <input type="number" class="form-control" id="calories"
-									name="nutritionalInformation.calories" step="0.01" required
-									th:value="${recipe.nutritionalInformation?.calories}">
-							</div>
-							<div class="mb-3">
-								<label for="fat" class="form-label">Grasas (g)</label> <input
-									type="number" class="form-control" id="fat"
-									name="nutritionalInformation.fat" step="0.01" required
-									th:value="${recipe.nutritionalInformation?.fat}">
-							</div>
-							<div class="mb-3">
-								<label for="carbohydrates" class="form-label">Carbohidratos
-									(g)</label> <input type="number" class="form-control"
-									id="carbohydrates" name="nutritionalInformation.carbohydrates"
-									step="0.01" required
-									th:value="${recipe.nutritionalInformation?.carbohydrates}">
-							</div>
-							<div class="mb-3">
-								<label for="proteins" class="form-label">Proteínas (g)</label> <input
-									type="number" class="form-control" id="proteins"
-									name="nutritionalInformation.proteins" step="0.01" required
-									th:value="${recipe.nutritionalInformation?.proteins}">
-							</div>
-							<div class="mb-3">
-								<label for="otherNutrients" class="form-label">Otros
-									Nutrientes</label> <input type="text" class="form-control"
-									id="otherNutrients"
-									name="nutritionalInformation.otherNutrients"
-									th:value="${recipe.nutritionalInformation?.otherNutrients}">
+						<div id="ingredientsContainer">
+							<!-- Iterar sobre la lista de ingredientes de la receta -->
+							<div th:each="ingredient, iterStat : ${recipe.ingredients}">
+								<div class="mb-3 ingredient-item">
+									<label th:for="'ingredient' + ${iterStat.index}"
+										class="form-label">*Ingrediente <span
+										th:text="${iterStat.index + 1}">1</span></label> <input type="text"
+										class="form-control" th:id="'ingredient' + ${iterStat.index}"
+										th:name="'Ingredients[' + ${iterStat.index} + ']'"
+										th:value="${ingredient}" required>
+								</div>
 							</div>
 						</div>
-					</div>
-					<div class="mb-3">
-						<label for="allergensAndDietaryRestrictions" class="form-label">*Seleccione
-							los Alérgenos y Restricciones Dietéticas</label> <select
-							id="allergensAndDietaryRestrictions"
-							name="allergensAndDietaryRestrictions" class="form-control"
-							multiple required>
-							<option value="gluten"
-								th:selected="${recipe.allergensAndDietaryRestrictions.contains('gluten')}">Gluten</option>
-							<option value="lactosa"
-								th:selected="${recipe.allergensAndDietaryRestrictions.contains('lactosa')}">Lactosa</option>
-							<option value="frutos_secos"
-								th:selected="${recipe.allergensAndDietaryRestrictions.contains('frutos_secos')}">Frutos
-								Secos</option>
-							<option value="vegan"
-								th:selected="${recipe.allergensAndDietaryRestrictions.contains('vegan')}">Vegan</option>
-							<option value="vegetarian"
-								th:selected="${recipe.allergensAndDietaryRestrictions.contains('vegetarian')}">Vegetarian</option>
-							<option value="sin_gluten"
-								th:selected="${recipe.allergensAndDietaryRestrictions.contains('sin_gluten')}">Sin
-								Gluten</option>
-							<option value="sin_lactosa"
-								th:selected="${recipe.allergensAndDietaryRestrictions.contains('sin_lactosa')}">Sin
-								Lactosa</option>
-						</select>
+						<!-- Botón para añadir más ingredientes -->
+						<button type="button" class="btn btn-outline-primary"
+							id="addIngredientBtn">Añadir Ingrediente</button>
 					</div>
 				</div>
+
+				<div class="mb-3">
+					<label for="grades" class="form-label">Notas / Consejos</label>
+					<textarea class="form-control" id="grades" name="grades"
+						th:text="${recipe.grades}" rows="4"></textarea>
+				</div>
+
+				<div class="card mb-3">
+					<div class="card-header">Información Nutricional</div>
+					<div class="card-body">
+						<div class="mb-3">
+							<label for="calories" class="form-label">Calorías por
+								Porción</label> <input type="number" class="form-control" id="calories"
+								name="nutritionalInformation.calories" step="0.01" required
+								th:value="${recipe.nutritionalInformation?.calories}">
+						</div>
+						<div class="mb-3">
+							<label for="fat" class="form-label">Grasas (g)</label> <input
+								type="number" class="form-control" id="fat"
+								name="nutritionalInformation.fat" step="0.01" required
+								th:value="${recipe.nutritionalInformation?.fat}">
+						</div>
+						<div class="mb-3">
+							<label for="carbohydrates" class="form-label">Carbohidratos
+								(g)</label> <input type="number" class="form-control" id="carbohydrates"
+								name="nutritionalInformation.carbohydrates" step="0.01" required
+								th:value="${recipe.nutritionalInformation?.carbohydrates}">
+						</div>
+						<div class="mb-3">
+							<label for="proteins" class="form-label">Proteínas (g)</label> <input
+								type="number" class="form-control" id="proteins"
+								name="nutritionalInformation.proteins" step="0.01" required
+								th:value="${recipe.nutritionalInformation?.proteins}">
+						</div>
+						<div class="mb-3">
+							<label for="otherNutrients" class="form-label">Otros
+								Nutrientes</label> <input type="text" class="form-control"
+								id="otherNutrients" name="nutritionalInformation.otherNutrients"
+								th:value="${recipe.nutritionalInformation?.otherNutrients}">
+						</div>
+					</div>
+				</div>
+				<div class="mb-3">
+					<label for="allergensAndDietaryRestrictions" class="form-label">*Seleccione
+						los Alérgenos y Restricciones Dietéticas</label> <select
+						id="allergensAndDietaryRestrictions"
+						name="allergensAndDietaryRestrictions" class="form-control"
+						multiple required>
+						<option value="gluten"
+							th:selected="${recipe.allergensAndDietaryRestrictions.contains('gluten')}">Gluten</option>
+						<option value="lactosa"
+							th:selected="${recipe.allergensAndDietaryRestrictions.contains('lactosa')}">Lactosa</option>
+						<option value="frutos_secos"
+							th:selected="${recipe.allergensAndDietaryRestrictions.contains('frutos_secos')}">Frutos
+							Secos</option>
+						<option value="vegan"
+							th:selected="${recipe.allergensAndDietaryRestrictions.contains('vegan')}">Vegan</option>
+						<option value="vegetarian"
+							th:selected="${recipe.allergensAndDietaryRestrictions.contains('vegetarian')}">Vegetarian</option>
+						<option value="sin_gluten"
+							th:selected="${recipe.allergensAndDietaryRestrictions.contains('sin_gluten')}">Sin
+							Gluten</option>
+						<option value="sin_lactosa"
+							th:selected="${recipe.allergensAndDietaryRestrictions.contains('sin_lactosa')}">Sin
+							Lactosa</option>
+					</select>
+				</div>
+			</div>
 			</div>
 
 			<!-- Ubicación -->
@@ -383,7 +393,7 @@ button[type="submit"]:hover {
 				.ready(
 						function() {
 							$(
-									'#culinaryTechniques, #category, #whereItisDone, #listkitchenUtensils, #RecipeTechniques, #allergensAndDietaryRestrictions')
+									' #category, #whereItisDone, #listkitchenUtensils, #RecipeTechniques, #allergensAndDietaryRestrictions')
 									.select2();
 						});
 		// Rellenar el selector de países
@@ -440,7 +450,25 @@ button[type="submit"]:hover {
 		function updatePrepTimeValue(value) {
 		    document.getElementById('prepTimeCurrentValue').innerText = value;
 		}
-		
+		  let ingredientCount = 1; // Contador de ingredientes
+
+		    // Función para agregar nuevos campos de ingredientes
+		    document.getElementById('addIngredientBtn').addEventListener('click', function() {
+		        ingredientCount++; // Incrementar el contador
+
+		        const ingredientsContainer = document.getElementById('ingredientsContainer');
+		        const newIngredientDiv = document.createElement('div');
+		        newIngredientDiv.classList.add('mb-3', 'ingredient-item');
+
+		        // Crear nuevo input para el ingrediente
+		        newIngredientDiv.innerHTML = `
+		            <label for="ingredient${ingredientCount}" class="form-label">*Ingrediente ${ingredientCount}</label>
+		            <input type="text" class="form-control" id="ingredient${ingredientCount}" name="Ingredients[]" required>
+		        `;
+
+		        // Añadir el nuevo campo al contenedor
+		        ingredientsContainer.appendChild(newIngredientDiv);
+		    });
 	</script>
 </body>
 </html>

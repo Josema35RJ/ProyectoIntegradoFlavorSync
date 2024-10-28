@@ -1,37 +1,34 @@
 package com.example.demo.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 public class commentModel {
 	// Identificador único para cada comentario.
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+
 	private Integer id;
 
 	// El comentario que escribe
-	@Column(name = "Description", nullable = false)
-	@Size(max = 255, message = "The description cannot exceed 255 characters")
+
 	private String Description;
 
 	// Puntuacion que le da, al eborarla el y probarla ( esta puntuacion hara media
 	// con las demas, para obtener las valoracion a la receta)
-	@Column(name = "punctuaction", nullable = false)
-	@Positive(message = "The punctuation must be a positive number")
+
 	private int punctuation;
+
+	private cookModel cookId;
 
 	public commentModel() {
 		super();
 	}
 
-	public commentModel( String description, int punctuation) {
+	public commentModel(@Size(max = 255, message = "The description cannot exceed 255 characters") String description,
+			@Positive(message = "The punctuation must be a positive number") int punctuation, cookModel cookId) {
 		super();
 		Description = description;
 		this.punctuation = punctuation;
+		this.cookId = cookId;
 	}
 
 	public Integer getId() {
@@ -58,10 +55,18 @@ public class commentModel {
 		this.punctuation = punctuation;
 	}
 
+	public cookModel getUserId() {
+		return cookId;
+	}
+
+	public void setUserId(cookModel userId) {
+		this.cookId = userId;
+	}
+
 	@Override
 	public String toString() {
-		return "commentModel [id=" + id + ", Description="
-				+ Description + ", punctuation=" + punctuation + "]";
+		return "commentModel [id=" + id + ", Description=" + Description + ", punctuation=" + punctuation + ", userId="
+				+ cookId + "]";
 	}
-	
+
 }

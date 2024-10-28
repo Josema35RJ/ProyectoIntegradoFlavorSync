@@ -106,7 +106,7 @@ button[type="submit"]:hover {
 	<main class="container mt-5">
 		<h1>Crear/Actualizar Receta</h1>
 		<form id="registerForm" th:action="@{/auth/cook/addRecipe}"
-			method="post" enctype="multipart/form-data">
+			method="post">
 			<!-- Información General -->
 			<div class="card mb-4">
 				<div class="card-header">Información General</div>
@@ -192,8 +192,7 @@ button[type="submit"]:hover {
 					<div class="mb-3">
 						<label for="RecipeTechniques" class="form-label">*Seleccione
 							las Técnicas Culinarias</label> <select id="RecipeTechniques"
-							name="RecipeTechniques" class="form-control" multiple
-							required>
+							name="RecipeTechniques" class="form-control" multiple required>
 							<option th:each="technique : ${recipeTechniques}"
 								th:value="${technique.id}" th:text="${technique.name}"></option>
 						</select>
@@ -214,9 +213,9 @@ button[type="submit"]:hover {
 				<div class="card-body">
 					<label for="difficulty" class="form-label">*Dificultad</label> <select
 						class="form-select" id="difficulty" name="difficulty" required>
-						<option value="Fácil">Fácil</option>
-						<option value="Intermedia">Intermedia</option>
-						<option value="Difícil">Difícil</option>
+						<option value="fácil">Fácil</option>
+						<option value="intermedio">Intermedio</option>
+						<option value="difícil">Difícil</option>
 					</select>
 				</div>
 			</div>
@@ -226,10 +225,14 @@ button[type="submit"]:hover {
 				<div class="card-header">Lista Ingredientes</div>
 				<div class="card-body">
 					<div class="mb-3">
-						<label for="Ingredients" class="form-label">*Ingredientes</label>
-						<textarea class="form-control" id="Ingredients" name="Ingredients"
-							rows="4" required></textarea>
+						<button type="button" class="btn btn-outline-primary"
+							id="openModalBtn">Añadir / Editar Ingredientes</button>
 					</div>
+
+					<!-- Lista de Ingredientes -->
+					<h4>Ingredientes:</h4>
+					<div id="ingredientsListContainer"></div>
+
 
 					<div class="mb-3">
 						<label for="grades" class="form-label">Notas / Consejos</label>
@@ -274,10 +277,10 @@ button[type="submit"]:hover {
 						</div>
 					</div>
 					<div class="mb-3">
-						<label for="AllergensAndDietaryRestrictions" class="form-label">*Seleccione
+						<label for="allergensAndDietaryRestrictions" class="form-label">*Seleccione
 							los Alérgenos y Restricciones Dietéticas</label> <select
-							id="AllergensAndDietaryRestrictions"
-							name="AllergensAndDietaryRestrictions" class="form-control"
+							id="allergensAndDietaryRestrictions"
+							name="allergensAndDietaryRestrictions" class="form-control"
 							multiple required>
 							<option value="gluten">Gluten</option>
 							<option value="lactosa">Lactosa</option>
@@ -353,6 +356,40 @@ button[type="submit"]:hover {
 			</div>
 		</form>
 	</main>
+
+	<!-- Modal para añadir ingredientes -->
+	<div class="modal fade" id="ingredientModal" tabindex="-1"
+		aria-labelledby="ingredientModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="ingredientModalLabel">Agregar
+						Ingredientes</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<div class="mb-3">
+						<label for="newIngredient" class="form-label">Ingrediente</label>
+						<input type="text" class="form-control" id="newIngredient"
+							required>
+					</div>
+					<div class="mb-3">
+						<button type="button" class="btn btn-outline-secondary"
+							id="addIngredientToList">Añadir a la lista</button>
+					</div>
+					<div id="ingredientsList" class="list-group"></div>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-bs-dismiss="modal">Cerrar</button>
+					<button type="button" class="btn btn-primary"
+						id="saveIngredientsBtn">Guardar Ingredientes</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<script src="/js/formRecipe.js"></script>
 	<script
 		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
@@ -369,7 +406,7 @@ button[type="submit"]:hover {
 				.ready(
 						function() {
 							$(
-									'#RecipeTechniques, #category, #whereItisDone, #listkitchenUtensils, #listRecipeTechniquesString, #AllergensAndDietaryRestrictions')
+									'#RecipeTechniques, #category, #whereItisDone, #listkitchenUtensils, #listRecipeTechniquesString, #allergensAndDietaryRestrictions')
 									.select2();
 						});
 		document
@@ -482,6 +519,63 @@ button[type="submit"]:hover {
 	            }
 	        });
 	    });
+	     document.getElementById('openModalBtn').addEventListener('click', function() {
+	            const modal = new bootstrap.Modal(document.getElementById('ingredientModal'));
+	            modal.show();
+	        });
+
+	        document.getElementById('addIngredientToList').addEventListener('click', function() {
+	            const ingredientInput = document.getElementById('newIngredient');
+	            const ingredientValue = ingredientInput.value.trim();
+	            
+	            if (ingredientValue) {
+	                const ingredientItem = document.createElement('div');
+	                ingredientItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+	                ingredientItem.textContent = ingredientValue;
+
+	                // Botón para eliminar el ingrediente
+	                const removeBtn = document.createElement('button');
+	                removeBtn.classList.add('btn', 'btn-outline-danger', 'btn-sm');
+	                removeBtn.textContent = 'Eliminar';
+	                removeBtn.onclick = function() {
+	                    ingredientsList.removeChild(ingredientItem);
+	                };
+
+	                ingredientItem.appendChild(removeBtn);
+	                document.getElementById('ingredientsList').appendChild(ingredientItem);
+	                ingredientInput.value = ''; // Limpiar el campo de entrada
+	            }
+	        });
+
+	        // Guardar ingredientes en el formulario principal
+	        document.getElementById('saveIngredientsBtn').addEventListener('click', function() {
+	            const ingredientsList = document.getElementById('ingredientsList');
+	            const ingredients = [];
+
+	            ingredientsList.querySelectorAll('.list-group-item').forEach(item => {
+	                ingredients.push(item.firstChild.textContent); // Agregar el nombre del ingrediente a la lista
+	            });
+
+	            // Mostrar ingredientes en el formulario
+	            const ingredientsListContainer = document.getElementById('ingredientsListContainer');
+	            ingredientsListContainer.innerHTML = ingredients.map(ing => `<div>${ing}</div>`).join('');
+
+	            // Cerrar el modal
+	            const modal = bootstrap.Modal.getInstance(document.getElementById('ingredientModal'));
+	            modal.hide();
+	        });
+
+	        // Manejo del envío del formulario
+	        document.getElementById('recipeForm').addEventListener('submit', function(event) {
+	            event.preventDefault();
+	            const recipeName = document.getElementById('recipeName').value;
+	            const recipeDescription = document.getElementById('recipeDescription').value;
+
+	            // Aquí puedes manejar el envío de la receta (nombre, descripción y lista de ingredientes)
+	            console.log("Nombre de la Receta:", recipeName);
+	            console.log("Descripción:", recipeDescription);
+	            // Aquí puedes agregar la lógica para enviar estos datos a un servidor o procesarlos como desees.
+	        });
 	</script>
 </body>
 </html>

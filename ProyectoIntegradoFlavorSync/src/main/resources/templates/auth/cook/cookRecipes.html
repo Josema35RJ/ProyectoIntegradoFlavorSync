@@ -130,12 +130,8 @@ h1, h3 {
 					<tbody>
 						<!-- Iterar sobre las recetas -->
 						<tr th:each="recipe, stat : ${recipes}">
-							<td>
-								<div th:each="image, stat : ${base64listImage}">
-									<img th:src="${image}" alt="Imagen de la receta"
-										class="recipe-image">
-								</div>
-							</td>
+							<td><img th:src="${base64listImage.get(recipe.id)}"
+								alt="Imagen de la receta"></td>
 							<td th:text="${recipe.name}">Nombre de la Receta</td>
 							<td th:text="${recipe.level}">Nivel</td>
 							<td th:text="${recipe.diners}">Comensales</td>

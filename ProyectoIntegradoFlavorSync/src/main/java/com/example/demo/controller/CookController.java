@@ -43,6 +43,7 @@ public class CookController {
 	private static final String UPDATERECIPE_VIEW = "/auth/cook/updateRecipe";
 	private static final String COOKRECIPES_VIEW = "/auth/cook/cookRecipes";
 	private static final String RESETPASSWORD_VIEW = "/auth/resetPassword";
+	private static final String RECIPE_VIEW = "/auth/cook/viewRecipe";
 
 	@Autowired
 	@Qualifier("cookService")
@@ -65,43 +66,55 @@ public class CookController {
 	private CulinaryTechniquesService culinaryTechniquesService;
 
 	@GetMapping("/auth/cook/cookPanel")
-	public String PanelCook(Model model, Authentication authentication) {
-		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-		// Ahora puedes obtener la información del usuario logueado desde userDetails
-		cookModel c = cookService.findById(userDetails.getId());
-		// LISTADO DE RECETAS NUEVAS
-		List<recipeModel> recetasN = recipeService.getListRecipe();
-		List<recipeModel> recetasFacil = recipeService.getListFindByDificulty("Fácil");
-		Map<Integer, String> imagesRecipes = new HashMap<>();
-		for (recipeModel r : recetasN) {
-			imagesRecipes.put(r.getId(),
-					"data:image/jpeg;base64," + Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
-		}
-		model.addAttribute("base64listImage", imagesRecipes);
-		Map<Integer, String> imagesRecipesNew = new HashMap<>();
-		for (recipeModel r : recetasFacil) {
-			imagesRecipesNew.put(r.getId(),
-					"data:image/jpeg;base64," + Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
-		}
-		model.addAttribute("base64listImageEasy", imagesRecipesNew);
-		model.addAttribute("cook", c.getNickName());
-		model.addAttribute("imageCook", c.getImagePerfil());
-		model.addAttribute("recipesNew", recetasN);
-		model.addAttribute("recipes", recetasFacil);
-		return PANEL_VIEW; // Asegúrate de que LOGIN_VIEW sea el nombre correcto de la vista de login
-	}
+	public String PanelCook(
+	        @RequestParam(required = false) String category,
+	        @RequestParam(required = false) String difficulty,
+	        @RequestParam(required = false) Integer rating,
+	        Model model,
+	        Authentication authentication) {
+	    
+	    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+	    cookModel c = cookService.findById(userDetails.getId());
 
+	    // Aplicar los filtros al obtener la lista de recetas
+	    List<recipeModel> recipesFilters = recipeService.filterRecipes(category, difficulty, rating);
+	    List<recipeModel> recetasFacil = recipeService.getListFindByDificulty("Fácil");
+
+	    // Mapa de imágenes para las recetas filtradas
+	    Map<Integer, String> imagesRecipes = new HashMap<>();
+	    for (recipeModel r : recipesFilters) {
+	        imagesRecipes.put(r.getId(),
+	                "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
+	    }
+	    model.addAttribute("base64listImageFilters", imagesRecipes);
+
+	    // Mapa de imágenes para recetas de dificultad "Fácil"
+	    Map<Integer, String> imagesRecipesNew = new HashMap<>();
+	    for (recipeModel r : recetasFacil) {
+	        imagesRecipesNew.put(r.getId(),
+	                "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
+	    }
+	    model.addAttribute("base64listImageEasy", imagesRecipesNew);
+
+	    model.addAttribute("cook", c.getNickName());
+	    model.addAttribute("imageCook", c.getImagePerfil());
+	    model.addAttribute("recipesFilters", recipesFilters); // Recetas filtradas
+	    model.addAttribute("recipesEasy", recetasFacil); // Recetas fáciles
+
+	    return PANEL_VIEW; // Asegúrate de que PANEL_VIEW sea el nombre correcto de la vista del panel
+	}
+	
 	@GetMapping("/auth/cook/cookRecipes")
 	public String RecipesCook(Model model, Authentication authentication) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		// Ahora puedes obtener la información del usuario logueado desde userDetails
-		List<String> imagesRecipes = new ArrayList<>();
+	    Map<Integer, String> imagesRecipes = new HashMap<>();
 		cookModel c = cookService.findById(userDetails.getId());
 		model.addAttribute("cook", c.getNickName());
 		byte[] imageBytes = c.getImagePerfil();
 		for (recipeModel r : c.getListRecipes()) {
 
-			imagesRecipes.add("data:image/jpeg;base64," + Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
+			imagesRecipes.put(r.getId(),"data:image/jpeg;base64," + Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
 		}
 		String base64Image = Base64.getEncoder().encodeToString(imageBytes);
 		model.addAttribute("base64listImage", imagesRecipes);
@@ -111,6 +124,26 @@ public class CookController {
 		return COOKRECIPES_VIEW; // Asegúrate de que LOGIN_VIEW sea el nombre correcto de la vista de login
 	}
 
+	@GetMapping("/auth/cook/viewRecipe/{id}")
+	public String ViewRecipe(@PathVariable("id") Integer id, Model model, Authentication authentication) {
+		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+		List<String> listImagesRecipe = new ArrayList<>();
+		// Ahora puedes obtener la información del usuario logueado desde userDetails
+		cookModel c = cookService.findById(userDetails.getId());
+		recipeModel r = recipeService.getRecipeById(id);
+		for (byte[] b : r.getImagesRecipe()) {
+			listImagesRecipe.add("data:image/jpeg;base64," + Base64.getEncoder().encodeToString(b));
+		}
+		model.addAttribute("booleanComment", !commentService.findByUserId(c)); // Hay que añadir al comentario el autor
+																				// de este
+		model.addAttribute("booleanFav", !c.getListRecipesFavorites().contains(r));
+		model.addAttribute("imageRecipe",
+				"data:image/jpeg;base64," + Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
+		model.addAttribute("listImagesRecipe", listImagesRecipe);
+		model.addAttribute("recipe", r);
+		return RECIPE_VIEW; // Asegúrate de que LOGIN_VIEW sea el nombre correcto de la vista de login
+	}
+
 	@GetMapping("/auth/cook/cookPerfil")
 	public String PerfilCook(Model model, Authentication authentication) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -118,8 +151,6 @@ public class CookController {
 
 		cookModel c = cookService.findById(userDetails.getId());
 		List<Integer> selectedTechniques = c.getListCulinaryTechniques().stream().map(technique -> technique.getId()) // Asegurarse
-		// de
-// IDs
 				.collect(Collectors.toList());
 
 		byte[] imageBytes = c.getImagePerfil();
@@ -226,15 +257,32 @@ public class CookController {
 
 	@PostMapping("/auth/cook/AddComment")
 	public String AddComment(RedirectAttributes flash, @RequestParam(value = "id") String recipeId,
-			@RequestParam(value = "commentText") String comment, @RequestParam(value = "rating") String ra) {
-		commentModel com = new commentModel(comment, Integer.valueOf(ra));
+			@RequestParam(value = "commentText") String comment, @RequestParam(value = "rating") String ra,
+			Authentication authentication) {
+		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+		commentModel com = new commentModel(comment, Integer.valueOf(ra), cookService.findById(userDetails.getId()));
 		recipeModel r = recipeService.getRecipeById(Integer.valueOf(recipeId));
 		commentService.addComment(com, Integer.valueOf(recipeId));
 		r.getListComments().add(com);
-		recipeService.updateRecipe(r);
+		recipeService.updateRecipe(Integer.valueOf(recipeId), r);
 		flash.addFlashAttribute("success", "¡Comentario registrado exitosamente!");
 		return "redirect:" + PANEL_VIEW;
 
+	}
+
+	@PostMapping("/auth/cook/updateRecipe")
+	public String UpdateRecipePost(recipeModel r, Model model,
+			@RequestParam(value = "RecipeTechniques", required = false) String[] listTechniques,
+			Authentication authentication, RedirectAttributes flash) {
+		List<culinaryTechniquesModel> l = new ArrayList<>();
+		for (String i : listTechniques) {
+			l.add(culinaryTechniquesService.findById(Integer.valueOf(i)));
+		}
+		r.setListRecipeTechniques(l);
+		recipeService.updateRecipe(r.getId(), r);
+		flash.addFlashAttribute("success", "¡Receta actualizada exitosamente!");
+
+		return "redirect:" + PANEL_VIEW;
 	}
 
 	@GetMapping("/auth/cook/updateRecipe/{id}")
@@ -259,7 +307,6 @@ public class CookController {
 		model.addAttribute("recipeTechniques", culinaryTechniquesService.getListCulinaryTechniques());
 		model.addAttribute("recipe", r);
 
-		flash.addFlashAttribute("success", "¡Receta Actualizada exitosamente!");
 		return UPDATERECIPE_VIEW;
 	}
 
@@ -303,6 +350,16 @@ public class CookController {
 	public String ResetRecipe(@PathVariable("token") String token, Model model, RedirectAttributes flash) {
 		model.addAttribute("token", token);
 		return RESETPASSWORD_VIEW;
+	}
+
+	@PostMapping("/auth/cook/favoriteRecipe/{recipeId}")
+	public String favRecipe(@PathVariable("recipeId") Integer rId, Authentication authentication,
+			RedirectAttributes flash) {
+		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+		recipeService.toggleFav(rId, userDetails.getId());
+		flash.addFlashAttribute("success", "¡Añadido correctamente exitosamente!");
+		return "redirect:" + PANEL_VIEW; // Redirect to login after successful password update
 	}
 
 	private int calculateAge(LocalDate birthDate) {

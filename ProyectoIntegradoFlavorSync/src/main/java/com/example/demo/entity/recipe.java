@@ -139,8 +139,8 @@ public class recipe {
 
 	// Video de la elaboracion guardado en base 64
 	// private byte[] video;
-
-	private String Ingredients;
+	@ElementCollection
+	private List<String>  Ingredients = new ArrayList<>();
 
 	// Imagen de perfil de la receta
 	@Lob // Indica que el campo debe ser tratado como un tipo grande

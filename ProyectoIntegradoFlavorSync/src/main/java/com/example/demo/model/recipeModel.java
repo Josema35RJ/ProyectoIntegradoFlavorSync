@@ -117,7 +117,7 @@ public class recipeModel {
 
 	// Relación many-to-many usando la clase RecipeIngredient como entidad
 	// intermedia
-	private String Ingredients;
+	private List<String>  Ingredients = new ArrayList<>();
 	
 	//Fecha de creacion de la receta 
 	private LocalDate createDate;
@@ -126,7 +126,7 @@ public class recipeModel {
 	private LocalDate updateDate;
 	
 	public recipeModel(Integer id, String name, int diners, float preparationTime, List<String> whereItisDone,
-			List<String> category, String Ingredients, List<String> listkitchenUtensils,
+			List<String> category, List<String> Ingredients, List<String> listkitchenUtensils,
 			String instructions, String difficulty, List<String> allergensAndDietaryRestrictions,
 			nutritionalInformationModel nutritionalInformation, String country, String city) {
 		super();
@@ -169,7 +169,6 @@ public class recipeModel {
 		Country = country;
 		this.city = city;
 		this.createDate = LocalDate.now();
-
 	}
 
 	public recipeModel() {
@@ -337,11 +336,11 @@ public class recipeModel {
 		this.imagesRecipe = imagesRecipe;
 	}
 
-	public String getIngredients() {
+	public List<String> getIngredients() {
 		return Ingredients;
 	}
 
-	public void setIngredients(String Ingredients) {
+	public void setIngredients(List<String> Ingredients) {
 		this.Ingredients = Ingredients;
 	}
 

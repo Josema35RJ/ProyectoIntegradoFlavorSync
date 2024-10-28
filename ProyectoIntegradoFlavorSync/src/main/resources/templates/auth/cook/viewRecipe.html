@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Detalle de la Receta</title>
+<!-- Bootstrap 5.3 CSS -->
+<link
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css"
+	rel="stylesheet">
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+	rel="stylesheet">
+<style>
+.recipe-header img {
+	width: 150px;
+	height: 150px;
+	border-radius: 50%;
+	object-fit: cover;
+}
+
+.recipe-section {
+	background-color: #f8f9fa;
+	border: 1px solid #dee2e6;
+	border-radius: 0.5rem;
+	padding: 1rem;
+	margin-bottom: 1rem;
+}
+
+.star-rating .star {
+	cursor: pointer;
+	font-size: 1.5rem;
+	color: #ffd700;
+}
+
+.star-rating .star:hover {
+	color: #ffcc00;
+}
+
+.footer {
+	background-color: #343a40;
+	color: white;
+	padding: 1rem 0;
+}
+</style>
+</head>
+<body>
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+		<div class="container-fluid">
+			<a class="navbar-brand" href="#">FlavorSync</a>
+			<button class="navbar-toggler" type="button"
+				data-bs-toggle="collapse" data-bs-target="#navbarNav">
+				<span class="navbar-toggler-icon"></span>
+			</button>
+			<div class="collapse navbar-collapse" id="navbarNav">
+				<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+					<li class="nav-item"><a class="nav-link"
+						href="/auth/cook/cookPanel">Home</a></li>
+					<li class="nav-item"><a class="nav-link"
+						href="/auth/cook/cookPerfil"><i class="fas fa-user"></i> Mi
+							Perfil</a></li>
+					<li class="nav-item"><a class="nav-link"
+						href="/auth/cook/logout"><i class="fas fa-sign-out-alt"></i>
+							Cerrar Sesión</a></li>
+				</ul>
+			</div>
+		</div>
+	</nav>
+
+	<div class="container my-5">
+		<div class="recipe-header text-center">
+			<img id="profileImage" th:src="${imageRecipe}" alt="Imagen de perfil">
+			<h1 class="display-4 mt-3" th:text="${recipe.name}">Nombre de la
+				Receta</h1>
+			<p class="lead" th:text="'Nivel del Cocinero: ' + ${recipe.level}">Nivel
+				del Cocinero</p>
+			<div class="mt-3">
+				<button type="button" class="btn btn-primary"
+					th:if="${booleanComment}"
+					th:attr="data-bs-toggle='modal', data-bs-target='#commentModal', data-recipe-id=${recipe.id}">
+					<i class="fas fa-comment-dots"></i> Añadir Comentario
+				</button>
+				<button id="downloadPdf" class="btn btn-secondary">
+					<i class="fas fa-file-pdf"></i> Descargar PDF
+				</button>
+				<button type="button" class="btn btn-outline-danger favorite-btn"
+					th:attr="data-recipe-id=${recipe.id}">
+					<i class="far fa-heart favorite-heart"></i>
+				</button>
+			</div>
+		</div>
+
+		<div class="row mb-4">
+			<div class="col-md-6">
+				<div class="recipe-section">
+					<h2 class="h4">Información General</h2>
+					<ul class="list-unstyled">
+						<li><strong>Comensales:</strong> <span
+							th:text="${recipe.diners}">4</span></li>
+						<li><strong>Tiempo de preparación:</strong> <span
+							th:text="${recipe.preparationTime}">30</span> minutos</li>
+						<li><strong>Dificultad:</strong> <span
+							class="badge bg-danger" th:text="${recipe.difficulty}">Difícil</span></li>
+						<li><strong>Categoría:</strong></li>
+						<ul class="list-group">
+							<li class="list-group-item"
+								th:each="category : ${recipe.category}" th:text="${category}">Entrante</li>
+						</ul>
+					</ul>
+				</div>
+			</div>
+			<div class="col-md-6">
+				<div class="recipe-section">
+					<h2 class="h4">Categoría y Origen</h2>
+					<h2 class="h5">Calificación</h2>
+					<div>
+						<span class="star" data-value="1">★</span> <span class="star"
+							data-value="2">★</span> <span class="star" data-value="3">★</span>
+						<span class="star" data-value="4">★</span> <span class="star"
+							data-value="5">★</span>
+					</div>
+					<ul class="list-unstyled">
+						<li><strong>País:</strong> <span th:text="${recipe.Country}">España</span></li>
+						<li><strong>Ciudad:</strong> <span th:text="${recipe.city}">Madrid</span></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div class="recipe-section mb-4">
+			<h2 class="h4">Ingredientes</h2>
+			<ul class="list-group">
+				<li class="list-group-item"
+					th:each="ingredient : ${recipe.Ingredients}"
+					th:text="${ingredient}">Ingrediente</li>
+			</ul>
+		</div>
+
+		<div class="recipe-section mb-4">
+			<h2 class="h4">Utensilios de Cocina</h2>
+			<ul class="list-group">
+				<li class="list-group-item"
+					th:each="utensil : ${recipe.listkitchenUtensils}"
+					th:text="${utensil}">Cuchillo</li>
+			</ul>
+		</div>
+
+		<div class="recipe-section mb-4">
+			<h2 class="h4">Técnicas Culinarias</h2>
+			<ul class="list-group">
+				<li class="list-group-item"
+					th:each="technique : ${recipe.listRecipeTechniques}"
+					th:text="${technique.name}">Técnica culinaria</li>
+			</ul>
+		</div>
+
+		<div class="recipe-section mb-4">
+			<h2 class="h4">Instrucciones</h2>
+			<p class="bg-light p-3 rounded" th:text="${recipe.instructions}">Paso
+				a paso para la receta...</p>
+		</div>
+
+		<div class="recipe-section mb-4">
+			<h2 class="h4">Galería de Imágenes</h2>
+			<div class="image-gallery" th:each="img : ${listImagesRecipe}">
+				<img th:src="${img}" alt="Imagen de la receta"
+					class="img-thumbnail recipe-image"
+					style="max-width: 100%; height: auto;">
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal para añadir comentarios -->
+	<div class="modal fade" id="commentModal" tabindex="-1"
+		aria-labelledby="commentModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="commentModalLabel">Añadir
+						Comentario</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<textarea class="form-control" rows="5"
+						placeholder="Escribe tu comentario aquí..." id="commentText"></textarea>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-bs-dismiss="modal">Cerrar</button>
+					<button type="button" class="btn btn-primary" id="submitComment">Enviar
+						Comentario</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<footer class="footer text-center">
+		<span class="text-muted">© 2024 FlavorSync</span>
+	</footer>
+	<script src="/js/viewRecipe.js"></script>
+	<script
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.13/jspdf.plugin.autotable.min.js"></script>
+</body>
+</html>
