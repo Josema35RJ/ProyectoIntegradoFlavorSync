@@ -8,6 +8,11 @@
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+<!-- Enlace a Select2 CSS -->
+<link
+	href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"
+	rel="stylesheet" />
+
 <link rel="stylesheet" href="/css/panels.css">
 <style>
 /* Ajuste de tamaño de las imágenes en el carrusel y las tarjetas */
@@ -230,6 +235,12 @@ footer {
 			<form id="filterForm">
 				<div class="row">
 					<div class="col-md-4">
+						<label for="ingredientsFilter">Ingredientes</label> <select
+							id="ingredientsFilter" class="form-select" multiple>
+							<option value="">Todos</option>
+						</select>
+					</div>
+					<div class="col-md-4">
 						<label for="categoryFilter">Categoría</label> <select
 							id="categoryFilter" class="form-select">
 							<option value="">Todas</option>
@@ -297,6 +308,45 @@ footer {
 		</section>
 	</main>
 
+	<!-- Modal para añadir comentario -->
+	<div class="modal fade" id="commentModal" tabindex="-1"
+		aria-labelledby="commentModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="commentModalLabel">Añadir
+						Comentario a Nombre de la Receta</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<form action="/auth/cook/AddComment" method="post">
+						<input type="hidden" id="id" name="id" />
+						<div class="mb-3">
+							<label for="commentText" class="form-label">Escribe tu
+								comentario:</label>
+							<textarea class="form-control" id="commentText"
+								name="commentText" rows="3" required></textarea>
+						</div>
+						<!-- Estrellas para valoración -->
+						<div class="mb-3">
+							<label class="form-label">Valoración:</label>
+							<div class="star-rating" id="starRating">
+								<span class="star" data-value="1">★</span> <span class="star"
+									data-value="2">★</span> <span class="star" data-value="3">★</span>
+								<span class="star" data-value="4">★</span> <span class="star"
+									data-value="5">★</span>
+							</div>
+							<input type="hidden" name="rating" id="rating" />
+						</div>
+						<button type="submit" class="btn btn-primary">Enviar
+							Comentario</button>
+					</form>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- Pie de página -->
 	<footer class="footer text-center">
 		<span class="text-muted">© 2024 FlavorSync</span>
@@ -309,6 +359,9 @@ footer {
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 	<!-- Incluir jQuery -->
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+	<!-- Enlace a Select2 JS -->
+	<script
+		src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
 	<!-- Script para permitir 3 recetas por slide en fila sin repetirse -->
 	<script>
@@ -353,9 +406,16 @@ footer {
 	            window.location.href = `/auth/cook/viewRecipe/${recipeId}`;
 	        });
 	    });
+	 // Detener la propagación del evento en el botón "Añadir Comentario"
+	    document.querySelectorAll('.btn-primary').forEach(button => {
+	        button.addEventListener('click', function(event) {
+	            event.stopPropagation(); // Evita que se active el evento de redirección
+	        });
+	    });
 	});
 	// Guardar los filtros seleccionados en localStorage
 	function saveFilters() {
+		 localStorage.setItem('ingredients', $('#ingredientsFilter').val());
 	    localStorage.setItem('category', $('#categoryFilter').val());
 	    localStorage.setItem('difficulty', $('#difficultyFilter').val());
 	    localStorage.setItem('rating', $('#ratingFilter').val());
@@ -363,10 +423,14 @@ footer {
 
 	// Cargar los filtros desde localStorage
 	function loadFilters() {
+		 const ingredients = localStorage.getItem('ingredients');
 	    const category = localStorage.getItem('category');
 	    const difficulty = localStorage.getItem('difficulty');
 	    const rating = localStorage.getItem('rating');
 
+	    if (ingredients) {
+	        $('#ingredientsFilter').val(ingredients);
+	    }
 	    if (category) {
 	        $('#categoryFilter').val(category);
 	    }
@@ -384,11 +448,13 @@ footer {
 
 	    $('#filterForm select').on('change', function () {
 	        saveFilters(); // Guardar filtros al cambiar
+	        let ingredients = $('#ingredientsFilter').val();
 	        let category = $('#categoryFilter').val();
 	        let difficulty = $('#difficultyFilter').val();
 	        let rating = $('#ratingFilter').val();
 	        let query = '';
 
+	        if (ingredients) query += 'ingredients=' + ingredients + '&';
 	        if (category) query += 'category=' + category + '&';
 	        if (difficulty) query += 'difficulty=' + difficulty + '&';
 	        if (rating) query += 'rating=' + rating;
@@ -396,7 +462,126 @@ footer {
 	        // Redirigir a la página filtrada
 	        window.location.href = '/auth/cook/cookPanel?' + query;
 	    });
-	});
+	});   // Escuchar el evento de apertura del modal
+    var commentModal = document.getElementById('commentModal');
+    commentModal.addEventListener('show.bs.modal', function () {
+        // Resetear la valoración al abrir el modal
+        resetStarRating();
+    });
+
+    // Manejo de la valoración por estrellas dentro del modal
+    commentModal.addEventListener('click', function(event) {
+        if (event.target.classList.contains('star')) {
+            var ratingValue = event.target.getAttribute('data-value');
+            setStarRating(ratingValue);
+        }
+    });
+
+    function setStarRating(rating) {
+        // Establecer la valoración en el campo oculto
+        document.getElementById('rating').value = rating;
+
+        // Obtener todas las estrellas dentro del modal
+        var stars = commentModal.querySelectorAll('.star');
+
+        // Resetear las clases de selección en todas las estrellas
+        stars.forEach(function(star) {
+            star.classList.remove('selected');
+        });
+
+        // Añadir la clase de selección a las estrellas seleccionadas
+        for (let i = 0; i < rating; i++) {
+            stars[i].classList.add('selected');
+        }
+    }
+
+    function resetStarRating() {
+        // Resetear el valor oculto de la valoración
+        document.getElementById('rating').value = 0;
+
+        // Obtener todas las estrellas dentro del modal
+        var stars = commentModal.querySelectorAll('.star');
+
+        // Resetear las clases de selección en todas las estrellas
+        stars.forEach(function(star) {
+            star.classList.remove('selected');
+        });
+    }
+    // Escuchar el evento de apertura del modal
+    var commentModal = document.getElementById('commentModal');
+    commentModal.addEventListener('show.bs.modal', function (event) {
+        // Obtener el botón que abrió el modal
+        var button = event.relatedTarget;
+
+        // Obtener el ID de la receta del atributo data-recipe-id
+        var recipeId = button.getAttribute('data-recipe-id');
+
+        // Establecer el ID de la receta en el campo oculto del modal
+        var recipeIdInput = commentModal.querySelector('#id');
+        recipeIdInput.value = recipeId;
+
+        // Opcional: Resetear la valoración al abrir el modal
+        resetStarRating();
+    });
+    // Arreglo con los ingredientes
+     const ingredientes = [
+        // Lácteos y huevos
+        "Leche", "Mantequilla", "Queso", "Yogur", "Nata", "Crema", "Leche Condensada", "Huevo",
+        
+        // Carnes y pescados
+        "Pollo", "Carne de Res", "Cerdo", "Cordero", "Pavo", "Bacalao", "Salmón", "Atún", "Gambas",
+        
+        // Verduras y hortalizas
+        "Tomate", "Cebolla", "Ajo", "Pimiento", "Calabacín", "Berenjena", "Zanahoria", "Patata",
+        "Pepino", "Espinaca", "Lechuga", "Brócoli", "Coliflor", "Setas", "Espárragos", "Acelga",
+        
+        // Frutas
+        "Manzana", "Plátano", "Naranja", "Limón", "Fresa", "Melón", "Sandía", "Mango", "Piña",
+        "Pera", "Melocotón", "Cereza", "Kiwi", "Uvas", "Papaya", "Higos", "Granada", "Coco",
+        
+        // Hierbas y especias
+        "Sal", "Pimienta", "Orégano", "Tomillo", "Romero", "Perejil", "Cilantro", "Albahaca",
+        "Comino", "Canela", "Jengibre", "Clavo", "Nuez Moscada", "Cúrcuma", "Pimentón", "Azafrán",
+        
+        // Cereales y legumbres
+        "Arroz", "Pasta", "Lentejas", "Garbanzos", "Frijoles", "Quinoa", "Cuscús", "Avena",
+        "Maíz", "Trigo", "Cebada",
+        
+        // Frutos secos y semillas
+        "Almendra", "Nuez", "Avellana", "Anacardo", "Pistacho", "Semillas de Chía", "Semillas de Girasol",
+        "Semillas de Calabaza", "Semillas de Lino",
+        
+        // Aceites y grasas
+        "Aceite de Oliva", "Aceite de Girasol", "Aceite de Coco", "Manteca de Cerdo", "Margarina",
+        
+        // Otros ingredientes comunes
+        "Azúcar", "Harina", "Vinagre", "Miel", "Chocolate", "Cacao en Polvo", "Salsa de Soja",
+        "Mostaza", "Ketchup", "Mayonesa", "Levadura", "Vino Tinto", "Vino Blanco", "Caldo de Pollo",
+        "Caldo de Verduras", "Salsa de Tomate", "Crema de Cacahuate", "Leche de Almendra", "Sirope de Arce"
+    ];
+
+    // Referencia al elemento select
+    const ingredientsFilter = document.getElementById('ingredientsFilter');
+
+    // Función para añadir opciones de ingredientes al select
+    function populateSelect(optionsArray) {
+        optionsArray.forEach(ingrediente => {
+            const option = document.createElement('option');
+            option.value = ingrediente.toLowerCase(); // Usa el nombre en minúsculas como valor
+            option.textContent = ingrediente; // Usa el nombre en mayúsculas como texto
+            ingredientsFilter.appendChild(option); // Añade la opción al select
+        });
+    }
+
+    // Llama a la función para poblar el select
+    populateSelect(ingredientes);
+    $(document)
+	.ready(
+			function() {
+				$(
+						 '#ingredientsFilter')
+						.select2();
+			});
     </script>
 </body>
 </html>

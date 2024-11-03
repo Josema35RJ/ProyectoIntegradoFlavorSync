@@ -227,13 +227,11 @@ button[type="submit"]:hover {
 					<div class="mb-3">
 						<button type="button" class="btn btn-outline-primary"
 							id="openModalBtn">Añadir / Editar Ingredientes</button>
+						<!-- Lista de Ingredientes -->
+						<h4>Ingredientes:</h4>
+						 <ul id="ingredientsListContainer" class="list-group mb-3"></ul>
+						<input type="hidden" id="ingredients" name="ingredients">
 					</div>
-
-					<!-- Lista de Ingredientes -->
-					<h4>Ingredientes:</h4>
-					<div id="ingredientsListContainer"></div>
-
-
 					<div class="mb-3">
 						<label for="grades" class="form-label">Notas / Consejos</label>
 						<textarea class="form-control" id="grades" name="grades" rows="4"></textarea>
@@ -357,34 +355,34 @@ button[type="submit"]:hover {
 		</form>
 	</main>
 
-	<!-- Modal para añadir ingredientes -->
+	<!-- Modal for managing ingredients -->
 	<div class="modal fade" id="ingredientModal" tabindex="-1"
 		aria-labelledby="ingredientModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
-					<h5 class="modal-title" id="ingredientModalLabel">Agregar
+					<h5 class="modal-title" id="ingredientModalLabel">Gestionar
 						Ingredientes</h5>
 					<button type="button" class="btn-close" data-bs-dismiss="modal"
 						aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
+					<h5>Ingredientes Actuales</h5>
+					<div id="ingredientList" class="list-group mb-3"></div>
+
+					<h5>Agregar Nuevo Ingrediente</h5>
 					<div class="mb-3">
 						<label for="newIngredient" class="form-label">Ingrediente</label>
-						<input type="text" class="form-control" id="newIngredient"
-							required>
+						<input type="text" class="form-control" id="newIngredient">
 					</div>
-					<div class="mb-3">
-						<button type="button" class="btn btn-outline-secondary"
-							id="addIngredientToList">Añadir a la lista</button>
-					</div>
-					<div id="ingredientsList" class="list-group"></div>
+					<button type="button" class="btn btn-outline-secondary"
+						id="addIngredientToList">Añadir a la lista</button>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-secondary"
 						data-bs-dismiss="modal">Cerrar</button>
 					<button type="button" class="btn btn-primary"
-						id="saveIngredientsBtn">Guardar Ingredientes</button>
+						id="saveIngredientsBtn">Guardar Cambios</button>
 				</div>
 			</div>
 		</div>
@@ -519,52 +517,73 @@ button[type="submit"]:hover {
 	            }
 	        });
 	    });
-	     document.getElementById('openModalBtn').addEventListener('click', function() {
-	            const modal = new bootstrap.Modal(document.getElementById('ingredientModal'));
-	            modal.show();
+		  // Abrir el modal al hacer clic en el botón "Añadir Ingredientes"
+	    document.getElementById('openModalBtn').addEventListener('click', function() {
+	        const modal = new bootstrap.Modal(document.getElementById('ingredientModal'));
+	        modal.show();
+	    });
+
+	    // Función para actualizar la lista principal de ingredientes en el HTML
+	    function updateIngredientsListContainer(ingredients) {
+	        const ingredientsListContainer = document.getElementById('ingredientsListContainer');
+	        ingredientsListContainer.innerHTML = ''; // Limpiar la lista existente
+
+	        ingredients.forEach(ingredient => {
+	            const listItem = document.createElement('li');
+	            listItem.textContent = ingredient;
+	            ingredientsListContainer.appendChild(listItem);
 	        });
+	    }
 
-	        document.getElementById('addIngredientToList').addEventListener('click', function() {
-	            const ingredientInput = document.getElementById('newIngredient');
-	            const ingredientValue = ingredientInput.value.trim();
-	            
-	            if (ingredientValue) {
-	                const ingredientItem = document.createElement('div');
-	                ingredientItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
-	                ingredientItem.textContent = ingredientValue;
+	    // Agregar un nuevo ingrediente a la lista en el modal y en la lista principal
+	    document.getElementById('addIngredientToList').addEventListener('click', function() {
+	        const ingredientInput = document.getElementById('newIngredient');
+	        const ingredientValue = ingredientInput.value.trim();
 
-	                // Botón para eliminar el ingrediente
-	                const removeBtn = document.createElement('button');
-	                removeBtn.classList.add('btn', 'btn-outline-danger', 'btn-sm');
-	                removeBtn.textContent = 'Eliminar';
-	                removeBtn.onclick = function() {
-	                    ingredientsList.removeChild(ingredientItem);
-	                };
+	        if (ingredientValue) {
+	            const ingredientItem = document.createElement('div');
+	            ingredientItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+	            ingredientItem.textContent = ingredientValue;
 
-	                ingredientItem.appendChild(removeBtn);
-	                document.getElementById('ingredientsList').appendChild(ingredientItem);
-	                ingredientInput.value = ''; // Limpiar el campo de entrada
-	            }
+	            // Botón para eliminar el ingrediente
+	            const removeBtn = document.createElement('button');
+	            removeBtn.classList.add('btn', 'btn-outline-danger', 'btn-sm');
+	            removeBtn.textContent = 'Eliminar';
+	            removeBtn.onclick = function() {
+	                ingredientItem.remove();
+	                updateIngredientsListContainer(getIngredientsFromModal()); // Actualizar lista principal al eliminar
+	            };
+
+	            ingredientItem.appendChild(removeBtn);
+	            document.getElementById('ingredientList').appendChild(ingredientItem); // Agregar al contenedor del modal
+
+	            ingredientInput.value = ''; // Limpiar el campo de entrada
+
+	            // Actualizar la lista principal de ingredientes en el HTML
+	            updateIngredientsListContainer(getIngredientsFromModal());
+	        }
+	    });
+
+	    // Función para obtener ingredientes actuales del modal
+	    function getIngredientsFromModal() {
+	        const ingredients = [];
+	        document.querySelectorAll('#ingredientList .list-group-item').forEach(item => {
+	            ingredients.push(item.firstChild.textContent);
 	        });
+	        return ingredients;
+	    }
 
-	        // Guardar ingredientes en el formulario principal
-	        document.getElementById('saveIngredientsBtn').addEventListener('click', function() {
-	            const ingredientsList = document.getElementById('ingredientsList');
-	            const ingredients = [];
+	    // Guardar ingredientes en el formulario principal y cerrar modal
+	    document.getElementById('saveIngredientsBtn').addEventListener('click', function() {
+	        const ingredients = getIngredientsFromModal();
 
-	            ingredientsList.querySelectorAll('.list-group-item').forEach(item => {
-	                ingredients.push(item.firstChild.textContent); // Agregar el nombre del ingrediente a la lista
-	            });
+	        // Asignar ingredientes al input oculto para envío del formulario
+	        document.getElementById('ingredients').value = ingredients.join(', ');
 
-	            // Mostrar ingredientes en el formulario
-	            const ingredientsListContainer = document.getElementById('ingredientsListContainer');
-	            ingredientsListContainer.innerHTML = ingredients.map(ing => `<div>${ing}</div>`).join('');
-
-	            // Cerrar el modal
-	            const modal = bootstrap.Modal.getInstance(document.getElementById('ingredientModal'));
-	            modal.hide();
-	        });
-
+	        // Cerrar el modal
+	        const modal = bootstrap.Modal.getInstance(document.getElementById('ingredientModal'));
+	        modal.hide();
+	    });
 	        // Manejo del envío del formulario
 	        document.getElementById('recipeForm').addEventListener('submit', function(event) {
 	            event.preventDefault();

@@ -111,7 +111,7 @@ button[type="submit"]:hover {
 			<div class="card mb-4">
 				<div class="card-header">Información General</div>
 				<div class="card-body">
-				    <input type="hidden" id="id" name="id" th:value="${recipe.id}">
+					<input type="hidden" id="id" name="id" th:value="${recipe.id}">
 					<div class="mb-3">
 						<label for="name" class="form-label">*Nombre de la Receta</label>
 						<input type="text" class="form-control" id="name" name="name"
@@ -129,7 +129,8 @@ button[type="submit"]:hover {
 					<div class="mb-3">
 						<label for="preparationTime" class="form-label">*Tiempo de
 							Preparación (minutos)</label> <input type="range" class="form-range"
-							id="preparationTime" name="preparationTime" min="10" max="180" step="5"
+							id="preparationTime" name="preparationTime" min="10" max="180"
+							step="5"
 							oninput="document.getElementById('prepTimeOutput').value = this.value">
 						<output id="prepTimeOutput" th:text="${recipe.preparationTime}"></output>
 					</div>
@@ -216,8 +217,7 @@ button[type="submit"]:hover {
 					<div class="mb-3">
 						<label for="RecipeTechniques" class="form-label">*Seleccione
 							las Técnicas Culinarias</label> <select id="RecipeTechniques"
-							name="RecipeTechniques" class="form-control" multiple
-							required>
+							name="RecipeTechniques" class="form-control" multiple required>
 							<option th:each="technique : ${recipeTechniques}"
 								th:value="${technique.id}" th:text="${technique.name}"
 								th:selected="${selectedTechniques.contains(technique.id)}">
@@ -257,23 +257,16 @@ button[type="submit"]:hover {
 				<div class="card-header">Lista Ingredientes</div>
 				<div class="card-body">
 					<div class="mb-3">
-						<div id="ingredientsContainer">
-							<!-- Iterar sobre la lista de ingredientes de la receta -->
-							<div th:each="ingredient, iterStat : ${recipe.ingredients}">
-								<div class="mb-3 ingredient-item">
-									<label th:for="'ingredient' + ${iterStat.index}"
-										class="form-label">*Ingrediente <span
-										th:text="${iterStat.index + 1}">1</span></label> <input type="text"
-										class="form-control" th:id="'ingredient' + ${iterStat.index}"
-										th:name="'Ingredients[' + ${iterStat.index} + ']'"
-										th:value="${ingredient}" required>
-								</div>
-							</div>
-						</div>
-						<!-- Botón para añadir más ingredientes -->
 						<button type="button" class="btn btn-outline-primary"
-							id="addIngredientBtn">Añadir Ingrediente</button>
+							id="openModalBtn">Gestionar Ingredientes</button>
 					</div>
+					<h4>Ingredientes:</h4>
+					<ul id="ingredientsListContainer" name="Ingredients"
+						th:value="*{Ingredients}">
+						<li th:each="ingredient : ${recipe.Ingredients}"
+							th:text="${ingredient}"></li>
+					</ul>
+					<input type="hidden" id="ingredients" name="ingredients">
 				</div>
 
 				<div class="mb-3">
@@ -377,6 +370,40 @@ button[type="submit"]:hover {
 			</div>
 		</form>
 	</main>
+
+	<!-- Modal for managing ingredients -->
+	<div class="modal fade" id="ingredientModal" tabindex="-1"
+		aria-labelledby="ingredientModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="ingredientModalLabel">Gestionar
+						Ingredientes</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">
+					<h5>Ingredientes Actuales</h5>
+					<div id="ingredientList" class="list-group mb-3"></div>
+
+					<h5>Agregar Nuevo Ingrediente</h5>
+					<div class="mb-3">
+						<label for="newIngredient" class="form-label">Ingrediente</label>
+						<input type="text" class="form-control" id="newIngredient">
+					</div>
+					<button type="button" class="btn btn-outline-secondary"
+						id="addIngredientToList">Añadir a la lista</button>
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-bs-dismiss="modal">Cerrar</button>
+					<button type="button" class="btn btn-primary"
+						id="saveIngredientsBtn">Guardar Cambios</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<script src="/js/formRecipe.js"></script>
 	<script
 		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
@@ -384,7 +411,7 @@ button[type="submit"]:hover {
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+		src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 	<script
 		src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
 
@@ -450,25 +477,80 @@ button[type="submit"]:hover {
 		function updatePrepTimeValue(value) {
 		    document.getElementById('prepTimeCurrentValue').innerText = value;
 		}
-		  let ingredientCount = 1; // Contador de ingredientes
+		// Función para crear un elemento de ingrediente en el modal
+		function createIngredientItem(text) {
+		    const ingredientItem = document.createElement('div');
+		    ingredientItem.classList.add('list-group-item', 'd-flex', 'justify-content-between', 'align-items-center');
+		    ingredientItem.textContent = text;
 
-		    // Función para agregar nuevos campos de ingredientes
-		    document.getElementById('addIngredientBtn').addEventListener('click', function() {
-		        ingredientCount++; // Incrementar el contador
+		    const removeBtn = document.createElement('button');
+		    removeBtn.classList.add('btn', 'btn-outline-danger', 'btn-sm');
+		    removeBtn.textContent = 'Eliminar';
+		    removeBtn.onclick = function () {
+		        ingredientItem.remove();
+		    };
 
-		        const ingredientsContainer = document.getElementById('ingredientsContainer');
-		        const newIngredientDiv = document.createElement('div');
-		        newIngredientDiv.classList.add('mb-3', 'ingredient-item');
+		    ingredientItem.appendChild(removeBtn);
+		    return ingredientItem;
+		}
 
-		        // Crear nuevo input para el ingrediente
-		        newIngredientDiv.innerHTML = `
-		            <label for="ingredient${ingredientCount}" class="form-label">*Ingrediente ${ingredientCount}</label>
-		            <input type="text" class="form-control" id="ingredient${ingredientCount}" name="Ingredients[]" required>
-		        `;
+		// Abrir el modal y llenar con los ingredientes actuales
+		document.getElementById('openModalBtn').addEventListener('click', function () {
+		    const ingredientList = document.getElementById('ingredientList');
+		    ingredientList.innerHTML = ''; // Limpiar la lista actual en el modal
 
-		        // Añadir el nuevo campo al contenedor
-		        ingredientsContainer.appendChild(newIngredientDiv);
+		    // Obtener ingredientes de la lista principal y llenar el modal
+		    const existingIngredients = Array.from(document.querySelectorAll('#ingredientsListContainer li'));
+		    existingIngredients.forEach(item => {
+		        const ingredientText = item.textContent.trim();
+		        const ingredientItem = createIngredientItem(ingredientText);
+		        ingredientList.appendChild(ingredientItem);
 		    });
+
+		    // Mostrar el modal
+		    const modal = new bootstrap.Modal(document.getElementById('ingredientModal'));
+		    modal.show();
+		});
+
+		// Añadir nuevo ingrediente a la lista del modal
+		document.getElementById('addIngredientToList').addEventListener('click', function () {
+		    const newIngredientInput = document.getElementById('newIngredient');
+		    const newIngredientValue = newIngredientInput.value.trim();
+
+		    if (newIngredientValue) {
+		        const ingredientItem = createIngredientItem(newIngredientValue);
+		        document.getElementById('ingredientList').appendChild(ingredientItem);
+		        newIngredientInput.value = ''; // Limpiar el input después de añadir
+		    } else {
+		        alert('Por favor, ingrese un ingrediente válido.');
+		    }
+		});
+
+		// Guardar ingredientes del modal en la lista principal y llenar el input oculto
+		document.getElementById('saveIngredientsBtn').addEventListener('click', function () {
+		    const ingredientsListContainer = document.getElementById('ingredientsListContainer');
+		    const ingredientsInModal = Array.from(document.querySelectorAll('#ingredientList .list-group-item'));
+
+		    // Limpiar la lista principal y agregar elementos desde el modal
+		    ingredientsListContainer.innerHTML = '';
+		    const ingredientsArray = []; // Array para almacenar los ingredientes
+
+		    ingredientsInModal.forEach(item => {
+		        const ingredientText = item.firstChild.textContent.trim(); // Extraer el texto
+		        const listItem = document.createElement('li');
+		        listItem.textContent = ingredientText;
+		        ingredientsListContainer.appendChild(listItem);
+		        
+		        ingredientsArray.push(ingredientText); // Agregar al array
+		    });
+
+		    // Llenar el input oculto con el array de ingredientes en formato JSON
+		    document.getElementById('ingredients').value = JSON.stringify(ingredientsArray);
+
+		    // Cerrar el modal
+		    const modal = bootstrap.Modal.getInstance(document.getElementById('ingredientModal'));
+		    modal.hide();
+		});
 	</script>
 </body>
 </html>

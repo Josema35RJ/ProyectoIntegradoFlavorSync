@@ -67,6 +67,7 @@ public class CookController {
 
 	@GetMapping("/auth/cook/cookPanel")
 	public String PanelCook(
+			@RequestParam(required = false) String ingredients,
 	        @RequestParam(required = false) String category,
 	        @RequestParam(required = false) String difficulty,
 	        @RequestParam(required = false) Integer rating,
@@ -75,9 +76,9 @@ public class CookController {
 	    
 	    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 	    cookModel c = cookService.findById(userDetails.getId());
-
+       
 	    // Aplicar los filtros al obtener la lista de recetas
-	    List<recipeModel> recipesFilters = recipeService.filterRecipes(category, difficulty, rating);
+	    List<recipeModel> recipesFilters = recipeService.filterRecipes(ingredients,category, difficulty, rating);
 	    List<recipeModel> recetasFacil = recipeService.getListFindByDificulty("Fácil");
 
 	    // Mapa de imágenes para las recetas filtradas
@@ -103,18 +104,19 @@ public class CookController {
 
 	    return PANEL_VIEW; // Asegúrate de que PANEL_VIEW sea el nombre correcto de la vista del panel
 	}
-	
+
 	@GetMapping("/auth/cook/cookRecipes")
 	public String RecipesCook(Model model, Authentication authentication) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		// Ahora puedes obtener la información del usuario logueado desde userDetails
-	    Map<Integer, String> imagesRecipes = new HashMap<>();
+		Map<Integer, String> imagesRecipes = new HashMap<>();
 		cookModel c = cookService.findById(userDetails.getId());
 		model.addAttribute("cook", c.getNickName());
 		byte[] imageBytes = c.getImagePerfil();
 		for (recipeModel r : c.getListRecipes()) {
 
-			imagesRecipes.put(r.getId(),"data:image/jpeg;base64," + Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
+			imagesRecipes.put(r.getId(),
+					"data:image/jpeg;base64," + Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
 		}
 		String base64Image = Base64.getEncoder().encodeToString(imageBytes);
 		model.addAttribute("base64listImage", imagesRecipes);

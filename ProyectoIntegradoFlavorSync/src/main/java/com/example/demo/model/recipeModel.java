@@ -117,7 +117,7 @@ public class recipeModel {
 
 	// Relación many-to-many usando la clase RecipeIngredient como entidad
 	// intermedia
-	private List<String>  Ingredients = new ArrayList<>();
+	private List<String> Ingredients = new ArrayList<>();
 	
 	//Fecha de creacion de la receta 
 	private LocalDate createDate;

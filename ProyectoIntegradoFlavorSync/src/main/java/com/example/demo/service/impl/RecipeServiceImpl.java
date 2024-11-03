@@ -228,16 +228,34 @@ public class RecipeServiceImpl implements RecipeService {
 	}
 
 	@Override
-	public List<recipeModel> filterRecipes(String category, String difficulty, Integer rating) {
-		// TODO Auto-generated method stub
-		List<recipeModel> l = new ArrayList<>();
-		for(recipe r: recipeRepository.findRecipesByFilters(difficulty, rating)) {
-			l.add(recipeConverter.transform(r));
-			l=   l.stream()
-				        .filter(recipe -> category == null || category.isEmpty() || recipe.getCategory().contains(category))
-				        .collect(Collectors.toList());
-		}
-		return l;
-	}
+	public List<recipeModel> filterRecipes(String ingredients, String category, String difficulty, Integer rating) {
+		List<recipeModel> filteredRecipes = new ArrayList<>();
 
+		// Convertimos la cadena de ingredientes en una lista para facilitar la
+		// comparación
+		List<String> ingredientList = (ingredients == null || ingredients.isEmpty()) ? new ArrayList<>()
+				: Arrays.asList(ingredients.split(",")).stream().map(String::trim) // Limpiamos espacios en blanco
+						.collect(Collectors.toList());
+
+		System.out.println("**********************************");
+		System.out.println("Filtrando por ingredientes: " + ingredientList);
+
+		// Obtenemos las recetas según la dificultad y la calificación
+		for (recipe r : recipeRepository.findRecipesByFilters(difficulty, rating)) {
+			recipeModel recipeModel = recipeConverter.transform(r);
+			filteredRecipes.add(recipeModel);
+		}
+
+		// Aplicamos filtros para categoría e ingredientes
+		filteredRecipes = filteredRecipes.stream()
+				.filter(recipe -> category == null || category.isEmpty() || recipe.getCategory().contains(category))
+				.filter(recipe -> ingredientList.isEmpty() || recipe.getIngredients().stream()
+						.anyMatch(ingredient -> ingredientList.stream().anyMatch(
+								filterIngredient -> ingredient.toUpperCase().contains(filterIngredient.toUpperCase()))))
+				.collect(Collectors.toList());
+
+		System.out.println("**********************************");
+		System.out.println("Recetas filtradas: " + filteredRecipes);
+		return filteredRecipes;
+	}
 }

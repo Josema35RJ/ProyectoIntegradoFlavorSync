@@ -25,5 +25,5 @@ public interface RecipeService {
 
 	boolean toggleFav(Integer recipeId, int id);
 
-	public List<recipeModel> filterRecipes(String category, String difficulty, Integer rating);
+	public List<recipeModel> filterRecipes(String ingredients, String category, String difficulty, Integer rating);
 }
