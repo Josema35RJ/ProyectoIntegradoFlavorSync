@@ -111,6 +111,33 @@ button[type="submit"]:hover {
 			<div class="card mb-4">
 				<div class="card-header">Información General</div>
 				<div class="card-body">
+					<div class="text-center mb-3" style="position: relative;">
+						<!-- Profile image -->
+						<img id="profileImage" th:src="${base64Image}"
+							style="width: 150px; height: 150px; border-radius: 50%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); object-fit: cover;"
+							alt="Profile Image">
+
+						<!-- Change image button -->
+						<label id="changeImageLink"
+							style="position: absolute; bottom: 10px; right: 10px; background: rgba(255, 255, 255, 0.8); border-radius: 50%; padding: 5px; text-align: center; box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3); cursor: pointer;">
+							<img
+							src="https://img.icons8.com/material-outlined/24/000000/camera--v1.png"
+							alt="Edit" style="width: 24px; height: 24px;">
+						</label>
+
+						<!-- Hidden input for uploading a new image -->
+						<input type="file" id="imagenPerfilFile" name="imagenPerfilFile"
+							style="display: none;" accept="image/png, image/jpeg"> <input
+							type="hidden" id="imagenPerfilBase64" name="imagenPerfilBase64">
+					</div>
+
+					<style>
+/* Show change link on hover */
+#profileImage:hover+#changeImageLink {
+	display: block; /* Always show the label since it's not display:none */
+}
+</style>
+
 					<input type="hidden" id="id" name="id" th:value="${recipe.id}">
 					<div class="mb-3">
 						<label for="name" class="form-label">*Nombre de la Receta</label>
@@ -121,7 +148,7 @@ button[type="submit"]:hover {
 					<div class="mb-3">
 						<label for="diners" class="form-label">*Número de
 							Comensales</label> <input type="range" class="form-range" id="diners"
-							name="diners" min="1" max="10"
+							name="diners" min="1" max="10" th:value="${recipe.diners}"
 							oninput="document.getElementById('dinersOutput').value = this.value">
 						<output id="dinersOutput" th:text="${recipe.diners}"></output>
 					</div>
@@ -130,7 +157,7 @@ button[type="submit"]:hover {
 						<label for="preparationTime" class="form-label">*Tiempo de
 							Preparación (minutos)</label> <input type="range" class="form-range"
 							id="preparationTime" name="preparationTime" min="10" max="180"
-							step="5"
+							step="5" th:value="${recipe.preparationTime}"
 							oninput="document.getElementById('prepTimeOutput').value = this.value">
 						<output id="prepTimeOutput" th:text="${recipe.preparationTime}"></output>
 					</div>
@@ -361,6 +388,35 @@ button[type="submit"]:hover {
 							<option th:text="*{city}"></option>
 						</select>
 					</div>
+
+					<!-- HTML -->
+					<h2 class="h4 text-center">Galería de Imágenes</h2>
+					<div id="imageGallery" class="d-flex flex-wrap gap-3">
+						<!-- Mostrar imágenes existentes con Thymeleaf -->
+						<div th:each="imgSrc, iterStat : ${imageRecipe}"
+							class="position-relative img-container">
+							<img th:src="${imgSrc}" alt="Imagen de la receta"
+								class="img-thumbnail"
+								style="max-height: 200px; object-fit: cover;">
+							<button type="button"
+								class="btn-close position-absolute top-0 end-0 m-1"
+								th:onclick="'removeExistingImage(' + ${iterStat.index} + ')'"></button>
+						</div>
+					</div>
+
+					<div class="text-center mt-3">
+						<!-- Botón para añadir imágenes -->
+						<button id="addImageButton" type="button"
+							class="btn btn-secondary rounded-circle"
+							style="width: 50px; height: 50px; font-size: 1.5rem;">+</button>
+					</div>
+
+					<!-- Input de archivos oculto -->
+					<input type="file" id="recipeImages" multiple class="d-none">
+					<!-- Input oculto para almacenar imágenes en Base64 -->
+					<input type="hidden" id="recipeImagesBase64"
+						name="recipeImagesBase64">
+
 				</div>
 			</div>
 
@@ -544,12 +600,171 @@ button[type="submit"]:hover {
 		        ingredientsArray.push(ingredientText); // Agregar al array
 		    });
 
-		    // Llenar el input oculto con el array de ingredientes en formato JSON
-		    document.getElementById('ingredients').value = JSON.stringify(ingredientsArray);
+		    // Llenar el input oculto con el array de ingredientes en formato de cadena, sin JSON
+		    document.getElementById('ingredients').value = ingredientsArray.join(", ");
 
 		    // Cerrar el modal
 		    const modal = bootstrap.Modal.getInstance(document.getElementById('ingredientModal'));
 		    modal.hide();
+		});
+		document.addEventListener('DOMContentLoaded', function() {
+		    const changeImageLink = document.getElementById('changeImageLink');
+		    const imagenPerfilFile = document.getElementById('imagenPerfilFile');
+		    const profileImage = document.getElementById('profileImage');
+		    const imagenPerfilBase64 = document.getElementById('imagenPerfilBase64');
+
+		    // Click event to trigger file input
+		    changeImageLink.addEventListener('click', function(event) {
+		        event.preventDefault(); // Prevent default behavior
+		        imagenPerfilFile.click(); // Trigger the file input click
+		    });
+
+		    // Change event for file input
+		    imagenPerfilFile.addEventListener('change', function(event) {
+		        const file = event.target.files[0]; // Get the selected file
+		        if (file) {
+		            const reader = new FileReader(); // Create a FileReader
+		            reader.onload = function(e) {
+		                const img = new Image();
+		                img.src = e.target.result; // Set the image source to the file's result
+		                img.onload = function() {
+		                    const canvas = document.createElement('canvas'); // Create a canvas
+		                    const maxSize = 300; // Maximum size for both width and height
+		                    let { width, height } = img; // Get original dimensions
+
+		                    // Calculate new dimensions maintaining aspect ratio
+		                    if (width > height) {
+		                        if (width > maxSize) {
+		                            height = Math.round((maxSize / width) * height);
+		                            width = maxSize;
+		                        }
+		                    } else {
+		                        if (height > maxSize) {
+		                            width = Math.round((maxSize / height) * width);
+		                            height = maxSize;
+		                        }
+		                    }
+
+		                    canvas.width = width; // Set canvas width
+		                    canvas.height = height; // Set canvas height
+
+		                    // Draw the image on the canvas
+		                    const ctx = canvas.getContext('2d');
+		                    ctx.drawImage(img, 0, 0, width, height);
+
+		                    // Get the compressed image in base64 format
+		                    const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7); // Quality at 70%
+
+		                    // Store the base64 image without the prefix
+		                    imagenPerfilBase64.value = compressedBase64.split(',')[1];
+
+		                    // Update the displayed profile image
+		                    profileImage.src = compressedBase64;
+		                };
+		            };
+		            reader.readAsDataURL(file); // Read the file as a Data URL
+		        }
+		    });
+		});
+		let base64Images = [];
+
+		// Función para inicializar las imágenes precargadas
+		function initializePreloadedImages() {
+			const preloadedImages = document.querySelectorAll('#imageGallery .img-thumbnail');
+			preloadedImages.forEach((imgElement) => {
+				const src = imgElement.getAttribute('src');
+				const base64Data = src.includes("base64") ? src.split(",")[1] : src;
+				base64Images.push(base64Data);
+			});
+			updateHiddenInput();
+		}
+
+		initializePreloadedImages(); // Llama a la función al cargar la página
+
+		// Función para actualizar el input oculto con el contenido actual de base64Images
+		function updateHiddenInput() {
+			document.getElementById('recipeImagesBase64').value = base64Images.join(',');
+		}
+
+		// Función para eliminar imágenes existentes
+		function removeExistingImage(index) {
+			base64Images.splice(index, 1); // Remover de la lista base64
+			document.querySelector(`#imageGallery .img-container:nth-child(${index + 1})`).remove();
+			updateHiddenInput();
+		}
+
+		// Evento para abrir el selector de archivos al hacer clic en el botón "+"
+		document.getElementById('addImageButton').addEventListener('click', function() {
+			document.getElementById('recipeImages').click();
+		});
+
+		// Procesamiento de imágenes nuevas
+		document.getElementById('recipeImages').addEventListener('change', function(event) {
+			const files = event.target.files;
+
+			Array.from(files).forEach((file) => {
+				if (file) {
+					const reader = new FileReader();
+					reader.onload = function(e) {
+						const img = new Image();
+						img.src = e.target.result;
+						img.onload = function() {
+							const canvas = document.createElement('canvas');
+							const maxWidth = 300;
+							const maxHeight = 300;
+							let width = img.width;
+							let height = img.height;
+
+							if (width > height && width > maxWidth) {
+								height = Math.round((maxWidth / width) * height);
+								width = maxWidth;
+							} else if (height > maxHeight) {
+								width = Math.round((maxHeight / height) * width);
+								height = maxHeight;
+							}
+
+							canvas.width = width;
+							canvas.height = height;
+							const ctx = canvas.getContext('2d');
+							ctx.drawImage(img, 0, 0, width, height);
+
+							const compressedBase64 = canvas.toDataURL('image/jpeg', 0.7);
+							const imageBase64Data = compressedBase64.split(',')[1];
+							base64Images.push(imageBase64Data); // Añadir la nueva imagen a la lista base64
+							updateHiddenInput();
+
+							// Agregar nueva imagen a la galería
+							const imgContainer = document.createElement('div');
+							imgContainer.classList.add('position-relative', 'img-container');
+
+							const imgElement = document.createElement('img');
+							imgElement.src = compressedBase64;
+							imgElement.alt = "Imagen de la receta";
+							imgElement.classList.add('img-thumbnail');
+							imgElement.style.maxHeight = '200px';
+							imgElement.style.objectFit = 'cover';
+
+							const deleteButton = document.createElement('button');
+							deleteButton.classList.add('btn-close', 'position-absolute', 'top-0', 'end-0', 'm-1');
+							deleteButton.onclick = function() {
+								const index = base64Images.indexOf(imageBase64Data);
+								if (index > -1) {
+									base64Images.splice(index, 1);
+									updateHiddenInput();
+								}
+								imgContainer.remove();
+							};
+
+							imgContainer.appendChild(imgElement);
+							imgContainer.appendChild(deleteButton);
+							document.getElementById('imageGallery').appendChild(imgContainer);
+						};
+					};
+					reader.readAsDataURL(file);
+				}
+			});
+
+			event.target.value = ''; // Limpiar el input
 		});
 	</script>
 </body>

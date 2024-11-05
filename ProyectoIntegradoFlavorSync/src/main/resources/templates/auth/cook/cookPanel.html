@@ -415,7 +415,7 @@ footer {
 	});
 	// Guardar los filtros seleccionados en localStorage
 	function saveFilters() {
-		 localStorage.setItem('ingredients', $('#ingredientsFilter').val());
+	    localStorage.setItem('ingredients', JSON.stringify($('#ingredientsFilter').val()));
 	    localStorage.setItem('category', $('#categoryFilter').val());
 	    localStorage.setItem('difficulty', $('#difficultyFilter').val());
 	    localStorage.setItem('rating', $('#ratingFilter').val());
@@ -423,13 +423,13 @@ footer {
 
 	// Cargar los filtros desde localStorage
 	function loadFilters() {
-		 const ingredients = localStorage.getItem('ingredients');
+	    const ingredients = JSON.parse(localStorage.getItem('ingredients'));
 	    const category = localStorage.getItem('category');
 	    const difficulty = localStorage.getItem('difficulty');
 	    const rating = localStorage.getItem('rating');
 
 	    if (ingredients) {
-	        $('#ingredientsFilter').val(ingredients);
+	        $('#ingredientsFilter').val(ingredients).trigger('change'); // Usamos trigger para que Select2 se actualice correctamente
 	    }
 	    if (category) {
 	        $('#categoryFilter').val(category);
@@ -454,7 +454,7 @@ footer {
 	        let rating = $('#ratingFilter').val();
 	        let query = '';
 
-	        if (ingredients) query += 'ingredients=' + ingredients + '&';
+	        if (ingredients) query += 'ingredients=' + ingredients.join(',') + '&'; // Únicos cambios aquí
 	        if (category) query += 'category=' + category + '&';
 	        if (difficulty) query += 'difficulty=' + difficulty + '&';
 	        if (rating) query += 'rating=' + rating;
@@ -462,7 +462,8 @@ footer {
 	        // Redirigir a la página filtrada
 	        window.location.href = '/auth/cook/cookPanel?' + query;
 	    });
-	});   // Escuchar el evento de apertura del modal
+	});
+  // Escuchar el evento de apertura del modal
     var commentModal = document.getElementById('commentModal');
     commentModal.addEventListener('show.bs.modal', function () {
         // Resetear la valoración al abrir el modal

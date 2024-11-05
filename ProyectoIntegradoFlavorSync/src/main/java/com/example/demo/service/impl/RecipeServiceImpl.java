@@ -3,12 +3,14 @@ package com.example.demo.service.impl;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.example.demo.converter.CookConverter;
 import com.example.demo.converter.RecipeConverter;
@@ -59,11 +61,11 @@ public class RecipeServiceImpl implements RecipeService {
 	public boolean updateRecipe(int id, recipeModel re) {
 		// Buscar la receta existente en el repositorio
 		recipeModel recipeOld = recipeConverter.transform(recipeRepository.findById(id));
+	
 		if (recipeOld.toString().isEmpty()) {
 			// Si no se encuentra la receta, retornar false
 			return false;
 		}
-
 		// Actualizar nombre si es diferente
 		if (!re.getName().equalsIgnoreCase(recipeOld.getName())) {
 			recipeOld.setName(re.getName());
@@ -161,6 +163,126 @@ public class RecipeServiceImpl implements RecipeService {
 		recipeRepository.save(recipeConverter.transform(recipeOld));
 		return true;
 	}
+	
+	@Override
+	public boolean updateRecipe(int id, recipeModel re,String imagenPerfilRecipe, String[] ImagesBase64) {
+		// Buscar la receta existente en el repositorio
+		recipeModel recipeOld = recipeConverter.transform(recipeRepository.findById(id));
+	
+		if (recipeOld.toString().isEmpty()) {
+			// Si no se encuentra la receta, retornar false
+			return false;
+		}
+		if(imagenPerfilRecipe.getBytes().length>0) {
+			recipeOld.setImageRecipePerfil(Base64.getDecoder().decode(imagenPerfilRecipe));
+		}
+		// Actualizar nombre si es diferente
+		if (!re.getName().equalsIgnoreCase(recipeOld.getName())) {
+			recipeOld.setName(re.getName());
+		}
+
+		// Actualizar cantidad de comensales si es diferente
+		if (re.getDiners() != recipeOld.getDiners()) {
+			recipeOld.setDiners(re.getDiners());
+		}
+
+		// Actualizar tiempo de preparación si es diferente
+		if (re.getPreparationTime() != recipeOld.getPreparationTime()) {
+			recipeOld.setPreparationTime(re.getPreparationTime());
+		}
+
+		// Actualizar lugar de elaboración si es diferente
+		if (!re.getWhereItisDone().equals(recipeOld.getWhereItisDone())) {
+			recipeOld.setWhereItisDone(re.getWhereItisDone());
+		}
+
+		// Actualizar categorías si son diferentes
+		if (!re.getCategory().equals(recipeOld.getCategory())) {
+			recipeOld.setCategory(re.getCategory());
+		}
+
+		// Actualizar dificultad si es diferente
+		if (!re.getDifficulty().equalsIgnoreCase(recipeOld.getDifficulty())) {
+			recipeOld.setDifficulty(re.getDifficulty());
+		}
+
+		// Actualizar las técnicas culinarias si son diferentes
+		if (!re.getListRecipeTechniques().equals(recipeOld.getListRecipeTechniques())) {
+			recipeOld.setListRecipeTechniques(re.getListRecipeTechniques());
+		}
+
+		// Actualizar utensilios de cocina si son diferentes
+		if (!re.getListkitchenUtensils().equals(recipeOld.getListkitchenUtensils())) {
+			recipeOld.setListkitchenUtensils(re.getListkitchenUtensils());
+		}
+
+		// Actualizar restricciones alimentarias si son diferentes
+		if (!re.getAllergensAndDietaryRestrictions().equals(recipeOld.getAllergensAndDietaryRestrictions())) {
+			recipeOld.setAllergensAndDietaryRestrictions(re.getAllergensAndDietaryRestrictions());
+		}
+
+		// Actualizar la información nutricional si es diferente
+		if (re.getNutritionalInformation() != null
+				&& !re.getNutritionalInformation().equals(recipeOld.getNutritionalInformation())) {
+			recipeOld.setNutritionalInformation(re.getNutritionalInformation());
+		}
+
+		// Actualizar las instrucciones si son diferentes
+		if (!re.getInstructions().equals(recipeOld.getInstructions())) {
+			recipeOld.setInstructions(re.getInstructions());
+		}
+
+		// Actualizar los ingredientes si son diferentes
+		if (!re.getIngredients().isEmpty()) {
+			recipeOld.setIngredients(re.getIngredients());
+		}
+
+		// Actualizar las imágenes si son diferentes
+		if (!re.getImagesRecipe().equals(recipeOld.getImagesRecipe())) {
+			recipeOld.setImagesRecipe(re.getImagesRecipe());
+		}
+
+		// Actualizar la imagen de perfil si es diferente
+		if (re.getImageRecipePerfil() != null
+				&& !Arrays.equals(re.getImageRecipePerfil(), recipeOld.getImageRecipePerfil())) {
+			recipeOld.setImageRecipePerfil(re.getImageRecipePerfil());
+		}
+
+		// Actualizar el historial si es diferente
+		if (!re.getHistory().equals(recipeOld.getHistory())) {
+			recipeOld.setHistory(re.getHistory());
+		}
+
+		// Actualizar las observaciones (grades) si son diferentes
+		if (!re.getGrades().equals(recipeOld.getGrades())) {
+			recipeOld.setGrades(re.getGrades());
+		}
+
+		// Actualizar país si es diferente
+		if (!re.getCountry().equalsIgnoreCase(recipeOld.getCountry())) {
+			recipeOld.setCountry(re.getCountry());
+		}
+
+		// Actualizar ciudad si es diferente
+		if (!re.getCity().equalsIgnoreCase(recipeOld.getCity())) {
+			recipeOld.setCity(re.getCity());
+		}
+        
+		if (ImagesBase64.length > 0) {
+			recipeOld.getImagesRecipe().clear();
+		    for(String x :ImagesBase64){
+		    	recipeOld.getImagesRecipe().add(Base64.getDecoder().decode(x));
+		    }
+		   
+		}
+
+		// Actualizar la fecha de actualización
+		recipeOld.setUpdateDate(LocalDate.now());
+		// Guardar la receta actualizada en el repositorio
+		recipeRepository.save(recipeConverter.transform(recipeOld));
+		return true;
+	}
+
 
 	// No interesa borrar recetas
 	@Override
@@ -236,9 +358,8 @@ public class RecipeServiceImpl implements RecipeService {
 		List<String> ingredientList = (ingredients == null || ingredients.isEmpty()) ? new ArrayList<>()
 				: Arrays.asList(ingredients.split(",")).stream().map(String::trim) // Limpiamos espacios en blanco
 						.collect(Collectors.toList());
-
-		System.out.println("**********************************");
-		System.out.println("Filtrando por ingredientes: " + ingredientList);
+		System.out.println("*************************");
+		System.out.println(ingredientList);
 
 		// Obtenemos las recetas según la dificultad y la calificación
 		for (recipe r : recipeRepository.findRecipesByFilters(difficulty, rating)) {
@@ -249,13 +370,11 @@ public class RecipeServiceImpl implements RecipeService {
 		// Aplicamos filtros para categoría e ingredientes
 		filteredRecipes = filteredRecipes.stream()
 				.filter(recipe -> category == null || category.isEmpty() || recipe.getCategory().contains(category))
-				.filter(recipe -> ingredientList.isEmpty() || recipe.getIngredients().stream()
-						.anyMatch(ingredient -> ingredientList.stream().anyMatch(
-								filterIngredient -> ingredient.toUpperCase().contains(filterIngredient.toUpperCase()))))
+				.filter(recipe -> ingredientList.isEmpty() || ingredientList.stream()
+						.allMatch(filterIngredient -> recipe.getIngredients().stream().anyMatch(
+								ingredient -> ingredient.toUpperCase().contains(filterIngredient.toUpperCase()))))
 				.collect(Collectors.toList());
 
-		System.out.println("**********************************");
-		System.out.println("Recetas filtradas: " + filteredRecipes);
 		return filteredRecipes;
 	}
 }

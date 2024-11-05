@@ -333,7 +333,7 @@ public class recipeModel {
 	}
 
 	public void setImagesRecipe(List<byte[]> imagesRecipe) {
-		this.imagesRecipe = imagesRecipe;
+		this.imagesRecipe.addAll(imagesRecipe);
 	}
 
 	public List<String> getIngredients() {

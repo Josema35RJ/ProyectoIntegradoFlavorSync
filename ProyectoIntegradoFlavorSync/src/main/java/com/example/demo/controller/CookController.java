@@ -66,43 +66,39 @@ public class CookController {
 	private CulinaryTechniquesService culinaryTechniquesService;
 
 	@GetMapping("/auth/cook/cookPanel")
-	public String PanelCook(
-			@RequestParam(required = false) String ingredients,
-	        @RequestParam(required = false) String category,
-	        @RequestParam(required = false) String difficulty,
-	        @RequestParam(required = false) Integer rating,
-	        Model model,
-	        Authentication authentication) {
-	    
-	    CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-	    cookModel c = cookService.findById(userDetails.getId());
-       
-	    // Aplicar los filtros al obtener la lista de recetas
-	    List<recipeModel> recipesFilters = recipeService.filterRecipes(ingredients,category, difficulty, rating);
-	    List<recipeModel> recetasFacil = recipeService.getListFindByDificulty("Fácil");
+	public String PanelCook(@RequestParam(required = false) String ingredients,
+			@RequestParam(required = false) String category, @RequestParam(required = false) String difficulty,
+			@RequestParam(required = false) Integer rating, Model model, Authentication authentication) {
 
-	    // Mapa de imágenes para las recetas filtradas
-	    Map<Integer, String> imagesRecipes = new HashMap<>();
-	    for (recipeModel r : recipesFilters) {
-	        imagesRecipes.put(r.getId(),
-	                "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
-	    }
-	    model.addAttribute("base64listImageFilters", imagesRecipes);
+		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+		cookModel c = cookService.findById(userDetails.getId());
 
-	    // Mapa de imágenes para recetas de dificultad "Fácil"
-	    Map<Integer, String> imagesRecipesNew = new HashMap<>();
-	    for (recipeModel r : recetasFacil) {
-	        imagesRecipesNew.put(r.getId(),
-	                "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
-	    }
-	    model.addAttribute("base64listImageEasy", imagesRecipesNew);
+		// Aplicar los filtros al obtener la lista de recetas
+		List<recipeModel> recipesFilters = recipeService.filterRecipes(ingredients, category, difficulty, rating);
+		List<recipeModel> recetasFacil = recipeService.getListFindByDificulty("Fácil");
 
-	    model.addAttribute("cook", c.getNickName());
-	    model.addAttribute("imageCook", c.getImagePerfil());
-	    model.addAttribute("recipesFilters", recipesFilters); // Recetas filtradas
-	    model.addAttribute("recipesEasy", recetasFacil); // Recetas fáciles
+		// Mapa de imágenes para las recetas filtradas
+		Map<Integer, String> imagesRecipes = new HashMap<>();
+		for (recipeModel r : recipesFilters) {
+			imagesRecipes.put(r.getId(),
+					"data:image/jpeg;base64," + Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
+		}
+		model.addAttribute("base64listImageFilters", imagesRecipes);
 
-	    return PANEL_VIEW; // Asegúrate de que PANEL_VIEW sea el nombre correcto de la vista del panel
+		// Mapa de imágenes para recetas de dificultad "Fácil"
+		Map<Integer, String> imagesRecipesNew = new HashMap<>();
+		for (recipeModel r : recetasFacil) {
+			imagesRecipesNew.put(r.getId(),
+					"data:image/jpeg;base64," + Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
+		}
+		model.addAttribute("base64listImageEasy", imagesRecipesNew);
+
+		model.addAttribute("cook", c.getNickName());
+		model.addAttribute("imageCook", c.getImagePerfil());
+		model.addAttribute("recipesFilters", recipesFilters); // Recetas filtradas
+		model.addAttribute("recipesEasy", recetasFacil); // Recetas fáciles
+
+		return PANEL_VIEW; // Asegúrate de que PANEL_VIEW sea el nombre correcto de la vista del panel
 	}
 
 	@GetMapping("/auth/cook/cookRecipes")
@@ -275,13 +271,15 @@ public class CookController {
 	@PostMapping("/auth/cook/updateRecipe")
 	public String UpdateRecipePost(recipeModel r, Model model,
 			@RequestParam(value = "RecipeTechniques", required = false) String[] listTechniques,
+			@RequestParam("imagenPerfilBase64") String imagenPerfilRecipe,
+			@RequestParam(value = "recipeImagesBase64", required = false) String[] ImagesBase64,
 			Authentication authentication, RedirectAttributes flash) {
 		List<culinaryTechniquesModel> l = new ArrayList<>();
 		for (String i : listTechniques) {
 			l.add(culinaryTechniquesService.findById(Integer.valueOf(i)));
 		}
 		r.setListRecipeTechniques(l);
-		recipeService.updateRecipe(r.getId(), r);
+		recipeService.updateRecipe(r.getId(), r, imagenPerfilRecipe, ImagesBase64);
 		flash.addFlashAttribute("success", "¡Receta actualizada exitosamente!");
 
 		return "redirect:" + PANEL_VIEW;
@@ -291,10 +289,12 @@ public class CookController {
 	public String UpdateRecipe(@PathVariable("id") Integer id, Model model, Authentication authentication,
 			RedirectAttributes flash) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+		List<String> listImagesRecipe = new ArrayList<>();
 		recipeModel r = recipeService.getRecipeById(id);
 		cookModel c = cookService.findById(userDetails.getId());
-		// Ahora puedes obtener la información del usuario logueado desde userDetails
-		model.addAttribute("cookPerfil", c);
+		for (byte[] b : r.getImagesRecipe()) {
+			listImagesRecipe.add("data:image/jpeg;base64," + Base64.getEncoder().encodeToString(b));
+		}
 		// Obtener los IDs de las técnicas culinarias seleccionadas previamente en la
 		// receta
 		List<Integer> selectedTechniques = r.getListRecipeTechniques().stream().map(technique -> technique.getId()) // Asegurarse
@@ -303,6 +303,12 @@ public class CookController {
 				.collect(Collectors.toList());
 
 		// Añadir las técnicas seleccionadas y las técnicas disponibles al modelo
+		byte[] imageBytes = r.getImageRecipePerfil();
+		String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+		// Ahora puedes obtener la información del usuario logueado desde userDetails
+		model.addAttribute("cookPerfil", c);
+		model.addAttribute("base64Image", "data:image/jpeg;base64," + base64Image);
+		model.addAttribute("imageRecipe", listImagesRecipe);
 		model.addAttribute("country", r.getCountry());
 		model.addAttribute("city", r.getCity());
 		model.addAttribute("selectedTechniques", selectedTechniques); // Lista de IDs seleccionados
