@@ -27,8 +27,6 @@ public class TokenServiceImpl implements TokenService {
 	@Override
 	public String generateToken(String email) {
 		LocalDateTime now = LocalDateTime.now();
-		System.out.println("**************************GENERATETOKEN*********************");
-		System.out.println(now);
 		String input = email + now.toString();
 
 		try {
