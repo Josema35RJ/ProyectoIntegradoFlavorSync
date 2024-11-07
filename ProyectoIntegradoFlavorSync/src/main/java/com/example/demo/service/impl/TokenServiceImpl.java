@@ -16,9 +16,9 @@ import com.example.demo.service.TokenService;
 
 @Service("tokenService")
 public class TokenServiceImpl implements TokenService {
-	
-	// Tiempo de expiración en minutos (ej. 15 minutos)
-	private static final int EXPIRATION_TIME = 15;
+
+	// Tiempo de expiración en horas (3 horas)
+	private static final int EXPIRATION_HOURS = 3;
 
 	@Autowired
 	@Qualifier("passwordResetTokenRepository")
@@ -26,7 +26,9 @@ public class TokenServiceImpl implements TokenService {
 
 	@Override
 	public String generateToken(String email) {
-		LocalDateTime now = LocalDateTime.now().plusHours(2);
+		LocalDateTime now = LocalDateTime.now();
+		System.out.println("**************************GENERATETOKEN*********************");
+		System.out.println(now);
 		String input = email + now.toString();
 
 		try {
@@ -42,12 +44,13 @@ public class TokenServiceImpl implements TokenService {
 	@Override
 	public boolean isTokenValid(String token) {
 		PasswordResetToken storedToken = passwordResetTokenRepository.findByToken(token);
-		return storedToken != null && LocalDateTime.now().isAfter(storedToken.getExpirationTime());
+		  
+		   return LocalDateTime.now().isBefore(storedToken.getExpirationTime());
 	}
 
 	@Override
 	public void saveTokenToDatabase(String token, String email) {
-		LocalDateTime expirationTime = LocalDateTime.now().plusMinutes(EXPIRATION_TIME);
+	    LocalDateTime expirationTime = LocalDateTime.now().plusHours(EXPIRATION_HOURS);
 		PasswordResetToken passwordResetToken = new PasswordResetToken(token, email, expirationTime);
 		passwordResetTokenRepository.save(passwordResetToken);
 	}
@@ -56,18 +59,32 @@ public class TokenServiceImpl implements TokenService {
 	public String getEmailFromToken(String token) {
 		PasswordResetToken storedToken = passwordResetTokenRepository.findByToken(token);
 		if (storedToken != null) {
-			return storedToken.getUserEmail(); 
+			return storedToken.getUserEmail();
 		}
-		return null; 
+		return null;
+	}
+
+	// Método para eliminar el token asociado a un correo electrónico
+	public void deleteByEmail(String email) {
+		// Buscar el token por correo electrónico
+		PasswordResetToken token = passwordResetTokenRepository.findByUserEmail(email);
+
+		if (token != null) {
+			// Eliminar el token si se encuentra
+			passwordResetTokenRepository.delete(token);
+			System.out.println("Token eliminado para el usuario: " + email);
+		} else {
+			System.out.println("No se encontró un token para el usuario: " + email);
+		}
 	}
 
 	@Override
 	public void removeExistingTokensForEmail(String email) {
-		passwordResetTokenRepository.deleteByUserEmail(email); 
+		passwordResetTokenRepository.deleteByUserEmail(email);
 	}
 
 	@Override
 	public void cleanupExpiredTokens() {
-		passwordResetTokenRepository.deleteExpiredTokens(LocalDateTime.now()); 
+		passwordResetTokenRepository.deleteExpiredTokens(LocalDateTime.now());
 	}
 }

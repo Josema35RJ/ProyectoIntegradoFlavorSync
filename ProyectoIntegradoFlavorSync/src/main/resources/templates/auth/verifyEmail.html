@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Verificación de correo electrónico</title>
+</head>
+<body>
+    <h2>Hola,</h2>
+    <p>Gracias por registrarte. Por favor, haz clic en el enlace de abajo para verificar tu correo electrónico:</p>
+    <p><a th:href="${verificationLink}">Verificar correo</a></p>
+    <p>O copia y pega el siguiente enlace en tu navegador:</p>
+    <p th:text="${verificationLink}"></p>
+    <p>Este enlace expirará en una hora.</p>
+    <br>
+    <p>Gracias,</p>
+    <p>El equipo de soporte</p>
+</body>
+</html>

@@ -1,6 +1,6 @@
 package com.example.demo.model;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
@@ -50,6 +50,8 @@ public class cookModel {
 	@Size(max = 100, message = "The email cannot exceed 100 characters")
 	@NotBlank(message = "The email is required")
 	private String username;
+	
+	private boolean confirm_email = false;
 
 	// edad del cocinero
 	@NotNull(message = "birthDate is required")
@@ -109,9 +111,9 @@ public class cookModel {
 	// Imagen o imagenes del cocinero guardada en base64
 	private List<byte[]> imagesCook = new ArrayList<>();
 	 
-	private LocalDate createDate;
+	private LocalDateTime createDate;
 	
-	private LocalDate updateDate;
+	private LocalDateTime updateDate;
 
 	public cookModel() {
 		super();
@@ -133,11 +135,12 @@ public class cookModel {
 		this.lastName = lastName;
 		this.nickName = nickName;
 		this.username = username;
+		this.confirm_email = false;
 		this.birthDate = birthDate;
 		this.city = city;
 		this.country = country;
 		this.password = password;
-		this.enabled = true;
+		this.enabled = false;
 		this.listSpecialty = listSpecialty;
 		this.listCulinaryTechniques = listRecipeTechniques;
 		this.experience = experience;
@@ -184,6 +187,14 @@ public class cookModel {
 
 	public void setUsername(String username) {
 		this.username = username;
+	}
+
+	public boolean isConfirm_email() {
+		return confirm_email;
+	}
+
+	public void setConfirm_email(boolean confirm_email) {
+		this.confirm_email = confirm_email;
 	}
 
 	public Date getBirthDate() {
@@ -298,19 +309,19 @@ public class cookModel {
 		this.imagesCook = imagesCook;
 	}
 
-	public LocalDate getCreateDate() {
+	public LocalDateTime getCreateDate() {
 		return createDate;
 	}
 
-	public void setCreateDate(LocalDate createDate) {
+	public void setCreateDate(LocalDateTime createDate) {
 		this.createDate = createDate;
 	}
 
-	public LocalDate getUpdateDate() {
+	public LocalDateTime getUpdateDate() {
 		return updateDate;
 	}
 
-	public void setUpdateDate(LocalDate updateDate) {
+	public void setUpdateDate(LocalDateTime updateDate) {
 		this.updateDate = updateDate;
 	}
 

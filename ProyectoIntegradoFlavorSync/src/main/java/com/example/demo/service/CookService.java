@@ -1,5 +1,6 @@
 package com.example.demo.service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.springframework.security.core.userdetails.UserDetails;
@@ -16,10 +17,13 @@ public interface CookService {
 	List<cookModel> getFindByCooksProfessionals();
 	List<cookModel> getFindByCooksAprendiz();
 	List<cookModel> getFindByCooksAmateurs();
+	List<cookModel> findUnverifiedCooks(LocalDateTime currentDateTime);
+	void verifyUserEmail(String email);
 	boolean existeUsername(String username);
 	UserDetails loadUserByUsername(String email);
 	cookModel findById(int id);
 	cookModel findByUsername(String username);
 	boolean registrar(cookModel cook, List<String> culinaryTechniquesIds);
 	boolean updatePassword(String newP, cookModel cook);
+	cookModel findByRecipeId(recipeModel r);
 }

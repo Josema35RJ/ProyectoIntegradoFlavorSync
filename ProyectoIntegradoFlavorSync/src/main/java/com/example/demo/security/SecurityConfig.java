@@ -40,34 +40,35 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-        .csrf().disable()
+            .csrf().disable()
             .authorizeHttpRequests((requests) -> requests
                 .requestMatchers("/", "/imgs/*", "/auth/**", "/webjars/*", "/css/*", "/files/", "/js/*").permitAll()
-                .requestMatchers("/auth/cook/*").hasAuthority("ROL_COOKCHEF")
-                .requestMatchers("/auth/cook/*").hasAuthority("ROL_COOKPROFESSIONAL")
-                .requestMatchers("/auth/cook/*").hasAuthority("ROL_COOKAPRENDIZ")
-                .requestMatchers("/auth/cook/*").hasAuthority("ROL_COOKAMATEUR")
+                .requestMatchers("/auth/cook/*").hasAnyAuthority(
+                    "ROL_COOKCHEF", "ROL_COOKPROFESSIONAL", "ROL_COOKAPRENDIZ", "ROL_COOKAMATEUR")
                 .anyRequest().authenticated())
             .formLogin((form) -> form
                 .loginPage("/auth/login")
+                .failureHandler(new CustomAuthenticationFailureHandler()) // Redirección en caso de fallo
                 .successHandler(new AuthenticationSuccessHandler() {
                     @Override
                     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
-                            Authentication authentication) throws IOException, ServletException {
+                                                        Authentication authentication) throws IOException, ServletException {
                         Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
                         if (roles.contains("ROL_COOKAPRENDIZ")) {
                             response.sendRedirect("cook/cookPanel");
+                        } else {
+                            response.sendRedirect("/"); // Redirige al home o donde prefieras en caso de otros roles
                         }
                     }
                 }).permitAll())
             .logout((logout) -> logout
                 .permitAll()
                 .logoutUrl("/logout")
-                .logoutSuccessUrl("/auth/login")
+                .logoutSuccessUrl("/auth/login?logout=true") // Redirección con logout=true en caso de cierre de sesión
                 .invalidateHttpSession(true)
                 .deleteCookies("JSESSIONID"))
             .headers(headers -> headers.cacheControl());
-        
+
         return http.build();
     }
 }

@@ -129,12 +129,16 @@ public class CookController {
 		// Ahora puedes obtener la información del usuario logueado desde userDetails
 		cookModel c = cookService.findById(userDetails.getId());
 		recipeModel r = recipeService.getRecipeById(id);
+		cookModel cookRecipe= cookService.findByRecipeId(r);	
 		for (byte[] b : r.getImagesRecipe()) {
 			listImagesRecipe.add("data:image/jpeg;base64," + Base64.getEncoder().encodeToString(b));
 		}
 		model.addAttribute("booleanComment", !commentService.findByUserId(c)); // Hay que añadir al comentario el autor
-																				// de este
-		model.addAttribute("booleanFav", !c.getListRecipesFavorites().contains(r));
+											// de este
+		model.addAttribute("cookcreate", c.getListRecipes().contains(r));
+		model.addAttribute("imagePerfilCook", "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(cookRecipe.getImagePerfil()));
+		model.addAttribute("cookRecipe", cookRecipe);
+		model.addAttribute("booleanFav", c.getListRecipesFavorites().contains(r));
 		model.addAttribute("imageRecipe",
 				"data:image/jpeg;base64," + Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
 		model.addAttribute("listImagesRecipe", listImagesRecipe);

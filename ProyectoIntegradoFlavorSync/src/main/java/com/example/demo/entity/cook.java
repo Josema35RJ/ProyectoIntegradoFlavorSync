@@ -1,7 +1,7 @@
 package com.example.demo.entity;
 
 import java.sql.Date;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -15,6 +15,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Lob;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import jakarta.validation.constraints.Email;
@@ -60,6 +61,8 @@ public class cook {
 	@Size(max = 100, message = "The email cannot exceed 100 characters")
 	@NotBlank(message = "The email is required")
 	private String username;
+	
+	private boolean confirm_email = false;
 
 	// edad del cocinero
 	@NotNull(message = "birthDate is required")
@@ -92,7 +95,7 @@ public class cook {
 	// Mas adelante Tecnicas sera otra entidad, con nombre de la tecnica, creador,
 	// restaurante o lugar donde se creo y descripcion o instruccion de como es
 	@NotNull
-	@OneToMany(cascade = CascadeType.PERSIST)
+	@ManyToMany(cascade = CascadeType.PERSIST)
 	private List<culinaryTechniques> listCulinaryTechniques = new ArrayList<>();
 
 	// Cuantos años tienes cocinando
@@ -128,9 +131,9 @@ public class cook {
 	private List<byte[]> imagesCook = new ArrayList<>();
 	
 	@Column(name = "createDate") 
-	private LocalDate createDate;
+	private LocalDateTime createDate;
 	
 	@Column(name = "updateDate") 
-	private LocalDate updateDate;
+	private LocalDateTime updateDate;
 
 }

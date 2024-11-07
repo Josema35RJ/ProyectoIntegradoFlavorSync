@@ -1,18 +1,15 @@
 package com.example.demo.controller;
 
 import java.security.Principal;
-import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -21,9 +18,13 @@ import com.example.demo.converter.CookConverter;
 import com.example.demo.model.cookModel;
 import com.example.demo.service.CookService;
 import com.example.demo.service.CulinaryTechniquesService;
+import com.example.demo.service.impl.EmailServiceImpl;
+import com.example.demo.service.impl.TokenServiceImpl;
 
+import jakarta.mail.MessagingException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class loginController {
@@ -42,21 +43,27 @@ public class loginController {
 	@Autowired
 	@Qualifier("cookConverter")
 	private CookConverter cookConverter;
+	
+	@Autowired
+	private TokenServiceImpl tokenService;
+	
+	@Autowired
+	private EmailServiceImpl emailService;
 
 	@GetMapping("/auth/login")
 	public String login(Model model, @RequestParam(name = "error", required = false) String error,
 			@RequestParam(name = "logout", required = false) String logout, RedirectAttributes flash,
-			Principal principal) {
+			Principal principal ,HttpSession session) {
 
 		// Redirige a la página principal si el usuario ya inició sesión
 		if (principal != null) {
 			return "redirect:/" + LOGIN_VIEW;
 		}
-
+		error= (String) session.getAttribute("error");
 		// Solo agrega mensajes de error al modelo si los parámetros correspondientes no
 		// están vacíos
 		if (error != null) {
-			model.addAttribute("loginError", "Error de inicio de sesión. Por favor, verifica tus credenciales.");
+			model.addAttribute("loginError", error);
 			// Agrega otros mensajes de error específicos aquí si es necesario
 		} else {
 			// Asegúrate de que los atributos del modelo estén limpios si no hay errores
@@ -89,22 +96,26 @@ public class loginController {
 	@PostMapping("/auth/register")
 	public String registerSubmit(cookModel cook,
 			@RequestParam("culinaryTechniquesIds") List<String> listCulinaryTechniques,
-			@RequestParam(value="cookImagesBase64", required = false) String[] ImagesBase64,
-			@RequestParam("imagenPerfilBase64") String imagenPerfil, // Recibe la imagen en Base64
+			@RequestParam(value = "cookImagesBase64", required = false) String[] ImagesBase64,
+			@RequestParam("imagenPerfilBase64") String imagenPerfil,
 			@RequestParam("confirmPassword") String confirmPassword, BindingResult result, RedirectAttributes flash) {
 
 		// Validaciones existentes
 		if (result.hasErrors()) {
 			return REGISTER_VIEW;
 		}
-
+    
+		if(cookService.existeUsername(cook.getUsername())) {
+			flash.addFlashAttribute("error", "¡Correo ya en uso!");
+			return "redirect:"+ REGISTER_VIEW;
+			
+		}
 		// Convertir la imagen en Base64 a byte[]
 		byte[] imageBytes = Base64.getDecoder().decode(imagenPerfil);
-		cook.setImagePerfil(imageBytes); // Almacena la imagen en byte[] en la entidad cook
+		cook.setImagePerfil(imageBytes);
 
-		// Restante de la lógica de validación
+		// Validaciones adicionales
 		cook.setUsername(cook.getUsername().toLowerCase());
-
 		if (cook.getFirstName().length() > 25) {
 			flash.addFlashAttribute("error", "¡El nombre excede los 25 caracteres!");
 			return "redirect:" + REGISTER_VIEW;
@@ -128,13 +139,27 @@ public class loginController {
 			return "redirect:" + REGISTER_VIEW;
 		}
 
-		// Registrar el cocinero
-		cookService.registrar(cook,listCulinaryTechniques);
-		flash.addFlashAttribute("success", "¡Cocinero registrado exitosamente!");
+		// Registrar el cocinero con estado "no verificado"
+		cook.setConfirm_email(false); // Indica que el correo aún no ha sido verificado
+		cookService.registrar(cook, listCulinaryTechniques);
 
+		// Generar token de verificación
+		String token = tokenService.generateToken(cook.getUsername()); // Genera el token usando el email
+		tokenService.saveTokenToDatabase(token, cook.getUsername()); // Guarda el token en la base de datos
+
+		// Enviar correo de verificación
+		String verificationLink = "http://localhost:8080/auth/verify-email/" + token;
+		try {
+			emailService.sendVerificationEmail(cook.getUsername(), verificationLink, "Verificación de correo electrónico");
+			flash.addFlashAttribute("success",
+					"¡Cocinero registrado exitosamente! Revisa tu correo para verificar tu cuenta.");
+		} catch (MessagingException e) {
+			flash.addFlashAttribute("error", "Error al enviar el correo de verificación.");
+			e.printStackTrace();
+		}
 		return "redirect:" + LOGIN_VIEW;
 	}
-
+	
 	@GetMapping("/auth/cook/logout")
 	public String logout(HttpServletRequest request, HttpServletResponse response) {
 		// Invalida la sesión actual

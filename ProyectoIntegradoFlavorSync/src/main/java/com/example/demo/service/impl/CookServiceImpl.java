@@ -1,6 +1,7 @@
 package com.example.demo.service.impl;
 
-import java.time.LocalDate;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -20,9 +21,11 @@ import org.springframework.stereotype.Service;
 
 import com.example.demo.converter.CookConverter;
 import com.example.demo.converter.CulinaryTechniquesConverter;
+import com.example.demo.converter.RecipeConverter;
 import com.example.demo.entity.cook;
 import com.example.demo.entity.culinaryTechniques;
 import com.example.demo.model.cookModel;
+import com.example.demo.model.recipeModel;
 import com.example.demo.repository.CookRepository;
 import com.example.demo.repository.CulinaryTechniquesRepository;
 import com.example.demo.security.CustomUserDetails;
@@ -38,6 +41,10 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 	@Autowired
 	@Qualifier("cookConverter")
 	private CookConverter cookConverter;
+	
+	@Autowired
+	@Qualifier("recipeConverter")
+	private RecipeConverter recipeConverter;
 
 	@Autowired
 	@Qualifier("culinaryTechniquesRepository")
@@ -64,7 +71,7 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 			l.add(culinaryTechniquesRepository.findById(x).get());
 		}
 
-		cook.setUpdateDate(LocalDate.now());
+		cook.setUpdateDate(LocalDateTime.now());
 		cook c = cookConverter.transform(cook);
 		c.setListCulinaryTechniques(l);
 		cookRepository.save(c);
@@ -184,13 +191,25 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 			l.add(culinaryTechniquesRepository.findById(x).get());
 		}
 		cook.setPassword(passwordEncoder().encode(cook.getPassword()));
-		cook.setEnabled(true);
+		cook.setEnabled(false);
 		cook.setRole("ROL_COOKAPRENDIZ");
 		cook c = cookConverter.transform(cook);
 		c.setListCulinaryTechniques(l);
-		c.setCreateDate(LocalDate.now());
+		c.setCreateDate(LocalDateTime.now());
 		cookRepository.save(c);
 		return true;
+	}
+
+	// Método para verificar el email del usuario cambiando su estado a verificado
+	@Override
+	public void verifyUserEmail(String email) {
+		// Buscar el usuario por email
+		cook cook = cookRepository.findByUsername(email);
+		if (cook != null) {
+			cook.setEnabled(true);
+			cook.setConfirm_email(true); // Cambia el estado a verificado
+			cookRepository.save(cook); // Guarda los cambios en la base de datos
+		}
 	}
 
 	@Override
@@ -199,6 +218,32 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 		cook.setPassword(passwordEncoder().encode(newP));
 		cookRepository.save(cookConverter.transform(cook));
 		return true;
+	}
+
+	// Método para obtener la lista de usuarios no verificados con tokens expirados
+	@Override
+	public List<cookModel> findUnverifiedCooks(LocalDateTime currentDateTime) {
+		List<cookModel> listcModel = new ArrayList<>();
+		for (cook c : cookRepository.findAll()) {
+
+			if (!c.isConfirm_email() && hasPassedOneHour(c.getCreateDate())) {
+				listcModel.add(cookConverter.transform(c));
+			}
+
+		}
+		return listcModel;
+	}
+
+	private boolean hasPassedOneHour(LocalDateTime createDate) {
+		LocalDateTime now = LocalDateTime.now();
+		Duration duration = Duration.between(createDate, now);
+		return duration.toHours() >= 1;
+	}
+
+	@Override
+	public cookModel findByRecipeId(recipeModel r) {
+		// TODO Auto-generated method stub
+		return cookConverter.transform(cookRepository.findByRecipe(recipeConverter.transform(r)));
 	}
 
 }

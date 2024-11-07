@@ -296,10 +296,6 @@ footer {
 										th:class="${i <= recipe.averageRating ? 'star filled' : 'star'}"
 										aria-hidden="true">★</h3>
 								</div>
-								<button type="button" class="btn btn-primary mt-3"
-									th:attr="data-bs-toggle='modal', data-bs-target='#commentModal', data-recipe-id=${recipe.id}">
-									<i class="fas fa-comment-dots"></i> Añadir Comentario
-								</button>
 							</div>
 						</div>
 					</div>
@@ -308,44 +304,7 @@ footer {
 		</section>
 	</main>
 
-	<!-- Modal para añadir comentario -->
-	<div class="modal fade" id="commentModal" tabindex="-1"
-		aria-labelledby="commentModalLabel" aria-hidden="true">
-		<div class="modal-dialog">
-			<div class="modal-content">
-				<div class="modal-header">
-					<h5 class="modal-title" id="commentModalLabel">Añadir
-						Comentario a Nombre de la Receta</h5>
-					<button type="button" class="btn-close" data-bs-dismiss="modal"
-						aria-label="Close"></button>
-				</div>
-				<div class="modal-body">
-					<form action="/auth/cook/AddComment" method="post">
-						<input type="hidden" id="id" name="id" />
-						<div class="mb-3">
-							<label for="commentText" class="form-label">Escribe tu
-								comentario:</label>
-							<textarea class="form-control" id="commentText"
-								name="commentText" rows="3" required></textarea>
-						</div>
-						<!-- Estrellas para valoración -->
-						<div class="mb-3">
-							<label class="form-label">Valoración:</label>
-							<div class="star-rating" id="starRating">
-								<span class="star" data-value="1">★</span> <span class="star"
-									data-value="2">★</span> <span class="star" data-value="3">★</span>
-								<span class="star" data-value="4">★</span> <span class="star"
-									data-value="5">★</span>
-							</div>
-							<input type="hidden" name="rating" id="rating" />
-						</div>
-						<button type="submit" class="btn btn-primary">Enviar
-							Comentario</button>
-					</form>
-				</div>
-			</div>
-		</div>
-	</div>
+	
 
 	<!-- Pie de página -->
 	<footer class="footer text-center">
@@ -362,7 +321,6 @@ footer {
 	<!-- Enlace a Select2 JS -->
 	<script
 		src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"></script>
-
 	<!-- Script para permitir 3 recetas por slide en fila sin repetirse -->
 	<script>
 	// Script para permitir 3 recetas por slide en fila sin repetirse
@@ -406,12 +364,7 @@ footer {
 	            window.location.href = `/auth/cook/viewRecipe/${recipeId}`;
 	        });
 	    });
-	 // Detener la propagación del evento en el botón "Añadir Comentario"
-	    document.querySelectorAll('.btn-primary').forEach(button => {
-	        button.addEventListener('click', function(event) {
-	            event.stopPropagation(); // Evita que se active el evento de redirección
-	        });
-	    });
+	
 	});
 	// Guardar los filtros seleccionados en localStorage
 	function saveFilters() {
@@ -463,67 +416,7 @@ footer {
 	        window.location.href = '/auth/cook/cookPanel?' + query;
 	    });
 	});
-  // Escuchar el evento de apertura del modal
-    var commentModal = document.getElementById('commentModal');
-    commentModal.addEventListener('show.bs.modal', function () {
-        // Resetear la valoración al abrir el modal
-        resetStarRating();
-    });
-
-    // Manejo de la valoración por estrellas dentro del modal
-    commentModal.addEventListener('click', function(event) {
-        if (event.target.classList.contains('star')) {
-            var ratingValue = event.target.getAttribute('data-value');
-            setStarRating(ratingValue);
-        }
-    });
-
-    function setStarRating(rating) {
-        // Establecer la valoración en el campo oculto
-        document.getElementById('rating').value = rating;
-
-        // Obtener todas las estrellas dentro del modal
-        var stars = commentModal.querySelectorAll('.star');
-
-        // Resetear las clases de selección en todas las estrellas
-        stars.forEach(function(star) {
-            star.classList.remove('selected');
-        });
-
-        // Añadir la clase de selección a las estrellas seleccionadas
-        for (let i = 0; i < rating; i++) {
-            stars[i].classList.add('selected');
-        }
-    }
-
-    function resetStarRating() {
-        // Resetear el valor oculto de la valoración
-        document.getElementById('rating').value = 0;
-
-        // Obtener todas las estrellas dentro del modal
-        var stars = commentModal.querySelectorAll('.star');
-
-        // Resetear las clases de selección en todas las estrellas
-        stars.forEach(function(star) {
-            star.classList.remove('selected');
-        });
-    }
-    // Escuchar el evento de apertura del modal
-    var commentModal = document.getElementById('commentModal');
-    commentModal.addEventListener('show.bs.modal', function (event) {
-        // Obtener el botón que abrió el modal
-        var button = event.relatedTarget;
-
-        // Obtener el ID de la receta del atributo data-recipe-id
-        var recipeId = button.getAttribute('data-recipe-id');
-
-        // Establecer el ID de la receta en el campo oculto del modal
-        var recipeIdInput = commentModal.querySelector('#id');
-        recipeIdInput.value = recipeId;
-
-        // Opcional: Resetear la valoración al abrir el modal
-        resetStarRating();
-    });
+ 
     // Arreglo con los ingredientes
      const ingredientes = [
         // Lácteos y huevos
