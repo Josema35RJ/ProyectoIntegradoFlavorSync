@@ -42,7 +42,7 @@ public class SecurityConfig {
         http
             .csrf().disable()
             .authorizeHttpRequests((requests) -> requests
-                .requestMatchers("/", "/imgs/*", "/auth/**", "/webjars/*", "/css/*", "/files/", "/js/*").permitAll()
+                .requestMatchers("/", "/imgs/**", "/auth/**", "/webjars/*", "/css/*", "/files/", "/js/*").permitAll()
                 .requestMatchers("/auth/cook/*").hasAnyAuthority(
                     "ROL_COOKCHEF", "ROL_COOKPROFESSIONAL", "ROL_COOKAPRENDIZ", "ROL_COOKAMATEUR")
                 .anyRequest().authenticated())

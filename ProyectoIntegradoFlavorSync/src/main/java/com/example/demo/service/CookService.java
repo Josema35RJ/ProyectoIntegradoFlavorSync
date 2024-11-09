@@ -20,6 +20,7 @@ public interface CookService {
 	List<cookModel> findUnverifiedCooks(LocalDateTime currentDateTime);
 	void verifyUserEmail(String email);
 	boolean existeUsername(String username);
+	void verifyPunctuation (cookModel c);
 	UserDetails loadUserByUsername(String email);
 	cookModel findById(int id);
 	cookModel findByUsername(String username);

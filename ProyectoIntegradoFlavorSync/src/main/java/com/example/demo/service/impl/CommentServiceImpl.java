@@ -1,5 +1,6 @@
 package com.example.demo.service.impl;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,33 +22,35 @@ import com.example.demo.service.CommentService;
 @Service("commentService")
 public class CommentServiceImpl implements CommentService {
 
-	  @Autowired
-	    @Qualifier("commentRepository")
-	    private CommentRepository commentRepository;
-	  
-	  @Autowired
-	    @Qualifier("commentConverter")
-	    private CommentConverter commentConverter;
-	  
-	  @Autowired
-	    @Qualifier("cookConverter")
-	    private CookConverter cookConverter;
-	  
-	  @Autowired
-	    @Qualifier("recipeRepository")
-	    private RecipeRepository recipeRepository;
-	  
-	  @Autowired
-	    @Qualifier("recipeConverter")
-	    private RecipeConverter recipeConverter;
+	@Autowired
+	@Qualifier("commentRepository")
+	private CommentRepository commentRepository;
+
+	@Autowired
+	@Qualifier("commentConverter")
+	private CommentConverter commentConverter;
+
+	@Autowired
+	@Qualifier("cookConverter")
+	private CookConverter cookConverter;
+
+	@Autowired
+	@Qualifier("recipeRepository")
+	private RecipeRepository recipeRepository;
+
+	@Autowired
+	@Qualifier("recipeConverter")
+	private RecipeConverter recipeConverter;
 
 	@Override
 	public boolean addComment(commentModel comment, int RecipeId) {
 		// TODO Auto-generated method stub
-		if(comment.getDescription().isBlank() || comment.getDescription().isEmpty())
-		commentRepository.save(commentConverter.transform(comment));
+		comment.setCreateDate(LocalDateTime.now());
 		recipeModel r = recipeConverter.transform(recipeRepository.findById(RecipeId));
-		r.setAverageRating((float) ((r.getAverageRating()+comment.getPunctuation())/2));
+		if (r.getListComments().size() > 0)
+			r.setAverageRating(((r.getAverageRating() + comment.getPunctuation())) / r.getListComments().size());
+		else
+			r.setAverageRating(((r.getAverageRating() + comment.getPunctuation())) / 1);
 		r.getListComments().add(comment);
 		recipeRepository.save(recipeConverter.transform(r));
 		return true;
@@ -57,50 +60,49 @@ public class CommentServiceImpl implements CommentService {
 	public boolean updateComment(commentModel comment) {
 		// TODO Auto-generated method stub
 		comment c = commentRepository.findById(comment.getId()).get();
-		if(!comment.getDescription().equalsIgnoreCase(c.getDescription())) {
+		if (!comment.getDescription().equalsIgnoreCase(c.getDescription())) {
 			c.setDescription(comment.getDescription());
-		}else if(comment.getPunctuation()!=(c.getPunctuation())) {
+		} else if (comment.getPunctuation() != (c.getPunctuation())) {
 			recipeModel r = recipeConverter.transform(recipeRepository.findById(comment.getId()).get());
-			r.setAverageRating((float) ((r.getAverageRating()+comment.getPunctuation())/2));
+			r.setAverageRating((float) ((r.getAverageRating() + comment.getPunctuation()) / 2));
 		}
 		return true;
 	}
 
 	@Override
 	public boolean deleteComment(int id) {
-	 
-	    return true;
-	}
 
+		return true;
+	}
 
 	@Override
 	public List<commentModel> getListComments() {
 		// TODO Auto-generated method stub
 		List<commentModel> ListComment = new ArrayList<>();
-		for(comment c : commentRepository.findAll()) {
+		for (comment c : commentRepository.findAll()) {
 			ListComment.add(commentConverter.transform(c));
 		}
 		return ListComment;
 	}
 
-	//Obtener lista de comentarios en base al id de la receta y la puntuacion
+	// Obtener lista de comentarios en base al id de la receta y la puntuacion
 	@Override
-	public List<commentModel> getListCommentsFindByPunctuation( int punctuation) {
+	public List<commentModel> getListCommentsFindByPunctuation(int punctuation) {
 		// TODO Auto-generated method stub
-				List<commentModel> ListCommentByPunctuation = new ArrayList<>();
-				for(comment c : commentRepository.findByPunctuation(punctuation)) {
-					ListCommentByPunctuation.add(commentConverter.transform(c));
-				}
-				return ListCommentByPunctuation;
+		List<commentModel> ListCommentByPunctuation = new ArrayList<>();
+		for (comment c : commentRepository.findByPunctuation(punctuation)) {
+			ListCommentByPunctuation.add(commentConverter.transform(c));
+		}
+		return ListCommentByPunctuation;
 	}
 
 	@Override
 	public boolean findByUserId(cookModel c) {
 		// TODO Auto-generated method stub
-		if(commentRepository.findByUserId(cookConverter.transform(c)).isEmpty()) {
+		if (commentRepository.findByCookId(cookConverter.transform(c)).isEmpty()) {
 			return true;
 		}
 		return false;
 	}
-	
+
 }

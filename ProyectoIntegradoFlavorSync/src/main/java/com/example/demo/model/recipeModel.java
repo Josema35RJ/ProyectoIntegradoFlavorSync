@@ -231,7 +231,7 @@ public class recipeModel {
 		this.category = category;
 	}
 
-	public double getAverageRating() {
+	public float getAverageRating() {
 		return averageRating;
 	}
 

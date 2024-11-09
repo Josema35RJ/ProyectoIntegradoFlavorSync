@@ -1,36 +1,55 @@
 package com.example.demo.model;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
 public class commentModel {
-	// Identificador único para cada comentario.
 
+	// Identificador comentarios
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer id;
 
-	// El comentario que escribe
+	@Size(max = 255, message = "The description cannot exceed 255 characters")
+	private String description;
 
-	private String Description;
-
-	// Puntuacion que le da, al eborarla el y probarla ( esta puntuacion hara media
-	// con las demas, para obtener las valoracion a la receta)
-
+	@Positive(message = "The punctuation must be a positive number")
 	private int punctuation;
 
 	private cookModel cookId;
+
+	private LocalDateTime createDate;
+
+	private LocalDateTime updateDate;
+
+	// Relación recursiva: un comentario puede tener respuestas.
+	private commentModel parentComment; // Comentario al que responde, si lo tiene.
+
+	private List<commentModel> replies = new ArrayList<>(); // Respuestas a este comentario.
 
 	public commentModel() {
 		super();
 	}
 
-	public commentModel(@Size(max = 255, message = "The description cannot exceed 255 characters") String description,
-			@Positive(message = "The punctuation must be a positive number") int punctuation, cookModel cookId) {
+	public commentModel(
+			@Size(max = 255, message = "The description cannot exceed 255 characters") String description,
+			@Positive(message = "The punctuation must be a positive number") int punctuation) {
 		super();
-		Description = description;
+		this.description = description;
 		this.punctuation = punctuation;
-		this.cookId = cookId;
+		this.createDate = LocalDateTime.now();
 	}
 
+	// Getters y setters
 	public Integer getId() {
 		return id;
 	}
@@ -40,11 +59,11 @@ public class commentModel {
 	}
 
 	public String getDescription() {
-		return Description;
+		return description;
 	}
 
 	public void setDescription(String description) {
-		Description = description;
+		this.description = description;
 	}
 
 	public int getPunctuation() {
@@ -55,18 +74,49 @@ public class commentModel {
 		this.punctuation = punctuation;
 	}
 
-	public cookModel getUserId() {
+	public cookModel getCookId() {
 		return cookId;
 	}
 
-	public void setUserId(cookModel userId) {
-		this.cookId = userId;
+	public void setCookId(cookModel cookId) {
+		this.cookId = cookId;
+	}
+
+	public LocalDateTime getCreateDate() {
+		return createDate;
+	}
+
+	public void setCreateDate(LocalDateTime createDate) {
+		this.createDate = createDate;
+	}
+
+	public LocalDateTime getUpdateDate() {
+		return updateDate;
+	}
+
+	public void setUpdateDate(LocalDateTime updateDate) {
+		this.updateDate = updateDate;
+	}
+
+	public commentModel getParentComment() {
+		return parentComment;
+	}
+
+	public void setParentComment(commentModel parentComment) {
+		this.parentComment = parentComment;
+	}
+
+	public List<commentModel> getReplies() {
+		return replies;
+	}
+
+	public void setReplies(List<commentModel> replies) {
+		this.replies = replies;
 	}
 
 	@Override
 	public String toString() {
-		return "commentModel [id=" + id + ", Description=" + Description + ", punctuation=" + punctuation + ", userId="
-				+ cookId + "]";
+		return "commentModel [id=" + id + ", description=" + description + ", punctuation=" + punctuation + ", cookId="
+				+ cookId + ", createDate=" + createDate + ", updateDate=" + updateDate + "]";
 	}
-
 }

@@ -5,9 +5,11 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FlavorSync - Mis Recetas</title>
 <!-- CSS de Bootstrap 5 -->
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
-	rel="stylesheet">
+<link rel="stylesheet"
+	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+F
 <!-- Font Awesome para iconos -->
 <link
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
@@ -15,50 +17,249 @@
 <!-- CSS personalizado -->
 <link rel="stylesheet" href="/css/cookRecipes.css">
 <style>
+/* Global Styling */
 body {
-	background-color: #f8f9fa; /* Fondo más suave */
+	background-color: #f4f7fa;
+	font-family: 'Arial', sans-serif;
 }
 
-h1, h3 {
-	color: #343a40; /* Color de encabezados */
+/* Navbar Styling */
+.navbar {
+	background-color: #3b4a6b;
+	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
 }
 
-.alert {
-	margin-bottom: 20px; /* Espacio entre alertas y contenido */
+.navbar-brand, .navbar-nav .nav-link {
+	color: #ffffff !important;
 }
 
-.table {
-	background-color: #fff; /* Fondo blanco para la tabla */
-	border-radius: 8px; /* Bordes redondeados */
-	overflow: hidden; /* Esquinas redondeadas */
+/* Sidebar Styling */
+.sidebar {
+	background-color: #ffffff;
+	border-radius: 8px;
+	padding: 20px;
+	box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.05);
 }
 
-.table th, .table td {
-	vertical-align: middle; /* Alinear verticalmente */
+.sidebar h4, .sidebar h5 {
+	color: #3b4a6b;
 }
 
-.table-hover tbody tr:hover {
-	background-color: #e2e6ea; /* Color de fondo al pasar el mouse */
+.sidebar img {
+	border: 2px solid #3b4a6b;
 }
 
-.footer {
-	background-color: #343a40; /* Color de fondo del footer */
+.sidebar ul {
+	list-style-type: none;
+	padding: 0;
 }
 
-.star {
-	color: lightgray; /* Color de las estrellas vacías */
-	font-size: 24px; /* Tamaño de la estrella */
+.sidebar ul li {
+	margin-bottom: 10px;
+	color: #555;
+}
+
+/* Tab and Card Section Styling */
+.tab-content {
+	padding-top: 20px;
+}
+
+.card {
+	border: 1px solid #e0e0e0;
+	border-radius: 8px;
+	box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.05);
+	transition: transform 0.2s ease;
+}
+
+.card:hover {
+	transform: translateY(-5px);
+	box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.card-img-top {
+	border-top-left-radius: 8px;
+	border-top-right-radius: 8px;
+	height: 160px;
+	object-fit: cover;
+}
+
+.card-title {
+	font-size: 1.1rem;
+	color: #3b4a6b;
+}
+
+.card-footer {
+	background-color: #f8f9fa;
 }
 
 .star.filled {
-	color: gold; /* Color de las estrellas llenas */
+	color: #ffc107;
+}
+
+/* Modal Styling */
+.modal-content {
+	border-radius: 10px;
+	box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* Footer Styling */
+.footer {
+	background-color: #3b4a6b;
+	color: #ffffff;
+	padding: 10px 0;
+}
+/* Estilo general del modal */
+.modal-content {
+	background-color: #f9f9f9;
+	border-radius: 10px;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	padding: 20px;
+	font-family: 'Arial', sans-serif;
+}
+
+/* Cabecera del modal */
+.modal-header {
+	border-bottom: 2px solid #ddd;
+	padding-bottom: 15px;
+}
+
+.modal-title {
+	font-size: 24px;
+	font-weight: bold;
+	color: #333;
+}
+
+/* Botón de cierre */
+.btn-close {
+	background: none;
+	border: none;
+	font-size: 1.5rem;
+	color: #999;
+}
+
+.btn-close:hover {
+	color: #333;
+}
+
+/* Cuerpo del modal */
+.modal-body {
+	padding-top: 15px;
+}
+
+/* Títulos de las secciones dentro del modal */
+h4 {
+	color: #444;
+	font-size: 20px;
+	margin-bottom: 10px;
+}
+
+/* Estilos para las etiquetas */
+strong {
+	color: #007bff;
+}
+
+/* Texto de las secciones */
+p {
+	font-size: 16px;
+	color: #555;
+	line-height: 1.5;
+}
+
+/* Estilos para los elementos de lista (nutricional y técnicas) */
+ul {
+	list-style-type: none;
+	padding-left: 0;
+}
+
+ul li {
+	font-size: 16px;
+	color: #555;
+	margin-bottom: 8px;
+}
+
+/* Estilos de los ingredientes y restricciones dietéticas */
+#modalRecipeIngredients, #modalRecipeAllergens {
+	font-size: 16px;
+	color: #444;
+	font-style: italic;
+}
+
+#modalRecipeIngredients {
+	font-weight: bold;
+}
+
+/* Estilo para las estrellas de calificación */
+#modalRecipeRating {
+	font-size: 18px;
+	color: #ffbc00;
+}
+
+/* Contenedor de las categorías y técnicas */
+#modalRecipeCategory, #modalRecipeTechniques, #modalRecipeAppliance {
+	font-size: 16px;
+	color: #444;
+	font-style: italic;
+}
+
+/* Estilo de los consejos (grades) */
+#modalRecipeGrades {
+	font-style: italic;
+	color: #007bff;
+	font-size: 16px;
+	margin-top: 10px;
+}
+
+/* Estilo de la historia */
+#modalRecipeHistory {
+	font-size: 16px;
+	color: #777;
+	margin-top: 15px;
+}
+
+/* Estilo para los botones del modal */
+.modal-footer {
+	display: flex;
+	justify-content: center;
+	padding-top: 10px;
+}
+
+/* Botón de "Cerrar" */
+.btn-close {
+	font-size: 1rem;
+	background-color: #ff5c5c;
+	color: white;
+	border: none;
+	padding: 8px 16px;
+	border-radius: 5px;
+	transition: background-color 0.3s;
+}
+
+.btn-close:hover {
+	background-color: #e04e4e;
+}
+
+/* Modal responsive (para dispositivos pequeños) */
+@media ( max-width : 768px) {
+	.modal-dialog {
+		max-width: 90%;
+	}
+	.modal-content {
+		padding: 15px;
+	}
+	.modal-title {
+		font-size: 22px;
+	}
+	.btn-close {
+		font-size: 1.2rem;
+	}
 }
 </style>
 </head>
 <body>
+
 	<!-- Navbar -->
-	<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-		<div class="container-fluid">
+	<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+		<div class="container">
 			<a class="navbar-brand" href="#"><i class="fas fa-utensils"></i>
 				FlavorSync</a>
 			<button class="navbar-toggler" type="button"
@@ -68,7 +269,7 @@ h1, h3 {
 				<span class="navbar-toggler-icon"></span>
 			</button>
 			<div class="collapse navbar-collapse" id="navbarNav">
-				<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+				<ul class="navbar-nav ms-auto">
 					<li class="nav-item"><a href="/auth/cook/formRecipe"
 						class="btn btn-success me-3"><i class="fas fa-plus"></i> Crear
 							Receta</a></li>
@@ -85,187 +286,329 @@ h1, h3 {
 		</div>
 	</nav>
 
-	<!-- Contenido Principal -->
-	<main class="container my-5">
-		<!-- Mensaje de éxito -->
-		<div th:if="${success}" class="alert alert-success" role="alert">
-			<span th:text="${success}"></span>
-		</div>
-
-		<!-- Mensaje de error -->
-		<div th:if="${error}" class="alert alert-danger" role="alert">
-			<span th:text="${error}"></span>
-		</div>
-
-		<!-- Título y datos del cocinero -->
-		<div class="row mb-4">
-			<div class="col text-center">
-				<h1>Mis Recetas</h1>
-				<h3>
-					Bienvenido, <span th:text="${cook}"></span>!
-				</h3>
-				<img th:src="${base64Image}"
-					style="width: 150px; height: 150px; border-radius: 50%; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); object-fit: cover;"
-					alt="Imagen de perfil">
-			</div>
-		</div>
-
-		<!-- Tabla de Recetas -->
+	<!-- Main Content -->
+	<main class="container mt-5">
 		<div class="row">
-			<div class="col">
-				<table class="table table-hover align-middle">
-					<thead class="table-dark">
-						<tr>
-							<th scope="col">Imagen</th>
-							<th scope="col">Nombre de la Receta</th>
-							<th scope="col">Nivel</th>
-							<th scope="col">Comensales</th>
-							<th scope="col">Tiempo de Preparación (min)</th>
-							<th scope="col">Categoría</th>
-							<th scope="col">Calificación Promedio</th>
-							<th scope="col">Comentarios</th>
-							<th scope="col">Acciones</th>
-						</tr>
-					</thead>
-					<tbody>
-						<!-- Iterar sobre las recetas -->
-						<tr th:each="recipe, stat : ${recipes}">
-							<td><img th:src="${base64listImage.get(recipe.id)}"
-								alt="Imagen de la receta"></td>
-							<td th:text="${recipe.name}">Nombre de la Receta</td>
-							<td th:text="${recipe.level}">Nivel</td>
-							<td th:text="${recipe.diners}">Comensales</td>
-							<td th:text="${recipe.preparationTime}">Tiempo de
-								Preparación</td>
-							<td th:text="${recipe.category}">Categoría</td>
-							<td><span th:each="i : ${#numbers.sequence(1, 5)}"
-								th:class="${i <= recipe.averageRating ? 'star filled' : 'star'}"
-								aria-hidden="true">★</span></td>
-							<td th:text="${recipe.listComments}">Comentarios</td>
-							<td>
-								<button type="button" class="btn btn-info"
-									data-bs-toggle="modal" data-bs-target="#recipeModal"
-									data-name="${recipe.name}" data-level="${recipe.level}"
-									data-preparation-time="${recipe.preparationTime}"
-									data-diners="${recipe.diners}"
-									data-instructions="${recipe.instructions}"
-									data-difficulty="${recipe.difficulty}"
-									data-utensils="${recipe.listkitchenUtensils}"
-									data-allergens="${recipe.AllergensAndDietaryRestrictions}"
-									data-categories="${recipe.category}"
-									data-grades="${recipe.grades}">Ver</button> <a
-								th:href="@{'/auth/cook/updateRecipe/' + ${recipe.id}}"
-								class="btn btn-warning btn-sm me-1"> <i class="fas fa-edit"></i>
-									Editar
-							</a> <a class="btn btn-warning btn-sm me-1"> <i
-									class="fas fa-edit"></i> Ver Comentarios
-							</a>
-							</td>
-						</tr>
-						<!-- Mostrar un mensaje si no hay recetas -->
-						<tr th:if="${recipes.size() == 0}">
-							<td colspan="8" class="text-center">No hay recetas
-								disponibles.</td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
+			<!-- Left Sidebar for Profile and Info -->
+			<aside class="col-lg-3 sidebar">
+				<div class="text-center">
+					<h4>
+						Bienvenido, <span th:text="${cook.nickName ?: cook.firstName}"></span>!
+					</h4>
+					<img th:src="${base64Image}" class="rounded-circle shadow my-3"
+						style="width: 100px; height: 100px; object-fit: cover;"
+						alt="Imagen de perfil">
+				</div>
+				<ul class="list-unstyled mt-3">
+					<li><strong>Nombre completo:</strong> <span
+						th:text="${cook.firstName} + ' ' + ${cook.lastName}"></span></li>
+					<li><strong>Ciudad:</strong> <span th:text="${cook.city}"></span></li>
+					<li><strong>País:</strong> <span th:text="${cook.country}"></span></li>
+					<li><strong>Correo:</strong> <span th:text="${cook.username}"></span></li>
+					<li><strong>Edad:</strong> <span
+						th:text="${#dates.format(cook.birthDate, 'yyyy-MM-dd')}"></span></li>
+					<li><strong>Experiencia:</strong> <span
+						th:text="${cook.experience}"></span> años</li>
+				</ul>
+
+				<!-- Specialty Section -->
+				<div class="cook-specialty mt-4">
+					<h5>Especialidades</h5>
+					<ul>
+						<li th:each="specialty : ${cook.listSpecialty}"
+							th:text="${specialty}"></li>
+					</ul>
+				</div>
+
+				<!-- Culinary Techniques Section -->
+				<div class="cook-techniques mt-4">
+					<h5>Técnicas Culinarias</h5>
+					<ul>
+						<li th:each="technique : ${cook.listCulinaryTechniques}"
+							th:text="${technique.name}"></li>
+					</ul>
+				</div>
+			</aside>
+
+			<!-- Main Recipe Section -->
+			<section class="col-lg-9 recipe-section">
+				<ul class="nav nav-tabs mb-4" id="recipeTabs" role="tablist">
+					<li class="nav-item" role="presentation">
+						<button class="nav-link active" id="created-tab"
+							data-bs-toggle="tab" data-bs-target="#created" type="button"
+							role="tab" aria-controls="created" aria-selected="true">Recetas
+							Creadas</button>
+					</li>
+					<li class="nav-item" role="presentation">
+						<button class="nav-link" id="favorites-tab" data-bs-toggle="tab"
+							data-bs-target="#favorites" type="button" role="tab"
+							aria-controls="favorites" aria-selected="false">Recetas
+							Favoritas</button>
+					</li>
+				</ul>
+
+				<div class="tab-content">
+					<!-- Created Recipes Tab -->
+					<div class="tab-pane fade show active" id="created" role="tabpanel">
+						<div class="row row-cols-1 row-cols-md-2 g-4">
+							<div class="col" th:each="recipe : ${cook.listRecipes}">
+								<div class="card h-100 shadow-sm">
+									<img th:src="${base64listImage.get(recipe.id)}"
+										class="card-img-top" alt="Imagen de la receta">
+									<div class="card-body">
+										<h5 class="card-title" th:text="${recipe.name}"></h5>
+										<p>
+											<strong>Nivel:</strong> <span th:text="${recipe.level}"></span>
+										</p>
+										<p>
+											<strong>Comensales:</strong> <span th:text="${recipe.diners}"></span>
+										</p>
+										<p>
+											<strong>Tiempo:</strong> <span
+												th:text="${recipe.preparationTime}"></span> min
+										</p>
+										<p>
+											<strong>Categoría:</strong> <span
+												th:text="${recipe.category}"></span>
+										</p>
+										<p>
+											<strong>Calificación:</strong> <span
+												th:each="i : ${#numbers.sequence(1, 5)}"
+												th:class="${i <= recipe.averageRating ? 'star filled' : 'star'}">★</span>
+										</p>
+									</div>
+									<div class="card-footer">
+										<div th:else="${booleanEdit}">
+											<form action="/auth/cook/formUpdateRecipe" method="POST">
+												<input type="hidden" id="id" name="id"
+													th:value="${recipe.id}">
+												<button type="button" class="btn btn-primary">Actualizar</button>
+											</form>
+										</div>
+										<button class="btn btn-info btn-sm" data-bs-toggle="modal"
+											data-bs-target="#recipeModal"
+											th:attr="data-name=${recipe.name},
+            data-level=${recipe.level},
+            data-diners=${recipe.diners},
+            data-time=${recipe.preparationTime},
+            data-category=${recipe.category},
+            data-rating=${recipe.averageRating},
+            data-appliance=${recipe.whereItisDone},
+            data-techniques=${recipe.listRecipeTechniques},
+            data-instructions=${recipe.instructions},
+            data-allergens=${recipe.AllergensAndDietaryRestrictions},
+            data-nutritional=${recipe.nutritionalInformation},
+            data-grades=${recipe.grades},
+            data-history=${recipe.History},
+            data-country=${recipe.Country},
+            data-city=${recipe.city},
+            data-ingredients=${recipe.Ingredients}">
+											Ver</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+
+					<!-- Favorites Recipes Tab -->
+					<div class="tab-pane fade" id="favorites" role="tabpanel">
+						<div class="row row-cols-1 row-cols-md-2 g-4">
+							<div class="col" th:each="recipe : ${cook.listRecipesFavorites}">
+								<div class="card h-100 shadow-sm">
+									<img th:src="${base64listImage.get(recipe.id)}"
+										class="card-img-top" alt="Imagen de la receta">
+									<div class="card-body">
+										<h5 class="card-title" th:text="${recipe.name}"></h5>
+										<p>
+											<strong>Nivel:</strong> <span th:text="${recipe.level}"></span>
+										</p>
+										<p>
+											<strong>Comensales:</strong> <span th:text="${recipe.diners}"></span>
+										</p>
+										<p>
+											<strong>Tiempo:</strong> <span
+												th:text="${recipe.preparationTime}"></span> min
+										</p>
+										<p>
+											<strong>Categoría:</strong> <span
+												th:text="${recipe.category}"></span>
+										</p>
+										<p>
+											<strong>Calificación:</strong> <span
+												th:each="i : ${#numbers.sequence(1, 5)}"
+												th:class="${i <= recipe.averageRating ? 'star filled' : 'star'}">★</span>
+										</p>
+									</div>
+									<div class="card-footer">
+										<button class="btn btn-info btn-sm" data-bs-toggle="modal"
+											data-bs-target="#recipeModal"
+											th:attr="data-name=${recipe.name},
+            data-level=${recipe.level},
+            data-diners=${recipe.diners},
+            data-time=${recipe.preparationTime},
+            data-category=${recipe.category},
+            data-rating=${recipe.averageRating},
+            data-appliance=${recipe.whereItisDone},
+            data-techniques=${recipe.listRecipeTechniques},
+            data-instructions=${recipe.instructions},
+            data-allergens=${recipe.AllergensAndDietaryRestrictions},
+            data-nutritional=${recipe.nutritionalInformation},
+            data-grades=${recipe.grades},
+            data-history=${recipe.History},
+            data-country=${recipe.Country},
+            data-city=${recipe.city},
+            data-ingredients=${recipe.Ingredients}">
+											Ver</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</section>
 		</div>
 	</main>
 
-	<!-- Modal structure -->
-	<div class="modal fade" id="recipeModal" tabindex="-1" role="dialog"
+	<!-- Modal -->
+	<div class="modal fade" id="recipeModal" tabindex="-1"
 		aria-labelledby="recipeModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-lg" role="document">
-			<div class="modal-content rounded-4 shadow">
-				<div class="modal-header border-0">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
 					<h5 class="modal-title" id="recipeModalLabel">Detalles de la
 						Receta</h5>
-					<button type="button" class="close" data-bs-dismiss="modal"
-						aria-label="Close">
-						<span aria-hidden="true">×</span>
-					</button>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
 				</div>
 				<div class="modal-body" id="recipeDetails">
-				</div>
-				<div class="modal-footer border-0">
-					<button type="button" class="btn btn-outline-secondary"
-						data-bs-dismiss="modal">Cerrar</button>
+					<h4 id="modalRecipeName"></h4>
+					<p>
+						<strong>Nivel:</strong> <span id="modalRecipeLevel"></span>
+					</p>
+					<p>
+						<strong>Comensales:</strong> <span id="modalRecipeDiners"></span>
+					</p>
+					<p>
+						<strong>Tiempo de preparación:</strong> <span id="modalRecipeTime"></span>
+						min
+					</p>
+					<p>
+						<strong>Categoría:</strong> <span id="modalRecipeCategory"></span>
+					</p>
+					<p>
+						<strong>Calificación:</strong> <span id="modalRecipeRating"></span>
+					</p>
+
+					<p>
+						<strong>Aparatos de cocina:</strong> <span
+							id="modalRecipeAppliance"></span>
+					</p>
+					<p>
+						<strong>Técnicas Culinarias:</strong> <span
+							id="modalRecipeTechniques"></span>
+					</p>
+					<p>
+						<strong>Instrucciones:</strong> <span id="modalRecipeInstructions"></span>
+					</p>
+					<p>
+						<strong>Restricciones dietéticas y alérgenos:</strong> <span
+							id="modalRecipeAllergens"></span>
+					</p>
+					<p>
+						<strong>Información nutricional:</strong> <span
+							id="modalRecipeNutritional"></span>
+					</p>
+					<p>
+						<strong>Consejos:</strong> <span id="modalRecipeGrades"></span>
+					</p>
+					<p>
+						<strong>Historia:</strong> <span id="modalRecipeHistory"></span>
+					</p>
+					<p>
+						<strong>País:</strong> <span id="modalRecipeCountry"></span>
+					</p>
+					<p>
+						<strong>Ciudad:</strong> <span id="modalRecipeCity"></span>
+					</p>
+					<p>
+						<strong>Ingredientes:</strong> <span id="modalRecipeIngredients"></span>
+					</p>
 				</div>
 			</div>
 		</div>
 	</div>
 
 	<!-- Footer -->
-	<footer class="footer mt-auto py-3 bg-dark text-light">
-		<div class="container text-center">
-			<span>© 2024 FlavorSync - Todos los derechos reservados</span>
-		</div>
+	<footer class="footer py-3 text-center">
+		<div class="container">© 2024 FlavorSync - Todos los derechos
+			reservados</div>
 	</footer>
-
-	<!-- Scripts de Bootstrap -->
-	<!-- jQuery CDN -->
+	<!-- Bootstrap and JavaScript -->
+	<!-- jQuery -->
 	<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+	<!-- Popper.js -->
 	<script
-		src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+		src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/2.11.6/umd/popper.min.js"></script>
+
+	<!-- Bootstrap JS -->
 	<script
-		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.min.js"></script>
+		src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 	<script>
-	// Variables globales para almacenar los datos de la receta
-	let recipeName = '';
-	let recipeLevel = '';
-	let recipePreparationTime = '';
-	let recipeDiners = '';
-	let recipeInstructions = '';
-	let recipeDifficulty = '';
-	let recipeUtensils = '';
-	let recipeAllergens = '';
-	let recipeCategories = '';
-	let recipeGrades = '';
+		// Escuchar cuando se abre el modal
+		$('#recipeModal').on('show.bs.modal', function(event) {
+			var button = $(event.relatedTarget); // El botón que disparó el modal
+			var recipeName = button.data('name');
+			var recipeLevel = button.data('level');
+			var recipeDiners = button.data('diners');
+			var recipeTime = button.data('time');
+			var recipeCategory = button.data('category');
+			var recipeRating = button.data('rating');
+			var recipeAppliance = button.data('appliance');
+			var recipeTechniques = button.data('techniques');
+			var recipeInstructions = button.data('instructions');
+			var recipeAllergens = button.data('allergens');
+			var recipeNutritional = button.data('nutritional'); // Asegúrate de que este sea un objeto bien formateado
+			var recipeGrades = button.data('grades');
+			var recipeHistory = button.data('history');
+			var recipeCountry = button.data('country');
+			var recipeCity = button.data('city');
+			var recipeIngredients = button.data('ingredients');
 
-	// Función para establecer los valores en las variables globales
-	function setModalValues(button) {
-	    // Extraer los valores de los atributos de datos del botón
-	    recipeName = button.getAttribute('data-name');
-	    recipeLevel = button.getAttribute('data-level');
-	    recipePreparationTime = button.getAttribute('data-preparation-time');
-	    recipeDiners = button.getAttribute('data-diners');
-	    recipeInstructions = button.getAttribute('data-instructions');
-	    recipeDifficulty = button.getAttribute('data-difficulty');
-	    recipeUtensils = button.getAttribute('data-utensils');
-	    recipeAllergens = button.getAttribute('data-allergens');
-	    recipeCategories = button.getAttribute('data-categories');
-	    recipeGrades = button.getAttribute('data-grades');
-	}
+			var modal = $(this);
+			modal.find('#modalRecipeName').text(recipeName);
+			modal.find('#modalRecipeLevel').text(recipeLevel);
+			modal.find('#modalRecipeDiners').text(recipeDiners);
+			modal.find('#modalRecipeTime').text(recipeTime);
+			modal.find('#modalRecipeCategory').text(recipeCategory);
 
-	// Función para mostrar los valores en el modal
-	function populateModal() {
-	    // Establecer el contenido del modal usando las variables globales
-	    const modalContent = `
-	        <h6>${recipeName}</h6>
-	        <p><strong>Nivel:</strong> ${recipeLevel}</p>
-	        <p><strong>Tiempo de Preparación:</strong> ${recipePreparationTime} minutos</p>
-	        <p><strong>Comensales:</strong> ${recipeDiners}</p>
-	        <p><strong>Instrucciones:</strong> ${recipeInstructions}</p>
-	        <p><strong>Dificultad:</strong> ${recipeDifficulty}</p>
-	        <p><strong>Utensilios:</strong> ${recipeUtensils}</p>
-	        <p><strong>Alérgenos:</strong> ${recipeAllergens}</p>
-	        <p><strong>Categorías:</strong> ${recipeCategories}</p>
-	        <p><strong>Calificaciones:</strong> ${recipeGrades}</p>
-	    `;
+			// Calificación
+			var ratingHtml = '';
+			for (var i = 1; i <= 5; i++) {
+				if (i <= recipeRating) {
+					ratingHtml += '★';
+				} else {
+					ratingHtml += '☆';
+				}
+			}
+			modal.find('#modalRecipeRating').html(ratingHtml);
 
-	    // Actualizar el contenido del modal
-	    document.getElementById('recipeDetails').innerHTML = modalContent;
-	}
-
-	// Vinculación con el evento del modal para mostrar los detalles de la receta
-	document.getElementById('recipeModal').addEventListener('show.bs.modal', function (event) {
-	    const button = event.relatedTarget; // Botón que activó el modal
-	    setModalValues(button); // Llamar a la función para establecer los valores
-	    populateModal(); // Llamar a la función para mostrar los valores en el modal
-	});
+			// Mostrar los demás detalles
+			modal.find('#modalRecipeAppliance').text(recipeAppliance);
+			modal.find('#modalRecipeTechniques').text(recipeTechniques);
+			modal.find('#modalRecipeInstructions').text(recipeInstructions);
+			modal.find('#modalRecipeAllergens').text(recipeAllergens);
+			modal.find('#modalRecipeNutritional').text(recipeNutritional); // Aquí puedes formatear mejor la información nutricional
+			modal.find('#modalRecipeGrades').text(recipeGrades);
+			modal.find('#modalRecipeHistory').text(recipeHistory);
+			modal.find('#modalRecipeCountry').text(recipeCountry);
+			modal.find('#modalRecipeCity').text(recipeCity);
+			modal.find('#modalRecipeIngredients').text(recipeIngredients);
+		});
 	</script>
 </body>
 </html>

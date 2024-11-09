@@ -28,6 +28,7 @@ import com.example.demo.model.cookModel;
 import com.example.demo.model.recipeModel;
 import com.example.demo.repository.CookRepository;
 import com.example.demo.repository.CulinaryTechniquesRepository;
+import com.example.demo.repository.RecipeRepository;
 import com.example.demo.security.CustomUserDetails;
 import com.example.demo.service.CookService;
 
@@ -37,6 +38,10 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 	@Autowired
 	@Qualifier("cookRepository")
 	private CookRepository cookRepository;
+	
+	@Autowired
+	@Qualifier("recipeRepository")
+	private RecipeRepository recipeRepository;
 
 	@Autowired
 	@Qualifier("cookConverter")
@@ -244,6 +249,25 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 	public cookModel findByRecipeId(recipeModel r) {
 		// TODO Auto-generated method stub
 		return cookConverter.transform(cookRepository.findByRecipe(recipeConverter.transform(r)));
+	}
+
+	@Override
+	public void verifyPunctuation(cookModel c) {
+		// TODO Auto-generated method stub
+		int punctuation = c.getPunctuation(); 
+		for(recipeModel r: c.getListRecipes())
+			punctuation+= r.getAverageRating();
+		punctuation/=c.getListRecipes().size();
+		c.setPunctuation(punctuation);
+		if(c.getPunctuation()<5) {
+			c.setRole("ROL_COOKAPRENDIZ");
+		}else if (c.getPunctuation()>5 && c.getPunctuation()<8) {
+            c.setRole("ROL_COOKPROFESIONAL");
+		}else if (c.getPunctuation()>8 && c.getPunctuation()<10) {
+			c.setRole("ROL_COOKCHEF");
+		}
+			
+		cookRepository.save(cookConverter.transform(c));
 	}
 
 }

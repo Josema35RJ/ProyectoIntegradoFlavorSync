@@ -14,6 +14,6 @@ public interface CommentRepository extends JpaRepository<comment, Serializable> 
 
 	comment findById(int CommnetId);
 	List<comment> findByPunctuation( int Punctuaction);
-	List<comment> findByUserId(cook cook);
+	List<comment> findByCookId(cook cook);
 
 }

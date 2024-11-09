@@ -32,6 +32,7 @@ import com.example.demo.service.CulinaryTechniquesService;
 import com.example.demo.service.RecipeService;
 import com.example.demo.service.TokenService;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
 @Controller
@@ -107,7 +108,7 @@ public class CookController {
 		// Ahora puedes obtener la información del usuario logueado desde userDetails
 		Map<Integer, String> imagesRecipes = new HashMap<>();
 		cookModel c = cookService.findById(userDetails.getId());
-		model.addAttribute("cook", c.getNickName());
+		model.addAttribute("cook", c);
 		byte[] imageBytes = c.getImagePerfil();
 		for (recipeModel r : c.getListRecipes()) {
 
@@ -117,7 +118,6 @@ public class CookController {
 		String base64Image = Base64.getEncoder().encodeToString(imageBytes);
 		model.addAttribute("base64listImage", imagesRecipes);
 		model.addAttribute("base64Image", "data:image/jpeg;base64," + base64Image);
-		model.addAttribute("recipes", c.getListRecipes());
 
 		return COOKRECIPES_VIEW; // Asegúrate de que LOGIN_VIEW sea el nombre correcto de la vista de login
 	}
@@ -129,19 +129,19 @@ public class CookController {
 		// Ahora puedes obtener la información del usuario logueado desde userDetails
 		cookModel c = cookService.findById(userDetails.getId());
 		recipeModel r = recipeService.getRecipeById(id);
-		cookModel cookRecipe= cookService.findByRecipeId(r);	
+		cookModel cookRecipe = cookService.findByRecipeId(r);
 		for (byte[] b : r.getImagesRecipe()) {
 			listImagesRecipe.add("data:image/jpeg;base64," + Base64.getEncoder().encodeToString(b));
 		}
-		model.addAttribute("booleanComment", !commentService.findByUserId(c)); // Hay que añadir al comentario el autor
-											// de este
-		model.addAttribute("cookcreate", c.getListRecipes().contains(r));
-		model.addAttribute("imagePerfilCook", "data:image/jpeg;base64," + Base64.getEncoder().encodeToString(cookRecipe.getImagePerfil()));
+		model.addAttribute("booleanComment", commentService.findByUserId(c)); 
+		model.addAttribute("imagePerfilCook",
+				"data:image/jpeg;base64," + Base64.getEncoder().encodeToString(cookRecipe.getImagePerfil()));
 		model.addAttribute("cookRecipe", cookRecipe);
 		model.addAttribute("booleanFav", c.getListRecipesFavorites().contains(r));
 		model.addAttribute("imageRecipe",
 				"data:image/jpeg;base64," + Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
 		model.addAttribute("listImagesRecipe", listImagesRecipe);
+		model.addAttribute("userSession", c);
 		model.addAttribute("recipe", r);
 		return RECIPE_VIEW; // Asegúrate de que LOGIN_VIEW sea el nombre correcto de la vista de login
 	}
@@ -166,6 +166,33 @@ public class CookController {
 		model.addAttribute("recipeTechniques", culinaryTechniquesService.getListCulinaryTechniques());
 		model.addAttribute("age", age);
 		model.addAttribute("cookPerfil", c);
+		return PANELPERFIL_VIEW;
+	}
+	
+	@PostMapping("/auth/cook/cookPerfil")
+	public String ViewPerfilCook(@RequestParam("id") Integer id,Model model, Authentication authentication) {
+		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+		// Ahora puedes obtener la información del usuario logueado desde userDetails
+     
+		cookModel c = cookService.findById(id);
+		List<Integer> selectedTechniques = c.getListCulinaryTechniques().stream().map(technique -> technique.getId()) // Asegurarse
+				.collect(Collectors.toList());
+
+		byte[] imageBytes = c.getImagePerfil();
+		String base64Image = Base64.getEncoder().encodeToString(imageBytes);
+		model.addAttribute("base64Image", "data:image/jpeg;base64," + base64Image);
+		LocalDate birthDate = LocalDate.of(1990, 5, 20); // Ejemplo de fecha de nacimiento
+		int age = calculateAge(birthDate);
+		model.addAttribute("selectedTechniques", selectedTechniques); // Lista de IDs seleccionados
+		model.addAttribute("country", c.getCountry());
+		model.addAttribute("city", c.getCity());
+		model.addAttribute("recipeTechniques", culinaryTechniquesService.getListCulinaryTechniques());
+		model.addAttribute("age", age);
+		model.addAttribute("cookPerfil", c);
+		if(userDetails.getId()!=id) 
+		model.addAttribute("booleanEdit", false);
+		else
+			model.addAttribute("booleanEdit", true);	
 		return PANELPERFIL_VIEW;
 	}
 
@@ -254,22 +281,21 @@ public class CookController {
 
 		flash.addFlashAttribute("success", "¡Receta registrada exitosamente!");
 		return "redirect:" + COOKRECIPES_VIEW;
-
 	}
 
 	@PostMapping("/auth/cook/AddComment")
-	public String AddComment(RedirectAttributes flash, @RequestParam(value = "id") String recipeId,
-			@RequestParam(value = "commentText") String comment, @RequestParam(value = "rating") String ra,
-			Authentication authentication) {
-		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-		commentModel com = new commentModel(comment, Integer.valueOf(ra), cookService.findById(userDetails.getId()));
-		recipeModel r = recipeService.getRecipeById(Integer.valueOf(recipeId));
-		commentService.addComment(com, Integer.valueOf(recipeId));
-		r.getListComments().add(com);
-		recipeService.updateRecipe(Integer.valueOf(recipeId), r);
+	public String AddComment(RedirectAttributes flash, @RequestParam(value = "recipeId") Integer recipeId,
+			 @RequestParam(value = "cookCommentId") Integer cookCommentId,
+			commentModel c, Authentication authentication, HttpServletRequest request) {
+		recipeModel r = recipeService.getRecipeById(recipeId);
+		c.setCookId(cookService.findById(cookCommentId));
+		commentService.addComment(c, recipeId);
+		r.getListComments().add(c);
+		cookService.verifyPunctuation(cookService.findByRecipeId(r));
 		flash.addFlashAttribute("success", "¡Comentario registrado exitosamente!");
-		return "redirect:" + PANEL_VIEW;
-
+			    String referer = request.getHeader("Referer");
+	    // Redirigimos a la misma página
+	    return "redirect:" + referer;
 	}
 
 	@PostMapping("/auth/cook/updateRecipe")
@@ -289,8 +315,8 @@ public class CookController {
 		return "redirect:" + PANEL_VIEW;
 	}
 
-	@GetMapping("/auth/cook/updateRecipe/{id}")
-	public String UpdateRecipe(@PathVariable("id") Integer id, Model model, Authentication authentication,
+	@PostMapping("/auth/cook/formUpdateRecipe")
+	public String UpdateRecipe(@RequestParam("id") Integer id, Model model, Authentication authentication,
 			RedirectAttributes flash) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		List<String> listImagesRecipe = new ArrayList<>();
