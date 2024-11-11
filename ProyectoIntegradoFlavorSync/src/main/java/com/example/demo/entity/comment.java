@@ -14,6 +14,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
@@ -34,8 +35,8 @@ public class comment {
 
 	// Puntuacion que le da, al eborarla el y probarla ( esta puntuacion hara media
 	// con las demas, para obtener las valoracion a la receta)
-	@Column(name = "punctuation", nullable = false)
-	@Positive(message = "The punctuation must be a positive number")
+	@Column(name = "punctuation")
+	@Min(value = 0, message = "The punctuation must be a non-negative number")
 	private int punctuation;
 
 	 @ManyToOne

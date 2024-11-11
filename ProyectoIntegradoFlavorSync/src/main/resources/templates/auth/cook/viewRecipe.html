@@ -126,14 +126,14 @@ body {
 	}
 }
 
-.star-punctuation .star {
+.star {
 	cursor: pointer;
-	font-size: 1.8rem;
-	color: #ccc; /* Estrellas no seleccionadas */
+	font-size: 24px;
+	color: #ccc; /* Color de estrella no seleccionada */
 }
 
-.star-punctuation .star.selected, .star-punctuation .star:hover {
-	color: gold; /* Color dorado para estrellas seleccionadas o en hover */
+.star.selected {
+	color: gold; /* Color de estrella seleccionada */
 }
 </style>
 </head>
@@ -255,7 +255,8 @@ body {
 						<p th:text="${cookRecipe.experience}">Experiencia</p>
 						<!-- Opcional: Enlace al perfil completo del cocinero -->
 						<form action="/auth/cook/cookPerfil" method="POST">
-							<input type="hidden" id="id" name="id" th:value="${cookRecipe.id}">
+							<input type="hidden" id="id" name="id"
+								th:value="${cookRecipe.id}">
 							<button type="button" class="btn btn-primary">Ver Perfil</button>
 						</form>
 					</div>
@@ -266,7 +267,7 @@ body {
 					<h4 class="mb-3">Calificación</h4>
 					<div>
 						<span class="badge bg-warning text-dark"
-							th:text="${recipe.averageRating}">8.5</span>/10
+							th:text="${recipe.averageRating}">0</span>/5
 					</div>
 				</div>
 
@@ -288,51 +289,61 @@ body {
 							<!-- Mostrar cada comentario -->
 							<div th:each="comment : ${recipe.listComments}"
 								class="list-group-item border-0">
-								<div
-									class="d-flex justify-content-between align-items-center mb-3">
-									<div>
-										<h5 class="mb-1" th:text="${comment.cookId.firstName}">Nombre
-											del Usuario</h5>
-										<div class="star-punctuation">
-											<span th:each="i : ${#numbers.sequence(1, 5)}"> <i
-												class="fas fa-star"
-												th:classappend="${i <= comment.punctuation ? 'text-warning' : 'text-muted'}"></i>
-											</span>
-										</div>
-									</div>
-									<small class="text-muted"
-										th:text="${#temporals.format(comment.createDate, 'dd MMM yyyy')}">Fecha
-										del comentario</small>
-								</div>
-
-								<!-- Contenido del comentario -->
-								<p class="mb-2" th:text="${comment.description}">Contenido
-									del comentario</p>
-
-								<!-- Calificación numérica -->
-								<div class="d-flex justify-content-between">
-									<span><strong>Calificación:</strong> <span
-										th:text="${comment.punctuation}">5</span>/5</span>
-								</div>
-
-								<!-- Mostrar respuestas si existen -->
-								<div th:if="${not #lists.isEmpty(comment.replies)}" class="mt-3">
-									<ul class="list-group">
-										<li class="list-group-item border-0"
-											th:each="reply : ${comment.replies}">
-											<div class="d-flex justify-content-between align-items-start">
-												<div>
-													<h6 class="mb-1" th:text="${reply.userId.firstName}">Nombre
-														del Usuario</h6>
-													<p class="mb-0" th:text="${reply.description}">Respuesta
-														al comentario</p>
-												</div>
-												<small class="text-muted"
-													th:text="${#temporals.format(reply.createDate, 'dd MMM yyyy')}">Fecha
-													de la respuesta</small>
+								<div th:unless="${comment.parentComment!=null}">
+									<div
+										class="d-flex justify-content-between align-items-center mb-3">
+										<div>
+											<h5 class="mb-1" th:text="${comment.cookId.firstName}">Nombre
+												del Usuario</h5>
+											<div class="star-punctuation">
+												<span th:each="i : ${#numbers.sequence(1, 5)}"> <i
+													class="fas fa-star"
+													th:classappend="${i <= comment.punctuation ? 'text-warning' : 'text-muted'}"></i>
+												</span>
 											</div>
-										</li>
-									</ul>
+										</div>
+										<small class="text-muted"
+											th:text="${#temporals.format(comment.createDate, 'dd MMM yyyy')}">Fecha
+											del comentario</small>
+									</div>
+
+									<!-- Contenido del comentario -->
+									<p class="mb-2" th:text="${comment.description}">Contenido
+										del comentario</p>
+
+									<!-- Calificación numérica -->
+									<div class="d-flex justify-content-between">
+										<span><strong>Calificación:</strong> <span
+											th:text="${comment.punctuation}">5</span>/5</span>
+									</div>
+
+									<!-- Botón para abrir el modal de respuesta con el ID del comentario -->
+									<button type="button" class="btn btn-secondary"
+										data-bs-toggle="modal" data-bs-target="#replyModal"
+										th:attr="data-recipe-id=${recipe.id}, data-comment-id=${comment.id}">Responder
+										al Comentario</button>
+
+									<!-- Mostrar respuestas si existen -->
+									<div th:if="${not #lists.isEmpty(comment.replies)}"
+										class="mt-3">
+										<ul class="list-group">
+											<li class="list-group-item border-0"
+												th:each="reply : ${comment.replies}">
+												<div
+													class="d-flex justify-content-between align-items-start">
+													<div>
+														<h6 class="mb-1" th:text="${reply.cookId.firstName}">Nombre
+															del Usuario</h6>
+														<p class="mb-0" th:text="${reply.description}">Respuesta
+															al comentario</p>
+													</div>
+													<small class="text-muted"
+														th:text="${#temporals.format(reply.createDate, 'dd MMM yyyy')}">Fecha
+														de la respuesta</small>
+												</div>
+											</li>
+										</ul>
+									</div>
 								</div>
 							</div>
 						</div>
@@ -342,9 +353,8 @@ body {
 					<div th:if="${#lists.isEmpty(recipe.listComments)}">
 						<p class="text-muted">No hay comentarios aún para esta receta.</p>
 					</div>
-
 					<!-- Solo mostrar el botón de añadir comentario si el usuario no ha comentado aún -->
-					<div th:if="${booleanComment}">
+					<div th:unless="${booleanComment}">
 						<button type="button" class="btn btn-primary mt-3"
 							th:attr="data-bs-toggle='modal', data-bs-target='#commentModal', data-recipe-id=${recipe.id}">
 							<i class="fas fa-comment-dots"></i> Añadir Comentario
@@ -368,12 +378,16 @@ body {
 				</div>
 				<div class="modal-body">
 					<form action="/auth/cook/AddReply" method="post">
-						<input type="hidden" id="commentId" name="commentId" />
+						<input type="hidden" id="commentId" name="commentId" /> <input
+							type="hidden" id="recipeId" name="recipeId"
+							th:value="${recipe.id}" /> <input type="hidden"
+							id="cookCommentId" name="cookCommentId"
+							th:value="${userSession.id}" />
 						<div class="mb-3">
-							<label for="replyText" class="form-label">Escribe tu
-								respuesta:</label>
-							<textarea class="form-control" id="replyText" name="replyText"
-								rows="3" required></textarea>
+							<label for="commentText" class="form-label">Escribe tu
+								comentario:</label>
+							<textarea class="form-control" id="description"
+								name="description" rows="3" required></textarea>
 						</div>
 						<button type="submit" class="btn btn-primary">Enviar
 							Respuesta</button>
@@ -500,38 +514,7 @@ body {
 				star.classList.remove('selected');
 			});
 		}
-		// Escuchar el evento de apertura del modal de edición
-		var editCommentModal = document.getElementById('editCommentModal');
-		editCommentModal.addEventListener('show.bs.modal', function(event) {
-			// Obtener el botón que abrió el modal
-			var button = event.relatedTarget;
-
-			// Obtener el ID, texto y valoración del comentario desde los atributos del botón
-			var commentId = button.getAttribute('data-comment-id');
-			var commentText = button.getAttribute('data-comment-text');
-			var commentpunctuation = button
-					.getAttribute('data-comment-punctuation');
-
-			// Establecer los valores en los campos del modal
-			var commentIdInput = editCommentModal.querySelector('#commentId');
-			var commentTextInput = editCommentModal
-					.querySelector('#commentText');
-			var punctuationInput = editCommentModal
-					.querySelector('#punctuationEdit');
-
-			commentIdInput.value = commentId;
-			commentTextInput.value = commentText;
-			setStarpunctuationEdit(commentpunctuation);
-		});
-
-		// Manejo de la valoración por estrellas dentro del modal de edición
-		editCommentModal.addEventListener('click', function(event) {
-			if (event.target.classList.contains('star')) {
-				var punctuationValue = event.target.getAttribute('data-value');
-				setStarpunctuationEdit(punctuationValue);
-			}
-		});
-
+		
 		// Establecer la valoración seleccionada en el modal de edición
 		function setStarpunctuationEdit(punctuation) {
 			// Establecer la valoración en el campo oculto
@@ -549,6 +532,73 @@ body {
 			for (let i = 0; i < punctuation; i++) {
 				stars[i].classList.add('selected');
 			}
+		}
+		document.addEventListener('DOMContentLoaded', function() {
+		    const buttons = document.querySelectorAll('.btn-secondary[data-bs-toggle="modal"]');
+		    console.log('Botones encontrados:', buttons);
+
+		    if (buttons.length > 0) {
+		        buttons.forEach(button => {
+		            console.log('Botón:', button);
+		            button.addEventListener('click', function() {
+		                var recipeId = this.getAttribute('data-recipe-id');
+		                var commentId = this.getAttribute('data-comment-id');
+		                
+		                console.log('Recipe ID:', recipeId);
+		                console.log('Comment ID:', commentId);
+
+		                // Asignar los valores a los campos del modal
+		                document.getElementById('recipeId').value = recipeId;
+		                document.getElementById('commentId').value = commentId;
+		            });
+		        });
+		    } else {
+		        console.log('No se encontraron los botones');
+		    }
+		});
+		// Escuchar el evento de apertura del modal de respuesta
+		var replyModal = document.getElementById('replyModal');
+		replyModal.addEventListener('show.bs.modal', function(event) {
+		    // Obtener el botón que abrió el modal
+		    var button = event.relatedTarget;
+
+		    // Obtener el ID de la receta del atributo data-recipe-id
+		    var recipeId = button.getAttribute('data-recipe-id');
+		    var commentId = button.getAttribute('data-comment-id');
+
+		    // Establecer los valores en los campos ocultos
+		    document.getElementById('recipeId').value = recipeId;
+		    document.getElementById('commentId').value = commentId;
+
+		    // Resetear la valoración al abrir el modal
+		    resetStarpunctuation(replyModal);
+		});
+
+		// Manejo de la valoración por estrellas dentro del modal de respuesta
+		replyModal.addEventListener('click', function(event) {
+		    if (event.target.classList.contains('star')) {
+		        var punctuationValue = event.target.getAttribute('data-value');
+		        setStarpunctuation(replyModal, punctuationValue);
+		    }
+		});
+
+		// Establecer la valoración seleccionada para el modal de respuesta
+		function setStarpunctuation(modal, punctuation) {
+		    // Establecer la valoración en el campo oculto
+		    modal.querySelector('#punctuation').value = punctuation;
+
+		    // Obtener todas las estrellas dentro del modal
+		    var stars = modal.querySelectorAll('.star');
+
+		    // Resetear las clases de selección en todas las estrellas
+		    stars.forEach(function(star) {
+		        star.classList.remove('selected');
+		    });
+
+		    // Añadir la clase de selección a las estrellas seleccionadas
+		    for (let i = 0; i < punctuation; i++) {
+		        stars[i].classList.add('selected');
+		    }
 		}
 	</script>
 </body>

@@ -1,6 +1,7 @@
 package com.example.demo.controller;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -133,7 +134,7 @@ public class CookController {
 		for (byte[] b : r.getImagesRecipe()) {
 			listImagesRecipe.add("data:image/jpeg;base64," + Base64.getEncoder().encodeToString(b));
 		}
-		model.addAttribute("booleanComment", commentService.findByUserId(c)); 
+		model.addAttribute("booleanComment", commentService.findByUserId(c, r)); 
 		model.addAttribute("imagePerfilCook",
 				"data:image/jpeg;base64," + Base64.getEncoder().encodeToString(cookRecipe.getImagePerfil()));
 		model.addAttribute("cookRecipe", cookRecipe);
@@ -288,6 +289,23 @@ public class CookController {
 			 @RequestParam(value = "cookCommentId") Integer cookCommentId,
 			commentModel c, Authentication authentication, HttpServletRequest request) {
 		recipeModel r = recipeService.getRecipeById(recipeId);
+		c.setCookId(cookService.findById(cookCommentId));
+		commentService.addComment(c, recipeId);
+		r.getListComments().add(c);
+		cookService.verifyPunctuation(cookService.findByRecipeId(r));
+		flash.addFlashAttribute("success", "¡Comentario registrado exitosamente!");
+			    String referer = request.getHeader("Referer");
+	    // Redirigimos a la misma página
+	    return "redirect:" + referer;
+	}
+	
+	@PostMapping("/auth/cook/AddReply")
+	public String AddReply(RedirectAttributes flash, @RequestParam(value = "recipeId") Integer recipeId,
+			@RequestParam(value = "commentId") Integer commentId,
+			 @RequestParam(value = "cookCommentId") Integer cookCommentId,
+			commentModel c, Authentication authentication, HttpServletRequest request) {
+		recipeModel r = recipeService.getRecipeById(recipeId);
+		c.setParentComment(commentService.findById(commentId));
 		c.setCookId(cookService.findById(cookCommentId));
 		commentService.addComment(c, recipeId);
 		r.getListComments().add(c);

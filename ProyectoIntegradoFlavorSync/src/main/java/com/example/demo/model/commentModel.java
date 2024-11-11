@@ -4,11 +4,11 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.validation.constraints.Positive;
 import jakarta.validation.constraints.Size;
 
@@ -38,6 +38,13 @@ public class commentModel {
 
 	public commentModel() {
 		super();
+	}
+	
+	public commentModel(
+			@Size(max = 255, message = "The description cannot exceed 255 characters") String description) {
+		super();
+		this.description = description;
+		this.createDate = LocalDateTime.now();
 	}
 
 	public commentModel(
@@ -116,7 +123,6 @@ public class commentModel {
 
 	@Override
 	public String toString() {
-		return "commentModel [id=" + id + ", description=" + description + ", punctuation=" + punctuation + ", cookId="
-				+ cookId + ", createDate=" + createDate + ", updateDate=" + updateDate + "]";
+		return "commentModel [id=" + id + ", description=" + description + ", punctuation=" + punctuation + ", createDate=" + createDate + ", updateDate=" + updateDate + "]";
 	}
 }

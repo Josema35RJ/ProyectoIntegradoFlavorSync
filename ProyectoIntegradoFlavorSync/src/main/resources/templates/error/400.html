@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Error - Solicitud Incorrecta</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            background-image: url('/imgs/errors/400.jpg');
+            background-position: center;
+            background-repeat: no-repeat;
+            height: 100vh;
+            color: #ffffff;
+            overflow: hidden;
+        }
+
+        /* Filtro de fondo oscuro para el texto */
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 0;
+        }
+
+        .container {
+            position: relative;
+            z-index: 1;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 3em;
+            color: #ff6600;
+            margin-bottom: 10px;
+            animation: fadeInDown 1s ease-out;
+        }
+
+        p {
+            font-size: 1.2em;
+            color: #f0f0f0;
+            margin-bottom: 20px;
+            animation: fadeInUp 1s ease-out;
+        }
+
+        .buttons {
+            margin-top: 20px;
+        }
+
+        .btn {
+            text-decoration: none;
+            padding: 10px 20px;
+            font-size: 1em;
+            color: #fff;
+            background-color: #ff6600;
+            border-radius: 5px;
+            transition: background-color 0.3s ease;
+            display: inline-block;
+            margin: 5px;
+        }
+
+        .btn:hover {
+            background-color: #ff3300;
+        }
+
+        /* Animaciones de entrada */
+        @keyframes fadeInDown {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay"></div>
+    <div class="container">
+        <h1>400 - Solicitud Incorrecta</h1>
+        <p>Lo sentimos, la solicitud no es asi</p>
+        <div class="buttons">
+            <a href="http://localhost:8080/auth/cook/cookPanel" class="btn">Volver al Inicio</a>
+        </div>
+    </div>
+</body>
+</html>

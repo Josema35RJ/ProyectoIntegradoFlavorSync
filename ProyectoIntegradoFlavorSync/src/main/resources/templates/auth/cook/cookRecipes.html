@@ -9,7 +9,6 @@
 	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
 <link rel="stylesheet"
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-F
 <!-- Font Awesome para iconos -->
 <link
 	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
@@ -96,54 +95,54 @@ body {
 	color: #ffc107;
 }
 
-/* Modal Styling */
+/* Estilo para el modal */
 .modal-content {
 	border-radius: 10px;
-	box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.2);
-}
-
-/* Footer Styling */
-.footer {
-	background-color: #3b4a6b;
-	color: #ffffff;
-	padding: 10px 0;
-}
-/* Estilo general del modal */
-.modal-content {
-	background-color: #f9f9f9;
-	border-radius: 10px;
-	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 	padding: 20px;
-	font-family: 'Arial', sans-serif;
+	background-color: #f8f9fa;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Cabecera del modal */
+/* Estilo para las cabeceras */
 .modal-header {
-	border-bottom: 2px solid #ddd;
-	padding-bottom: 15px;
+	border-bottom: none;
+	background-color: #007bff;
+	color: #fff;
 }
 
+/* Estilo para los títulos dentro del modal */
 .modal-title {
-	font-size: 24px;
+	font-family: 'Arial', sans-serif;
+	font-size: 1.5rem;
 	font-weight: bold;
-	color: #333;
 }
 
 /* Botón de cierre */
 .btn-close {
-	background: none;
+	background-color: transparent;
 	border: none;
-	font-size: 1.5rem;
-	color: #999;
 }
 
-.btn-close:hover {
-	color: #333;
+/* Estilo para las secciones de la receta */
+.recipe-info .row p {
+	font-size: 1rem;
+	font-weight: 500;
 }
 
-/* Cuerpo del modal */
+/* Calificación estrella */
+#modalRecipeRating {
+	font-size: 1.25rem;
+	color: #f39c12;
+}
+
+/* Agregar márgenes a los párrafos */
+.recipe-info p {
+	margin-bottom: 15px;
+}
+
+/* Agregar una transición suave */
 .modal-body {
-	padding-top: 15px;
+	transition: all 0.3s ease;
 }
 
 /* Títulos de las secciones dentro del modal */
@@ -253,10 +252,70 @@ ul li {
 		font-size: 1.2rem;
 	}
 }
+
+#modalRecipeComments {
+	padding: 0;
+}
+
+.comment-container {
+	max-height: 400px; /* Altura máxima para la lista de comentarios */
+	overflow-y: auto; /* Habilita la barra de desplazamiento vertical */
+	padding-right: 15px; /* Espacio para la barra de desplazamiento */
+	margin-right: -15px;
+	/* Para evitar el espacio extra causado por la barra de desplazamiento */
+	border-right: 1px solid #ddd;
+	/* Opcional: agrega una línea de borde a la derecha */
+}
+
+.comment {
+	background-color: #f9f9f9;
+	padding: 10px;
+	margin-bottom: 15px;
+	border-radius: 8px;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+	font-family: Arial, sans-serif;
+}
+
+.comment-header {
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	margin-bottom: 10px;
+}
+
+.comment-author {
+	font-weight: bold;
+	font-size: 14px;
+}
+
+.comment-rating {
+	background-color: #ff9800;
+	color: white;
+	padding: 5px 10px;
+	border-radius: 5px;
+	font-weight: bold;
+	font-size: 14px;
+}
+
+.comment-body {
+	font-size: 16px;
+	margin-bottom: 10px;
+	line-height: 1.5;
+}
+
+.comment-footer {
+	font-size: 12px;
+	color: #555;
+	text-align: right;
+}
+
+.comment-date {
+	font-style: italic;
+	color: #777;
+}
 </style>
 </head>
 <body>
-
 	<!-- Navbar -->
 	<nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
 		<div class="container">
@@ -404,6 +463,10 @@ ul li {
             data-city=${recipe.city},
             data-ingredients=${recipe.Ingredients}">
 											Ver</button>
+										<button class="btn btn-info btn-sm" data-bs-toggle="modal"
+											data-bs-target="#recipeModalComments"
+											th:attr="data-name=${recipe.name}, data-comments=${recipe.listComments}">
+											Comentarios</button>
 									</div>
 								</div>
 							</div>
@@ -464,12 +527,10 @@ ul li {
 							</div>
 						</div>
 					</div>
-				</div>
 			</section>
 		</div>
 	</main>
 
-	<!-- Modal -->
 	<div class="modal fade" id="recipeModal" tabindex="-1"
 		aria-labelledby="recipeModalLabel" aria-hidden="true">
 		<div class="modal-dialog modal-lg">
@@ -482,57 +543,106 @@ ul li {
 				</div>
 				<div class="modal-body" id="recipeDetails">
 					<h4 id="modalRecipeName"></h4>
-					<p>
-						<strong>Nivel:</strong> <span id="modalRecipeLevel"></span>
-					</p>
-					<p>
-						<strong>Comensales:</strong> <span id="modalRecipeDiners"></span>
-					</p>
-					<p>
-						<strong>Tiempo de preparación:</strong> <span id="modalRecipeTime"></span>
-						min
-					</p>
-					<p>
-						<strong>Categoría:</strong> <span id="modalRecipeCategory"></span>
-					</p>
-					<p>
-						<strong>Calificación:</strong> <span id="modalRecipeRating"></span>
-					</p>
+					<div class="recipe-info">
+						<div class="row">
+							<div class="col-md-6">
+								<p>
+									<strong>Nivel:</strong> <span id="modalRecipeLevel"></span>
+								</p>
+								<p>
+									<strong>Comensales:</strong> <span id="modalRecipeDiners"></span>
+								</p>
+								<p>
+									<strong>Tiempo de preparación:</strong> <span
+										id="modalRecipeTime"></span> min
+								</p>
+								<p>
+									<strong>Categoría:</strong> <span id="modalRecipeCategory"></span>
+								</p>
+							</div>
+							<div class="col-md-6">
+								<p>
+									<strong>Calificación:</strong> <span id="modalRecipeRating"></span>
+								</p>
+								<p>
+									<strong>Aparatos de cocina:</strong> <span
+										id="modalRecipeAppliance"></span>
+								</p>
+								<p>
+									<strong>Técnicas Culinarias:</strong> <span
+										id="modalRecipeTechniques"></span>
+								</p>
+							</div>
+						</div>
+						<hr>
 
-					<p>
-						<strong>Aparatos de cocina:</strong> <span
-							id="modalRecipeAppliance"></span>
-					</p>
-					<p>
-						<strong>Técnicas Culinarias:</strong> <span
-							id="modalRecipeTechniques"></span>
-					</p>
-					<p>
-						<strong>Instrucciones:</strong> <span id="modalRecipeInstructions"></span>
-					</p>
-					<p>
-						<strong>Restricciones dietéticas y alérgenos:</strong> <span
-							id="modalRecipeAllergens"></span>
-					</p>
-					<p>
-						<strong>Información nutricional:</strong> <span
-							id="modalRecipeNutritional"></span>
-					</p>
-					<p>
-						<strong>Consejos:</strong> <span id="modalRecipeGrades"></span>
-					</p>
-					<p>
-						<strong>Historia:</strong> <span id="modalRecipeHistory"></span>
-					</p>
-					<p>
-						<strong>País:</strong> <span id="modalRecipeCountry"></span>
-					</p>
-					<p>
-						<strong>Ciudad:</strong> <span id="modalRecipeCity"></span>
-					</p>
-					<p>
-						<strong>Ingredientes:</strong> <span id="modalRecipeIngredients"></span>
-					</p>
+						<div>
+							<p>
+								<strong>Instrucciones:</strong>
+							</p>
+							<p id="modalRecipeInstructions"></p>
+						</div>
+						<div>
+							<p>
+								<strong>Restricciones dietéticas y alérgenos:</strong> <span
+									id="modalRecipeAllergens"></span>
+							</p>
+						</div>
+						<div>
+							<p>
+								<strong>Información nutricional:</strong> <span
+									id="modalRecipeNutritional"></span>
+							</p>
+						</div>
+						<div>
+							<p>
+								<strong>Consejos:</strong> <span id="modalRecipeGrades"></span>
+							</p>
+						</div>
+						<div>
+							<p>
+								<strong>Historia:</strong> <span id="modalRecipeHistory"></span>
+							</p>
+						</div>
+						<div>
+							<p>
+								<strong>País:</strong> <span id="modalRecipeCountry"></span>
+							</p>
+						</div>
+						<div>
+							<p>
+								<strong>Ciudad:</strong> <span id="modalRecipeCity"></span>
+							</p>
+						</div>
+						<div>
+							<p>
+								<strong>Ingredientes:</strong> <span id="modalRecipeIngredients"></span>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<!-- Modal para mostrar los comentarios -->
+	<div class="modal fade" id="recipeModalComments" tabindex="-1"
+		aria-labelledby="recipeCommentsModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-lg">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="recipeCommentsModalLabel">Comentarios
+						de la Receta</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body" id="recipeDetails">
+					<h4 id="modalRecipeName"></h4>
+					<div class="recipe-info">
+						<div id="modalRecipeComments" class="comment-container">
+							<!-- Los comentarios se añadirán aquí dinámicamente -->
+						</div>
+					</div>
 				</div>
 			</div>
 		</div>
@@ -559,55 +669,137 @@ ul li {
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 	<script>
-		// Escuchar cuando se abre el modal
-		$('#recipeModal').on('show.bs.modal', function(event) {
-			var button = $(event.relatedTarget); // El botón que disparó el modal
-			var recipeName = button.data('name');
-			var recipeLevel = button.data('level');
-			var recipeDiners = button.data('diners');
-			var recipeTime = button.data('time');
-			var recipeCategory = button.data('category');
-			var recipeRating = button.data('rating');
-			var recipeAppliance = button.data('appliance');
-			var recipeTechniques = button.data('techniques');
-			var recipeInstructions = button.data('instructions');
-			var recipeAllergens = button.data('allergens');
-			var recipeNutritional = button.data('nutritional'); // Asegúrate de que este sea un objeto bien formateado
-			var recipeGrades = button.data('grades');
-			var recipeHistory = button.data('history');
-			var recipeCountry = button.data('country');
-			var recipeCity = button.data('city');
-			var recipeIngredients = button.data('ingredients');
+	$('#recipeModal').on('show.bs.modal', function(event) {
+	    var button = $(event.relatedTarget); // El botón que disparó el modal
 
-			var modal = $(this);
-			modal.find('#modalRecipeName').text(recipeName);
-			modal.find('#modalRecipeLevel').text(recipeLevel);
-			modal.find('#modalRecipeDiners').text(recipeDiners);
-			modal.find('#modalRecipeTime').text(recipeTime);
-			modal.find('#modalRecipeCategory').text(recipeCategory);
+	    // Agrupar los datos en un objeto para mayor claridad
+	    var recipe = {
+	        name: button.data('name'),
+	        level: button.data('level'),
+	        diners: button.data('diners'),
+	        time: button.data('time'),
+	        category: button.data('category'),
+	        rating: button.data('rating'),
+	        appliance: button.data('appliance'),
+	        techniques: button.data('techniques'),
+	        instructions: button.data('instructions'),
+	        allergens: button.data('allergens'),
+	        nutritional: button.data('nutritional'),
+	        grades: button.data('grades'),
+	        history: button.data('history'),
+	        country: button.data('country'),
+	        city: button.data('city'),
+	        ingredients: button.data('ingredients')
+	    };
 
-			// Calificación
-			var ratingHtml = '';
-			for (var i = 1; i <= 5; i++) {
-				if (i <= recipeRating) {
-					ratingHtml += '★';
-				} else {
-					ratingHtml += '☆';
-				}
-			}
-			modal.find('#modalRecipeRating').html(ratingHtml);
+	    var modal = $(this);
+	    
+	    // Asignar los valores de la receta a los elementos del modal
+	    modal.find('#modalRecipeName').text(recipe.name);
+	    modal.find('#modalRecipeLevel').text(recipe.level);
+	    modal.find('#modalRecipeDiners').text(recipe.diners);
+	    modal.find('#modalRecipeTime').text(recipe.time);
+	    modal.find('#modalRecipeCategory').text(recipe.category);
 
-			// Mostrar los demás detalles
-			modal.find('#modalRecipeAppliance').text(recipeAppliance);
-			modal.find('#modalRecipeTechniques').text(recipeTechniques);
-			modal.find('#modalRecipeInstructions').text(recipeInstructions);
-			modal.find('#modalRecipeAllergens').text(recipeAllergens);
-			modal.find('#modalRecipeNutritional').text(recipeNutritional); // Aquí puedes formatear mejor la información nutricional
-			modal.find('#modalRecipeGrades').text(recipeGrades);
-			modal.find('#modalRecipeHistory').text(recipeHistory);
-			modal.find('#modalRecipeCountry').text(recipeCountry);
-			modal.find('#modalRecipeCity').text(recipeCity);
-			modal.find('#modalRecipeIngredients').text(recipeIngredients);
+	    // Calificación usando un ciclo más limpio
+	    var ratingHtml = Array.from({ length: 5 }, (_, i) => i < recipe.rating ? '★' : '☆').join('');
+	    modal.find('#modalRecipeRating').html(ratingHtml);
+
+	    // Mostrar los demás detalles
+	    modal.find('#modalRecipeAppliance').text(formatArray(recipe.appliance));
+	    modal.find('#modalRecipeTechniques').text(formatTechniques(recipe.techniques));
+	    modal.find('#modalRecipeInstructions').text(recipe.instructions);
+	    modal.find('#modalRecipeAllergens').text(formatArray(recipe.allergens));
+	    modal.find('#modalRecipeNutritional').text(recipe.nutritional || 'Información nutricional no disponible');
+	    modal.find('#modalRecipeGrades').text(recipe.grades || '');
+	    modal.find('#modalRecipeHistory').text(recipe.history || 'Historia no disponible');
+	    modal.find('#modalRecipeCountry').text(recipe.country);
+	    modal.find('#modalRecipeCity').text(recipe.city);
+	    modal.find('#modalRecipeIngredients').text(formatIngredients(recipe.ingredients));
+	});
+
+	// Función para dar formato a los arrays
+	function formatArray(arr) {
+	    return Array.isArray(arr) ? arr.join(', ') : arr;
+	}
+
+	// Función para dar formato a las técnicas culinarias
+	function formatTechniques(techniques) {
+	    if (Array.isArray(techniques)) {
+	        return techniques.map(technique => `${technique.name} (${technique.country})`).join(', ');
+	    }
+	    return techniques;
+	}
+
+	// Función para dar formato a los ingredientes
+	function formatIngredients(ingredients) {
+	    return Array.isArray(ingredients) ? ingredients.join(', ') : ingredients;
+	}
+		$(document).ready(function() {
+		    // Cuando el modal se va a mostrar
+		    $('#recipeModalComments').on('show.bs.modal', function(event) {
+		        var button = $(event.relatedTarget); // El botón que activó el modal
+		        var recipeName = button.data('name'); // Nombre de la receta
+		        var recipeComments = button.data('comments'); // Comentarios de la receta
+
+		        console.log('Recipe Name:', recipeName); // Verificar el nombre de la receta
+		        console.log('Recipe Comments:', recipeComments); // Verificar los comentarios pasados
+
+		        var modal = $(this);
+		        modal.find('#modalRecipeName').text(recipeName); // Establecer el nombre de la receta
+
+		        // Limpiar los comentarios anteriores
+		        var commentsList = modal.find('#modalRecipeComments');
+		        commentsList.empty();
+
+		        // Verificar que los comentarios sean una cadena válida
+		        if (typeof recipeComments === 'string' && recipeComments.trim() !== "") {
+		            console.log('Cadena completa de comentarios:', recipeComments);
+
+		            var commentPattern = /commentModel\s*\[([^\]]+)\]/g;
+		            var match;
+		            
+		            while ((match = commentPattern.exec(recipeComments)) !== null) {
+		                var commentData = match[1]; // Todo el contenido dentro de los corchetes
+
+		                // Buscar los valores específicos usando expresiones regulares
+		                var descriptionMatch = /description=([^,]+)/.exec(commentData);
+		                var punctuationMatch = /punctuation=(\d+)/.exec(commentData);
+		                var createDateMatch = /createDate=([^\s,]+)/.exec(commentData);
+		                var authorMatch = /author=([^,]+)/.exec(commentData);
+
+		                var description = descriptionMatch ? descriptionMatch[1].trim() : 'Sin descripción';
+		                var punctuation = punctuationMatch ? punctuationMatch[1].trim() : 'N/A';
+		                var createDate = createDateMatch ? createDateMatch[1].trim() : 'Fecha no disponible';
+		                var author = authorMatch ? authorMatch[1].trim() : 'Autor desconocido';
+
+		                // Crear el HTML para cada comentario con la estructura mejorada
+		                var commentHtml = `
+		                    <div class="comment">
+		                        <div class="comment-header">
+		                            <span class="comment-author">Por: ${author}</span>
+		                            <span class="comment-rating">${punctuation} ⭐</span>
+		                        </div>
+		                        <div class="comment-body">${description}</div>
+		                        <div class="comment-footer">
+		                            <span class="comment-date">${createDate}</span>
+		                        </div>
+		                    </div>
+		                `;
+
+		                // Agregar el comentario a la lista
+		                commentsList.append(commentHtml);
+		            }
+
+		            // Si no se encontraron comentarios válidos, mostrar un mensaje
+		            if (commentsList.is(':empty')) {
+		                commentsList.append("<p>No se pudieron cargar los comentarios correctamente.</p>");
+		            }
+
+		        } else {
+		            commentsList.append("<p>No hay comentarios disponibles.</p>");
+		        }
+		    });
 		});
 	</script>
 </body>

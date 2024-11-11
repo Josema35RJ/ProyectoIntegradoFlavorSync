@@ -47,8 +47,13 @@ public class CommentServiceImpl implements CommentService {
 		// TODO Auto-generated method stub
 		comment.setCreateDate(LocalDateTime.now());
 		recipeModel r = recipeConverter.transform(recipeRepository.findById(RecipeId));
+		int commentSize = 0;
+		for (commentModel x : r.getListComments())
+			if (x.getPunctuation() != 0 || x.getPunctuation() != -1) {
+				commentSize += 1;
+			}
 		if (r.getListComments().size() > 0)
-			r.setAverageRating(((r.getAverageRating() + comment.getPunctuation())) / r.getListComments().size());
+			r.setAverageRating(((r.getAverageRating() + comment.getPunctuation())) / commentSize);
 		else
 			r.setAverageRating(((r.getAverageRating() + comment.getPunctuation())) / 1);
 		r.getListComments().add(comment);
@@ -97,12 +102,20 @@ public class CommentServiceImpl implements CommentService {
 	}
 
 	@Override
-	public boolean findByUserId(cookModel c) {
+	public boolean findByUserId(cookModel c, recipeModel r) {
 		// TODO Auto-generated method stub
-		if (commentRepository.findByCookId(cookConverter.transform(c)).isEmpty()) {
-			return true;
+		for (commentModel x : r.getListComments()) {
+			if (x.getCookId().getId() == c.getId())
+				return true;
+			return false;
 		}
 		return false;
+	}
+
+	@Override
+	public commentModel findById(int id) {
+		// TODO Auto-generated method stub
+		return commentConverter.transform(commentRepository.findById(id));
 	}
 
 }

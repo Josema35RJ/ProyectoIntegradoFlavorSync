@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.example.demo.model.commentModel;
 import com.example.demo.model.cookModel;
+import com.example.demo.model.recipeModel;
 
 public interface CommentService {
 	
@@ -12,5 +13,6 @@ public interface CommentService {
 	boolean deleteComment (int id);
 	List<commentModel> getListComments();
 	List<commentModel> getListCommentsFindByPunctuation(int punctuation);
-	boolean findByUserId(cookModel c);
+	commentModel findById(int id);
+	boolean findByUserId(cookModel c, recipeModel r);
 }

@@ -56,8 +56,10 @@ public class SecurityConfig {
                         Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
                         if (roles.contains("ROL_COOKAPRENDIZ")) {
                             response.sendRedirect("cook/cookPanel");
-                        } else {
-                            response.sendRedirect("/"); // Redirige al home o donde prefieras en caso de otros roles
+                        } else if (roles.contains("ROL_COOKPROFESIONAL")) {
+                        	 response.sendRedirect("cook/cookPanel");
+                        } else if ((roles.contains("ROL_COOKCHEF"))) {
+                        	 response.sendRedirect("cook/cookPanel");
                         }
                     }
                 }).permitAll())
