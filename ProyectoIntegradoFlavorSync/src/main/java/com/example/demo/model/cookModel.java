@@ -114,6 +114,8 @@ public class cookModel {
 	private LocalDateTime createDate;
 	
 	private LocalDateTime updateDate;
+	
+	private String token;
 
 	public cookModel() {
 		super();
@@ -325,14 +327,23 @@ public class cookModel {
 		this.updateDate = updateDate;
 	}
 
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
+	}
+
 	@Override
 	public String toString() {
 		return "cookModel [id=" + id + ", firstName=" + firstName + ", lastName=" + lastName + ", nickName=" + nickName
-				+ ", username=" + username + ", birthDate=" + birthDate + ", city=" + city + ", country=" + country
-				+ ", password=" + password + ", enabled=" + enabled + ", listSpecialty=" + listSpecialty
-				+ ", listCulinaryTechniques=" + listCulinaryTechniques + ", experience=" + experience + ", role=" + role
-				+ ", punctuation=" + punctuation + ", listRecipes=" + listRecipes + ", listRecipesFavorites="
-				+ listRecipesFavorites + ", imagePerfil=" + Arrays.toString(imagePerfil) + ", imagesCook=" + imagesCook
-				+ ", createDate=" + createDate + ", updateDate=" + updateDate + "]";
+				+ ", username=" + username + ", confirm_email=" + confirm_email + ", birthDate=" + birthDate + ", city="
+				+ city + ", country=" + country + ", password=" + password + ", enabled=" + enabled + ", listSpecialty="
+				+ listSpecialty + ", listCulinaryTechniques=" + listCulinaryTechniques + ", experience=" + experience
+				+ ", role=" + role + ", punctuation=" + punctuation + ", listRecipes=" + listRecipes
+				+ ", listRecipesFavorites=" + listRecipesFavorites + ", imagePerfil=" + Arrays.toString(imagePerfil)
+				+ ", imagesCook=" + imagesCook + ", createDate=" + createDate + ", updateDate=" + updateDate
+				+ ", token=" + token + "]";
 	}
 }

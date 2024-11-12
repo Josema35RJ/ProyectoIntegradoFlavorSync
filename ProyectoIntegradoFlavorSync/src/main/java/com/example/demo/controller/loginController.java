@@ -29,8 +29,8 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class loginController {
 
-	private static final String LOGIN_VIEW = "/auth/login";
-	private static final String REGISTER_VIEW = "/auth/register";
+	private static final String LOGIN_VIEW = "/login";
+	private static final String REGISTER_VIEW = "/register";
 
 	@Autowired
 	@Qualifier("cookService")
@@ -50,7 +50,7 @@ public class loginController {
 	@Autowired
 	private EmailServiceImpl emailService;
 
-	@GetMapping("/auth/login")
+	@GetMapping("/login")
 	public String login(Model model, @RequestParam(name = "error", required = false) String error,
 			@RequestParam(name = "logout", required = false) String logout, RedirectAttributes flash,
 			Principal principal ,HttpSession session) {
@@ -86,14 +86,14 @@ public class loginController {
 		return LOGIN_VIEW; // Asegúrate de que LOGIN_VIEW sea el nombre correcto de la vista de login
 	}
 
-	@GetMapping("/auth/register")
+	@GetMapping("/register")
 	public String registerForm(Model model) {
 		model.addAttribute("cook", new cookModel());
 		model.addAttribute("recipeTechniques", culinaryTechniquesService.getListCulinaryTechniques());
 		return REGISTER_VIEW;
 	}
 
-	@PostMapping("/auth/register")
+	@PostMapping("/register")
 	public String registerSubmit(cookModel cook,
 			@RequestParam("culinaryTechniquesIds") List<String> listCulinaryTechniques,
 			@RequestParam(value = "cookImagesBase64", required = false) String[] ImagesBase64,

@@ -27,6 +27,6 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
 
         // Guarda el mensaje de error en la sesión y redirige a la página de login
         request.getSession().setAttribute("error", errorMessage);
-        response.sendRedirect("/auth/login");
+        response.sendRedirect("/login");
     }
 }

@@ -38,7 +38,7 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 	@Autowired
 	@Qualifier("cookRepository")
 	private CookRepository cookRepository;
-	
+
 	@Autowired
 	@Qualifier("recipeRepository")
 	private RecipeRepository recipeRepository;
@@ -46,7 +46,7 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 	@Autowired
 	@Qualifier("cookConverter")
 	private CookConverter cookConverter;
-	
+
 	@Autowired
 	@Qualifier("recipeConverter")
 	private RecipeConverter recipeConverter;
@@ -254,20 +254,38 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 	@Override
 	public void verifyPunctuation(cookModel c) {
 		// TODO Auto-generated method stub
-		int punctuation = c.getPunctuation(); 
-		for(recipeModel r: c.getListRecipes())
-			punctuation+= r.getAverageRating();
-		punctuation/=c.getListRecipes().size();
+		int punctuation = c.getPunctuation();
+		for (recipeModel r : c.getListRecipes())
+			punctuation += r.getAverageRating();
+		punctuation /= c.getListRecipes().size();
 		c.setPunctuation(punctuation);
-		if(c.getPunctuation()<5) {
+		if (c.getPunctuation() < 5) {
 			c.setRole("ROL_COOKAPRENDIZ");
-		}else if (c.getPunctuation()>5 && c.getPunctuation()<8) {
-            c.setRole("ROL_COOKPROFESIONAL");
-		}else if (c.getPunctuation()>8 && c.getPunctuation()<10) {
+		} else if (c.getPunctuation() > 5 && c.getPunctuation() < 8) {
+			c.setRole("ROL_COOKPROFESIONAL");
+		} else if (c.getPunctuation() > 8 && c.getPunctuation() < 10) {
 			c.setRole("ROL_COOKCHEF");
 		}
-			
+
 		cookRepository.save(cookConverter.transform(c));
+	}
+
+	@Override
+	public cookModel findByUsernameAndPassword(String username, String password) {
+		cookModel c = cookConverter.transform(cookRepository.findByUsername(username));
+
+		if (c != null && passwordEncoder().matches(password, c.getPassword())) {
+			return c;
+		}
+
+		return new cookModel();
+	}
+
+	@Override
+	public cookModel registrar(cookModel cook) {
+		// TODO Auto-generated method stub
+		cookRepository.save(cookConverter.transform(cook));
+		return cook;
 	}
 
 }

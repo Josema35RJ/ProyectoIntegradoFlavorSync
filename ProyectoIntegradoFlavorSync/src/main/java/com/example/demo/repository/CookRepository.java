@@ -11,6 +11,7 @@ import org.springframework.stereotype.Repository;
 
 import com.example.demo.entity.cook;
 import com.example.demo.entity.recipe;
+import com.example.demo.model.cookModel;
 
 @Repository("cookRepository")
 public interface CookRepository extends JpaRepository<cook, Serializable> {

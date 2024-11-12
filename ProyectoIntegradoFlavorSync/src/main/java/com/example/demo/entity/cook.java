@@ -136,4 +136,6 @@ public class cook {
 	@Column(name = "updateDate") 
 	private LocalDateTime updateDate;
 
+	@Column(name = "token") 
+	private String token;
 }
