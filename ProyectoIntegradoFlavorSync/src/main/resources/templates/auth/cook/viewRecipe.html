@@ -149,12 +149,12 @@ body {
 			<div class="collapse navbar-collapse" id="navbarNav">
 				<ul class="navbar-nav ms-auto mb-2 mb-lg-0">
 					<li class="nav-item"><a class="nav-link"
-						href="/auth/cook/cookPanel">Home</a></li>
+						href="/auth/cookweb/cookPanel">Home</a></li>
 					<li class="nav-item"><a class="nav-link"
-						href="/auth/cook/cookPerfil"><i class="fas fa-user"></i> Mi
+						href="/auth/cookweb/cookPerfil"><i class="fas fa-user"></i> Mi
 							Perfil</a></li>
 					<li class="nav-item"><a class="nav-link"
-						href="/auth/cook/logout"><i class="fas fa-sign-out-alt"></i>
+						href="/auth/cookweb/logout"><i class="fas fa-sign-out-alt"></i>
 							Cerrar Sesión</a></li>
 				</ul>
 			</div>
@@ -254,7 +254,7 @@ body {
 						<!-- Experiencia del cocinero -->
 						<p th:text="${cookRecipe.experience}">Experiencia</p>
 						<!-- Opcional: Enlace al perfil completo del cocinero -->
-						<form action="/auth/cook/cookPerfil" method="POST">
+						<form action="/auth/cookweb/cookPerfil" method="POST">
 							<input type="hidden" id="id" name="id"
 								th:value="${cookRecipe.id}">
 							<button type="button" class="btn btn-primary">Ver Perfil</button>
@@ -377,7 +377,7 @@ body {
 						aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-					<form action="/auth/cook/AddReply" method="post">
+					<form action="/auth/cookweb/AddReply" method="post">
 						<input type="hidden" id="commentId" name="commentId" /> <input
 							type="hidden" id="recipeId" name="recipeId"
 							th:value="${recipe.id}" /> <input type="hidden"
@@ -409,7 +409,7 @@ body {
 						aria-label="Close"></button>
 				</div>
 				<div class="modal-body">
-					<form action="/auth/cook/AddComment" method="post">
+					<form action="/auth/cookweb/AddComment" method="post">
 						<input type="hidden" id="recipeId" name="recipeId"
 							th:value="${recipe.id}" /> <input type="hidden"
 							id="cookCommentId" name="cookCommentId"

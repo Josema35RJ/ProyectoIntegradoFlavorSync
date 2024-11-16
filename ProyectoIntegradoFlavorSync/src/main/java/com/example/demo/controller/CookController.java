@@ -67,7 +67,7 @@ public class CookController {
 	@Qualifier("culinaryTechniquesService")
 	private CulinaryTechniquesService culinaryTechniquesService;
 
-	@GetMapping("/auth/cook/cookPanel")
+	@GetMapping("/auth/cookweb/cookPanel")
 	public String PanelCook(@RequestParam(required = false) String ingredients,
 			@RequestParam(required = false) String category, @RequestParam(required = false) String difficulty,
 			@RequestParam(required = false) Integer rating, Model model, Authentication authentication) {
@@ -103,7 +103,7 @@ public class CookController {
 		return PANEL_VIEW; // Asegúrate de que PANEL_VIEW sea el nombre correcto de la vista del panel
 	}
 
-	@GetMapping("/auth/cook/cookRecipes")
+	@GetMapping("/auth/cookweb/cookRecipes")
 	public String RecipesCook(Model model, Authentication authentication) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		// Ahora puedes obtener la información del usuario logueado desde userDetails
@@ -123,7 +123,7 @@ public class CookController {
 		return COOKRECIPES_VIEW; // Asegúrate de que LOGIN_VIEW sea el nombre correcto de la vista de login
 	}
 
-	@GetMapping("/auth/cook/viewRecipe/{id}")
+	@GetMapping("/auth/cookweb/viewRecipe/{id}")
 	public String ViewRecipe(@PathVariable("id") Integer id, Model model, Authentication authentication) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		List<String> listImagesRecipe = new ArrayList<>();
@@ -147,7 +147,7 @@ public class CookController {
 		return RECIPE_VIEW; // Asegúrate de que LOGIN_VIEW sea el nombre correcto de la vista de login
 	}
 
-	@GetMapping("/auth/cook/cookPerfil")
+	@GetMapping("/auth/cookweb/cookPerfil")
 	public String PerfilCook(Model model, Authentication authentication) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		// Ahora puedes obtener la información del usuario logueado desde userDetails
@@ -170,7 +170,7 @@ public class CookController {
 		return PANELPERFIL_VIEW;
 	}
 	
-	@PostMapping("/auth/cook/cookPerfil")
+	@PostMapping("/auth/cookweb/cookPerfil")
 	public String ViewPerfilCook(@RequestParam("id") Integer id,Model model, Authentication authentication) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		// Ahora puedes obtener la información del usuario logueado desde userDetails
@@ -245,7 +245,7 @@ public class CookController {
 		return "redirect:" + PANELPERFIL_VIEW;
 	}
 
-	@GetMapping("/auth/cook/formRecipe")
+	@GetMapping("/auth/cookweb/formRecipe")
 	public String FormRecipe(Model model, Authentication authentication) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		// Ahora puedes obtener la información del usuario logueado desde userDetails
@@ -284,7 +284,7 @@ public class CookController {
 		return "redirect:" + COOKRECIPES_VIEW;
 	}
 
-	@PostMapping("/auth/cook/AddComment")
+	@PostMapping("/auth/cookweb/AddComment")
 	public String AddComment(RedirectAttributes flash, @RequestParam(value = "recipeId") Integer recipeId,
 			 @RequestParam(value = "cookCommentId") Integer cookCommentId,
 			commentModel c, Authentication authentication, HttpServletRequest request) {
@@ -299,7 +299,7 @@ public class CookController {
 	    return "redirect:" + referer;
 	}
 	
-	@PostMapping("/auth/cook/AddReply")
+	@PostMapping("/auth/cookweb/AddReply")
 	public String AddReply(RedirectAttributes flash, @RequestParam(value = "recipeId") Integer recipeId,
 			@RequestParam(value = "commentId") Integer commentId,
 			 @RequestParam(value = "cookCommentId") Integer cookCommentId,
@@ -333,7 +333,7 @@ public class CookController {
 		return "redirect:" + PANEL_VIEW;
 	}
 
-	@PostMapping("/auth/cook/formUpdateRecipe")
+	@PostMapping("/auth/cookweb/formUpdateRecipe")
 	public String UpdateRecipe(@RequestParam("id") Integer id, Model model, Authentication authentication,
 			RedirectAttributes flash) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
@@ -366,7 +366,7 @@ public class CookController {
 		return UPDATERECIPE_VIEW;
 	}
 
-	@PostMapping("/auth/cook/updatePassword")
+	@PostMapping("/auth/cookweb/updatePassword")
 	public String updatePassword(@RequestParam("newPassword") String newP,
 			@RequestParam("confirmPassword") String confirmP, HttpSession session, Model model,
 			Authentication authentication, RedirectAttributes flash) {
@@ -408,7 +408,7 @@ public class CookController {
 		return RESETPASSWORD_VIEW;
 	}
 
-	@PostMapping("/auth/cook/favoriteRecipe/{recipeId}")
+	@PostMapping("/auth/cookweb/favoriteRecipe/{recipeId}")
 	public String favRecipe(@PathVariable("recipeId") Integer rId, Authentication authentication,
 			RedirectAttributes flash) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();

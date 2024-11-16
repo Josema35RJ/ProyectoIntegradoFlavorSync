@@ -29,22 +29,26 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     private final String SECRET = "mySecretKey";
 
     @Value("${jwt.expirationTimeInMillis}")
-    private long expirationTimeInMillis ; // 1 hora
-
+    private long expirationTimeInMillis; // 1 hora
 
     @Override
-    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain) throws ServletException, IOException {
+    protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
+            throws ServletException, IOException {
         try {
-            if (existeJWTToken(request, response)) {
-                Claims claims = validateToken(request);
-                if (claims.get("authorities") != null) {
-                    setUpSpringAuthentication(claims, request);
+            // Solo filtrar las rutas que requieren JWT, como "/api/" y "/cookapp/"
+            if (shouldFilter(request)) {
+                if (existeJWTToken(request, response)) {
+                    Claims claims = validateToken(request);
+                    if (claims.get("authorities") != null) {
+                        setUpSpringAuthentication(claims, request);
+                    } else {
+                        SecurityContextHolder.clearContext();
+                    }
                 } else {
                     SecurityContextHolder.clearContext();
                 }
-            } else {
-                SecurityContextHolder.clearContext();
             }
+            // Continúa con el filtro de la cadena
             chain.doFilter(request, response);
         } catch (ExpiredJwtException | UnsupportedJwtException | MalformedJwtException e) {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
@@ -64,32 +68,37 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
 
         List<SimpleGrantedAuthority> grantedAuthorities = authorities.stream()
                 .map(role -> {
-                    if (role.equals("ROL_COOKCHEF") || role.equals("ROL_COOKPROFESSIONAL") 
-                            || role.equals("ROL_COOKAPRENDIZ") || role.equals("ROL_COOKAMATEUR") && !request.getRequestURI().startsWith("/api/cook/")) {
-                        return null;
+                    // Aplicar roles según las rutas
+                    if ((role.equals("ROL_COOKCHEF") || role.equals("ROL_COOKPROFESSIONAL")
+                            || role.equals("ROL_COOKAPRENDIZ") || role.equals("ROL_COOKAMATEUR"))
+                            && !request.getRequestURI().startsWith("/api/cook/")) {
+                        return null; // No autorizar si la ruta no empieza con "/api/cook/"
                     }
                     return new SimpleGrantedAuthority(role);
                 })
                 .filter(role -> role != null)
                 .collect(Collectors.toList());
 
-        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(claims.getSubject(), null, grantedAuthorities);
+        UsernamePasswordAuthenticationToken auth = new UsernamePasswordAuthenticationToken(claims.getSubject(), null,
+                grantedAuthorities);
         SecurityContextHolder.getContext().setAuthentication(auth);
     }
 
     private boolean existeJWTToken(HttpServletRequest request, HttpServletResponse res) {
         String authenticationHeader = request.getHeader(HEADER);
-        if (authenticationHeader == null || !authenticationHeader.startsWith(PREFIX))
-            return false;
-        return true;
+        return authenticationHeader != null && authenticationHeader.startsWith(PREFIX);
     }
 
     public String generateToken(String username) {
         Date expirationDate = new Date(System.currentTimeMillis() + expirationTimeInMillis);
-        return Jwts.builder()
-            .setSubject(username)
-            .setExpiration(expirationDate)
-            .signWith(SignatureAlgorithm.HS512, SECRET)
-            .compact();
+        return Jwts.builder().setSubject(username).setExpiration(expirationDate)
+                .signWith(SignatureAlgorithm.HS512, SECRET).compact();
+    }
+
+    // Método para determinar si una ruta debe ser filtrada por JWT
+    private boolean shouldFilter(HttpServletRequest request) {
+        String uri = request.getRequestURI();
+        // Se aplica JWT solo a las rutas de "/api/" y "/cookapp/"
+        return uri.startsWith("/api/") || uri.startsWith("/cookapp/");
     }
 }

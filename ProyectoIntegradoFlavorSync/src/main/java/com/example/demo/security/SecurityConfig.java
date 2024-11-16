@@ -29,65 +29,74 @@ public class SecurityConfig {
     @Bean
     public HttpFirewall allowSemicolonHttpFirewall() {
         StrictHttpFirewall firewall = new StrictHttpFirewall();
-        firewall.setAllowSemicolon(true); // Permitir puntos y comas
+        firewall.setAllowSemicolon(true);
         return firewall;
     }
 
+    // Configuración del AuthenticationManager para manejo de autenticación
     @Bean
     public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
         return authenticationConfiguration.getAuthenticationManager();
     }
 
-    // Configuración para la API que usa JWT
+    // Configuración de seguridad para la API (protección mediante JWT)
     @Bean
     public SecurityFilterChain apiSecurity(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+        http
+            .securityMatcher("/api/**") // Aplica solo a rutas que comienzan con "/api/"
+            .csrf().disable() // Deshabilita CSRF ya que se usa JWT
             .authorizeRequests()
-                .requestMatchers("/api/login", "/api/register").permitAll()  // Permitir login y registro sin autenticación
-                .requestMatchers("/api/auth/cook/**").authenticated()  // Requiere autenticación JWT
+                .requestMatchers("/api/login", "/api/register").permitAll() // Rutas públicas para login y registro
+                .requestMatchers("/auth/cookapp/api/**").authenticated() // Rutas de la API protegidas por JWT
             .and()
-            .addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);  // Filtro JWT
+            .addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class); // Filtro JWT
 
         return http.build();
     }
 
+    // Configuración de seguridad para la aplicación web (cookweb) - NO usa JWT
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.csrf().disable()
+    public SecurityFilterChain webSecurity(HttpSecurity http) throws Exception {
+        http
+            .csrf().disable() // Deshabilita CSRF (puede ser necesario si usas cookies de sesión)
             .authorizeRequests()
-                .requestMatchers("/", "/imgs/**", "/webjars/*", "/css/*", "/files/", "/js/*").permitAll()  // Rutas públicas
-                .requestMatchers("/auth/cook/**").hasAnyAuthority(  // Accesible solo con roles específicos
-                    "ROL_COOKCHEF", "ROL_COOKPROFESSIONAL", "ROL_COOKAPRENDIZ", "ROL_COOKAMATEUR"
-                )
-                .anyRequest().authenticated()  // Cualquier otra ruta requiere autenticación
+                .requestMatchers("/", "/imgs/**", "/webjars/*", "/css/*", "/files/", "/js/*", "/favicon.ico").permitAll() // Rutas públicas
+                .requestMatchers("/auth/cookweb/**") // Rutas protegidas por roles
+                .hasAnyAuthority("ROL_COOKCHEF", "ROL_COOKPROFESSIONAL", "ROL_COOKAPRENDIZ", "ROL_COOKAMATEUR") // Requiere un rol específico
+                .anyRequest().authenticated() // Otras rutas requieren autenticación
             .and()
-            .formLogin(form -> form
-                .loginPage("/login")  // Página de login personalizada
-                .failureHandler(new CustomAuthenticationFailureHandler())  // Manejador de fallos de autenticación personalizado
+            .formLogin()
+                .loginPage("/login") // Página de login
+                .failureHandler(new CustomAuthenticationFailureHandler()) // Manejador de fallos en login
                 .successHandler(new AuthenticationSuccessHandler() {
                     @Override
-                    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication)
-                            throws IOException, ServletException {
-                        // Redirigir al panel después de un inicio de sesión exitoso
-                        response.sendRedirect("/auth/cook/cookPanel");
+                    public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
+                                                        Authentication authentication) throws IOException, ServletException {
+                        Set<String> roles = AuthorityUtils.authorityListToSet(authentication.getAuthorities());
+                        if (roles.contains("ROL_COOKAMATEUR") || roles.contains("ROL_COOKAPRENDIZ")
+                                || roles.contains("ROL_COOKPROFESIONAL") || roles.contains("ROL_COOKCHEF")) {
+                            response.sendRedirect("/auth/cookweb/cookPanel"); // Redirigir según rol
+                        } else {
+                            response.sendRedirect("/"); // Redirigir a la página principal
+                        }
                     }
-                }).permitAll()
-            )
-            .logout(logout -> logout
-                .permitAll()
-                .logoutUrl("/logout")
-                .logoutSuccessUrl("/login?logout=true")  // Redirigir a login después de cerrar sesión
-                .invalidateHttpSession(true)
-                .deleteCookies("JSESSIONID")  // Eliminar cookies al cerrar sesión
-            )
-            .httpBasic()  // Autenticación básica para la API
+                })
+                .permitAll() // Permitir acceso a la página de login
             .and()
-            .headers(headers -> headers.cacheControl());  // Deshabilitar caché
+            .logout()
+                .permitAll() // Permitir logout
+                .logoutUrl("/logout") // URL para logout
+                .logoutSuccessUrl("/login?logout=true") // Redirigir tras logout
+                .invalidateHttpSession(true) // Invalidar sesión al salir
+                .deleteCookies("JSESSIONID") // Eliminar cookies de sesión
+            .and()
+            .headers()
+                .cacheControl(); // Control de caché para mayor seguridad
 
         return http.build();
     }
 
-    // Filtro para JWT
+    // Filtro JWT
     @Bean
     public JWTAuthorizationFilter jwtAuthorizationFilter() {
         return new JWTAuthorizationFilter();

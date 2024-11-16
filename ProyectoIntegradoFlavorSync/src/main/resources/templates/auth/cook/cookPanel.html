@@ -162,11 +162,11 @@ footer {
 							Crear Receta
 					</a></li>
 					<li class="nav-item"><a class="nav-link"
-						href="/auth/cook/cookPerfil"> <i class="fas fa-user"></i> Mi
+						href="/auth/cookweb/cookPerfil"> <i class="fas fa-user"></i> Mi
 							Perfil
 					</a></li>
 					<li class="nav-item"><a class="nav-link"
-						href="/auth/cook/logout"> <i class="fas fa-sign-out-alt"></i>
+						href="/auth/cookweb/logout"> <i class="fas fa-sign-out-alt"></i>
 							Cerrar Sesión
 					</a></li>
 				</ul>
@@ -361,7 +361,7 @@ footer {
 	    document.querySelectorAll('.recipe-card').forEach(card => {
 	        card.addEventListener('click', function() {
 	            const recipeId = this.getAttribute('data-recipe-id');
-	            window.location.href = `/auth/cook/viewRecipe/${recipeId}`;
+	            window.location.href = `/auth/cookweb/viewRecipe/${recipeId}`;
 	        });
 	    });
 	
@@ -413,7 +413,7 @@ footer {
 	        if (rating) query += 'rating=' + rating;
 
 	        // Redirigir a la página filtrada
-	        window.location.href = '/auth/cook/cookPanel?' + query;
+	        window.location.href = '/auth/cookweb/cookPanel?' + query;
 	    });
 	});
  
