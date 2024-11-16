@@ -1,5 +1,5 @@
 # Establecer la imagen base para la etapa de construcción
-FROM maven:4.0.0-openjdk-21 AS build
+FROM maven:3.8.4-openjdk-21 AS build
 
 # Copiar el directorio del proyecto al contenedor
 COPY ProyectoIntegradoFlavorSync /app
