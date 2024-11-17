@@ -28,26 +28,36 @@ function resetStarRating() {
 		star.classList.remove('selected');
 	});
 }
-document.getElementById('downloadPdf').addEventListener('click', function () {
-       const elementToPrint = document.querySelector('.container'); // Ajusta este selector según el contenedor que quieras exportar.
+document.addEventListener('DOMContentLoaded', function () {
+    document.getElementById('downloadPdf').addEventListener('click', async function () {
+        // Asegúrate de importar `jsPDF` del espacio de nombres correcto
+        const { jsPDF } = window.jspdf;
 
-       const options = {
-           background: '#fff',
-           scale: 2, // Aumenta la calidad de la captura.
-       };
+        // Selecciona el contenedor principal para capturar
+        const elementToPrint = document.querySelector('.container');
 
-       html2canvas(elementToPrint, options).then((canvas) => {
-           const imgData = canvas.toDataURL('image/png'); // Convertir el canvas a imagen PNG.
-           const pdf = new jsPDF({
-               orientation: 'portrait',
-               unit: 'px',
-               format: [canvas.width, canvas.height], // Formato basado en la altura del canvas.
-           });
+        // Opciones para html2canvas
+        const options = {
+            background: '#fff',
+            scale: 2, // Mejora la calidad de la captura
+        };
 
-           pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
-           pdf.save('receta.pdf'); // Nombre del archivo de salida.
-       });
-   });
+        try {
+            const canvas = await html2canvas(elementToPrint, options); // Renderiza el HTML en un canvas
+            const imgData = canvas.toDataURL('image/png'); // Convierte el canvas en imagen
+            const pdf = new jsPDF({
+                orientation: 'portrait',
+                unit: 'px',
+                format: [canvas.width, canvas.height], // Ajusta el tamaño al canvas
+            });
+
+            pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height); // Añade la imagen al PDF
+            pdf.save('detalle_receta.pdf'); // Guarda el archivo
+        } catch (error) {
+            console.error('Error generando el PDF:', error); // Manejo de errores
+        }
+    });
+});
 document.addEventListener('DOMContentLoaded', function() {
 	// Función para mostrar el toast
 	function showToast(message, type) {
