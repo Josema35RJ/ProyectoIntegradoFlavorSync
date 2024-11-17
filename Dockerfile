@@ -1,5 +1,5 @@
 # Establecer la imagen base para la etapa de construcción
-FROM maven:3.8.4-openjdk-21 AS build
+FROM maven:3.8.1-openjdk-17 AS build
 
 # Copiar el directorio del proyecto al contenedor
 COPY ProyectoIntegradoFlavorSync /app
@@ -11,7 +11,7 @@ WORKDIR /app
 RUN mvn clean package -DskipTests
 
 # Establecer la imagen base final
-FROM openjdk:21-jdk-slim
+FROM openjdk:17-jdk-slim
 
 # Exponer el puerto de la aplicación
 EXPOSE 8080
