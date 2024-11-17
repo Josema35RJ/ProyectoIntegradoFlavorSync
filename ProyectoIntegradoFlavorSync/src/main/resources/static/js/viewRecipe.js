@@ -28,98 +28,26 @@ function resetStarRating() {
 		star.classList.remove('selected');
 	});
 }
-document.getElementById("downloadPdf").addEventListener("click", function() {
-	const { jsPDF } = window.jspdf;
-	const doc = new jsPDF();
+document.getElementById('downloadPdf').addEventListener('click', function () {
+       const elementToPrint = document.querySelector('.container'); // Ajusta este selector según el contenedor que quieras exportar.
 
-	// Función para agregar una sección con un título
-	function addSectionTitle(title, y) {
-		doc.setFontSize(16);
-		doc.setTextColor(0, 102, 204); // Color azul para el título
-		doc.setFont('Helvetica', 'bold');
-		doc.text(title, 20, y);
-	}
+       const options = {
+           background: '#fff',
+           scale: 2, // Aumenta la calidad de la captura.
+       };
 
-	// Función para agregar una lista de elementos
-	function addList(items, startY) {
-		doc.setFontSize(12);
-		doc.setTextColor(0, 0, 0); // Color negro para el texto
-		items.forEach((item, index) => {
-			doc.text(`• ${item}`, 20, startY + (index * 10));
-		});
-	}
+       html2canvas(elementToPrint, options).then((canvas) => {
+           const imgData = canvas.toDataURL('image/png'); // Convertir el canvas a imagen PNG.
+           const pdf = new jsPDF({
+               orientation: 'portrait',
+               unit: 'px',
+               format: [canvas.width, canvas.height], // Formato basado en la altura del canvas.
+           });
 
-	// Función para agregar una caja con texto
-	function addBoxedText(text, y) {
-		doc.setFontSize(12);
-		doc.setTextColor(0, 0, 0);
-		const pageWidth = doc.internal.pageSize.width;
-		const margin = 20;
-		const textWidth = doc.getTextWidth(text);
-		const boxWidth = Math.min(textWidth + 10, pageWidth - 2 * margin); // Ajuste el tamaño de la caja
-		doc.setDrawColor(200, 200, 200);
-		doc.setFillColor(240, 240, 240); // Color de fondo gris claro
-		doc.rect(margin, y - 3, boxWidth, 10, 'F'); // Caja con fondo
-		doc.text(text, margin + 5, y);
-	}
-
-	// Título principal
-	doc.setFontSize(22);
-	doc.setTextColor(0, 102, 204); // Azul para el título
-	doc.setFont('Helvetica', 'bold');
-	doc.text("Detalle de la Receta", 20, 20);
-	doc.setDrawColor(0, 102, 204);
-	doc.setLineWidth(1);
-	doc.line(20, 25, 190, 25);
-
-	// Información de la receta
-	const recipeName = document.querySelector('.recipe-header h1')?.innerText || "Nombre de la Receta No Disponible";
-	const preparationTime = document.querySelector('ul li:nth-child(2)')?.innerText.split(": ")[1] || "No disponible";
-	const diners = document.querySelector('ul li:nth-child(1)')?.innerText.split(": ")[1] || "No disponible";
-	const difficulty = document.querySelector('.badge.bg-danger')?.innerText || "No disponible";
-
-	doc.setFontSize(16);
-	doc.setTextColor(0, 0, 0); // Texto negro
-	doc.text(`Nombre de la Receta: ${recipeName}`, 20, 35);
-	doc.text(`Tiempo de Preparación: ${preparationTime}`, 20, 45);
-	doc.text(`Comensales: ${diners}`, 20, 55);
-	doc.text(`Dificultad: ${difficulty}`, 20, 65);
-
-	// Ingredientes
-	const ingredients = Array.from(document.querySelectorAll('.recipe-section ul.list-group li')).map(li => li.innerText);
-	addSectionTitle("Ingredientes:", 80);
-	addList(ingredients, 90);
-
-	// Instrucciones
-	const instructions = document.querySelector('.bg-light')?.innerText || "Instrucciones no disponibles.";
-	const instructionsY = 90 + (ingredients.length * 10) + 10;
-	addSectionTitle("Instrucciones:", instructionsY);
-	addBoxedText(instructions, instructionsY + 10);
-
-	// Galería de Imágenes de la receta
-	const recipeImages = Array.from(document.querySelectorAll('.image-gallery img')).map(img => img.src);
-	if (recipeImages.length) {
-		let imageY = instructionsY + 30;
-		recipeImages.forEach((image, index) => {
-			if (index % 2 === 0 && index > 0) {
-				doc.addPage(); // Nueva página para más imágenes
-				imageY = 10;
-			}
-			doc.addImage(image, 'JPEG', (index % 2 === 0 ? 10 : 110), imageY, 90, 60);
-			if (index % 2 !== 0) imageY += 70;
-		});
-	} else {
-		doc.text("No hay imágenes de la receta disponibles.", 20, instructionsY + 30);
-	}
-
-	// Establecer pie de página
-	doc.setFontSize(8);
-	doc.setTextColor(150);
-	doc.text("Generado con love by RecipeApp", 20, doc.internal.pageSize.height - 10);
-
-	// Guardar el PDF
-	doc.save('receta.pdf');
-});
+           pdf.addImage(imgData, 'PNG', 0, 0, canvas.width, canvas.height);
+           pdf.save('receta.pdf'); // Nombre del archivo de salida.
+       });
+   });
 document.addEventListener('DOMContentLoaded', function() {
 	// Función para mostrar el toast
 	function showToast(message, type) {
