@@ -1,7 +1,6 @@
 package com.example.demo.controller;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Period;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -134,11 +133,12 @@ public class CookController {
 		for (byte[] b : r.getImagesRecipe()) {
 			listImagesRecipe.add("data:image/jpeg;base64," + Base64.getEncoder().encodeToString(b));
 		}
-		model.addAttribute("booleanComment", commentService.findByUserId(c, r)); 
+		model.addAttribute("booleanComment", commentService.findByUserId(c, r));
 		model.addAttribute("imagePerfilCook",
 				"data:image/jpeg;base64," + Base64.getEncoder().encodeToString(cookRecipe.getImagePerfil()));
 		model.addAttribute("cookRecipe", cookRecipe);
-		model.addAttribute("booleanFav", c.getListRecipesFavorites().contains(r));
+		model.addAttribute("booleanLike", recipeService.booleanLike(c, r));
+		model.addAttribute("booleanFav", cookService.booleanFav(c, r));
 		model.addAttribute("imageRecipe",
 				"data:image/jpeg;base64," + Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
 		model.addAttribute("listImagesRecipe", listImagesRecipe);
@@ -169,12 +169,12 @@ public class CookController {
 		model.addAttribute("cookPerfil", c);
 		return PANELPERFIL_VIEW;
 	}
-	
+
 	@PostMapping("/auth/cookweb/cookPerfil")
-	public String ViewPerfilCook(@RequestParam("id") Integer id,Model model, Authentication authentication) {
+	public String ViewPerfilCook(@RequestParam("id") Integer id, Model model, Authentication authentication) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		// Ahora puedes obtener la información del usuario logueado desde userDetails
-     
+
 		cookModel c = cookService.findById(id);
 		List<Integer> selectedTechniques = c.getListCulinaryTechniques().stream().map(technique -> technique.getId()) // Asegurarse
 				.collect(Collectors.toList());
@@ -190,14 +190,14 @@ public class CookController {
 		model.addAttribute("recipeTechniques", culinaryTechniquesService.getListCulinaryTechniques());
 		model.addAttribute("age", age);
 		model.addAttribute("cookPerfil", c);
-		if(userDetails.getId()!=id) 
-		model.addAttribute("booleanEdit", false);
+		if (userDetails.getId() != id)
+			model.addAttribute("booleanEdit", false);
 		else
-			model.addAttribute("booleanEdit", true);	
+			model.addAttribute("booleanEdit", true);
 		return PANELPERFIL_VIEW;
 	}
 
-	@PostMapping("auth/cook/UpdatePerfil")
+	@PostMapping("auth/cookweb/UpdatePerfil")
 	public String UpdateCook(cookModel cNew, @RequestParam("culinaryTechniquesIds") List<String> listCulinaryTechniques,
 			@RequestParam("imagenPerfilBase64") String imagenPerfil, Authentication authentication,
 			RedirectAttributes flash) {
@@ -286,24 +286,24 @@ public class CookController {
 
 	@PostMapping("/auth/cookweb/AddComment")
 	public String AddComment(RedirectAttributes flash, @RequestParam(value = "recipeId") Integer recipeId,
-			 @RequestParam(value = "cookCommentId") Integer cookCommentId,
-			commentModel c, Authentication authentication, HttpServletRequest request) {
+			@RequestParam(value = "cookCommentId") Integer cookCommentId, commentModel c, Authentication authentication,
+			HttpServletRequest request) {
 		recipeModel r = recipeService.getRecipeById(recipeId);
 		c.setCookId(cookService.findById(cookCommentId));
 		commentService.addComment(c, recipeId);
 		r.getListComments().add(c);
 		cookService.verifyPunctuation(cookService.findByRecipeId(r));
 		flash.addFlashAttribute("success", "¡Comentario registrado exitosamente!");
-			    String referer = request.getHeader("Referer");
-	    // Redirigimos a la misma página
-	    return "redirect:" + referer;
+		String referer = request.getHeader("Referer");
+		// Redirigimos a la misma página
+		return "redirect:" + referer;
 	}
-	
+
 	@PostMapping("/auth/cookweb/AddReply")
 	public String AddReply(RedirectAttributes flash, @RequestParam(value = "recipeId") Integer recipeId,
 			@RequestParam(value = "commentId") Integer commentId,
-			 @RequestParam(value = "cookCommentId") Integer cookCommentId,
-			commentModel c, Authentication authentication, HttpServletRequest request) {
+			@RequestParam(value = "cookCommentId") Integer cookCommentId, commentModel c, Authentication authentication,
+			HttpServletRequest request) {
 		recipeModel r = recipeService.getRecipeById(recipeId);
 		c.setParentComment(commentService.findById(commentId));
 		c.setCookId(cookService.findById(cookCommentId));
@@ -311,9 +311,9 @@ public class CookController {
 		r.getListComments().add(c);
 		cookService.verifyPunctuation(cookService.findByRecipeId(r));
 		flash.addFlashAttribute("success", "¡Comentario registrado exitosamente!");
-			    String referer = request.getHeader("Referer");
-	    // Redirigimos a la misma página
-	    return "redirect:" + referer;
+		String referer = request.getHeader("Referer");
+		// Redirigimos a la misma página
+		return "redirect:" + referer;
 	}
 
 	@PostMapping("/auth/cook/updateRecipe")
@@ -408,14 +408,24 @@ public class CookController {
 		return RESETPASSWORD_VIEW;
 	}
 
-	@PostMapping("/auth/cookweb/favoriteRecipe/{recipeId}")
-	public String favRecipe(@PathVariable("recipeId") Integer rId, Authentication authentication,
-			RedirectAttributes flash) {
+	@PostMapping("/auth/cookweb/favoriteRecipe")
+	public String favRecipe(@RequestParam("recipeId") Integer rId, Authentication authentication,
+			RedirectAttributes flash, HttpServletRequest request) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-
 		recipeService.toggleFav(rId, userDetails.getId());
-		flash.addFlashAttribute("success", "¡Añadido correctamente exitosamente!");
-		return "redirect:" + PANEL_VIEW; // Redirect to login after successful password update
+
+		String referer = request.getHeader("Referer");
+		return "redirect:" + referer;
+	}
+
+	@PostMapping("/auth/cookweb/likeRecipe")
+	public String likeRecipe(@RequestParam("recipeId") Integer rId, Authentication authentication,
+			RedirectAttributes flash, HttpServletRequest request) {
+		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+		recipeService.toggleLike(rId, userDetails.getId());
+
+		String referer = request.getHeader("Referer");
+		return "redirect:" + referer;
 	}
 
 	private int calculateAge(LocalDate birthDate) {

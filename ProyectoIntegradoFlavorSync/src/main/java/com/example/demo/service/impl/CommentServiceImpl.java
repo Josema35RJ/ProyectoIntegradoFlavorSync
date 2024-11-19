@@ -3,6 +3,7 @@ package com.example.demo.service.impl;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -12,6 +13,7 @@ import com.example.demo.converter.CommentConverter;
 import com.example.demo.converter.CookConverter;
 import com.example.demo.converter.RecipeConverter;
 import com.example.demo.entity.comment;
+import com.example.demo.entity.recipe;
 import com.example.demo.model.commentModel;
 import com.example.demo.model.cookModel;
 import com.example.demo.model.recipeModel;
@@ -43,21 +45,40 @@ public class CommentServiceImpl implements CommentService {
 	private RecipeConverter recipeConverter;
 
 	@Override
-	public boolean addComment(commentModel comment, int RecipeId) {
-		// TODO Auto-generated method stub
+	public boolean addComment(commentModel comment, int recipeId) {
+		// Validar el comentario y la receta
+		if (comment == null || comment.getPunctuation() < -1) {
+			throw new IllegalArgumentException("El comentario no es válido.");
+		}
+
+		// Establecer la fecha de creación del comentario
 		comment.setCreateDate(LocalDateTime.now());
-		recipeModel r = recipeConverter.transform(recipeRepository.findById(RecipeId));
-		int commentSize = 0;
-		for (commentModel x : r.getListComments())
-			if (x.getPunctuation() != 0 || x.getPunctuation() != -1) {
-				commentSize += 1;
-			}
-		if (r.getListComments().size() > 0)
-			r.setAverageRating(((r.getAverageRating() + comment.getPunctuation())) / commentSize);
-		else
-			r.setAverageRating(((r.getAverageRating() + comment.getPunctuation())) / 1);
-		r.getListComments().add(comment);
-		recipeRepository.save(recipeConverter.transform(r));
+
+		// Buscar la receta asociada
+		recipe r = recipeRepository.findById(recipeId);
+		if (r.toString().isEmpty()) {
+			throw new IllegalArgumentException("No se encontró la receta con el ID proporcionado.");
+		}
+
+		// Convertir y obtener la receta
+		recipeModel recipe = recipeConverter.transform(r);
+
+		// Filtrar comentarios válidos para calcular el promedio de puntuación
+		List<commentModel> validComments = recipe.getListComments().stream().filter(c -> c.getPunctuation() > 0).collect(Collectors.toList());
+
+		// Calcular el nuevo promedio de puntuación
+		int validCommentCount = validComments.size();
+		double updatedAverageRating = ((recipe.getAverageRating() + comment.getPunctuation())
+				/ validCommentCount);
+
+		recipe.setAverageRating((float)updatedAverageRating);
+
+		// Agregar el nuevo comentario a la receta
+		recipe.getListComments().add(comment);
+
+		// Guardar los cambios en la base de datos
+		recipeRepository.save(recipeConverter.transform(recipe));
+
 		return true;
 	}
 

@@ -3,7 +3,9 @@ package com.example.demo.entity;
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -14,6 +16,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
@@ -61,13 +65,13 @@ public class cook {
 	@Size(max = 100, message = "The email cannot exceed 100 characters")
 	@NotBlank(message = "The email is required")
 	private String username;
-	
+
 	private boolean confirm_email = false;
 
 	// edad del cocinero
 	@NotNull(message = "birthDate is required")
 	@DateTimeFormat(pattern = "yyyy-MM-dd")
-	private Date birthDate; 
+	private Date birthDate;
 
 	// ciudad del cocinero
 	@Column(name = "city", nullable = false)
@@ -129,13 +133,22 @@ public class cook {
 	@Column(name = "imagesCook", columnDefinition = "LONGBLOB") // Define el tipo específico de la columna
 	@ElementCollection
 	private List<byte[]> imagesCook = new ArrayList<>();
-	
-	@Column(name = "createDate") 
+
+	@Column(name = "createDate")
 	private LocalDateTime createDate;
-	
-	@Column(name = "updateDate") 
+
+	@Column(name = "updateDate")
 	private LocalDateTime updateDate;
 
-	@Column(name = "token") 
+	@Column(name = "token")
 	private String token;
+
+	@ManyToMany
+	@JoinTable(
+	    name = "recipe_likes",
+	    joinColumns = @JoinColumn(name = "cook_id"),
+	    inverseJoinColumns = @JoinColumn(name = "recipe_id")
+	)
+	private Set<recipe> likedRecipes = new HashSet<>();
+
 }

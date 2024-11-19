@@ -29,4 +29,5 @@ public interface CookService {
 	cookModel findByRecipeId(recipeModel r);
 	cookModel registrar(cookModel cook);
 	cookModel findByUsernameAndPassword(String username, String password);
+	boolean booleanFav(cookModel c, recipeModel r);
 }

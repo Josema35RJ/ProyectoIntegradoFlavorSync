@@ -4,6 +4,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Base64;
+import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -61,7 +62,7 @@ public class RecipeServiceImpl implements RecipeService {
 	public boolean updateRecipe(int id, recipeModel re) {
 		// Buscar la receta existente en el repositorio
 		recipeModel recipeOld = recipeConverter.transform(recipeRepository.findById(id));
-	
+
 		if (recipeOld.toString().isEmpty()) {
 			// Si no se encuentra la receta, retornar false
 			return false;
@@ -163,17 +164,17 @@ public class RecipeServiceImpl implements RecipeService {
 		recipeRepository.save(recipeConverter.transform(recipeOld));
 		return true;
 	}
-	
+
 	@Override
-	public boolean updateRecipe(int id, recipeModel re,String imagenPerfilRecipe, String[] ImagesBase64) {
+	public boolean updateRecipe(int id, recipeModel re, String imagenPerfilRecipe, String[] ImagesBase64) {
 		// Buscar la receta existente en el repositorio
 		recipeModel recipeOld = recipeConverter.transform(recipeRepository.findById(id));
-	
+
 		if (recipeOld.toString().isEmpty()) {
 			// Si no se encuentra la receta, retornar false
 			return false;
 		}
-		if(imagenPerfilRecipe.getBytes().length>0) {
+		if (imagenPerfilRecipe.getBytes().length > 0) {
 			recipeOld.setImageRecipePerfil(Base64.getDecoder().decode(imagenPerfilRecipe));
 		}
 		// Actualizar nombre si es diferente
@@ -267,13 +268,13 @@ public class RecipeServiceImpl implements RecipeService {
 		if (!re.getCity().equalsIgnoreCase(recipeOld.getCity())) {
 			recipeOld.setCity(re.getCity());
 		}
-        
+
 		if (ImagesBase64.length > 0) {
 			recipeOld.getImagesRecipe().clear();
-		    for(String x :ImagesBase64){
-		    	recipeOld.getImagesRecipe().add(Base64.getDecoder().decode(x));
-		    }
-		   
+			for (String x : ImagesBase64) {
+				recipeOld.getImagesRecipe().add(Base64.getDecoder().decode(x));
+			}
+
 		}
 
 		// Actualizar la fecha de actualización
@@ -282,7 +283,6 @@ public class RecipeServiceImpl implements RecipeService {
 		recipeRepository.save(recipeConverter.transform(recipeOld));
 		return true;
 	}
-
 
 	// No interesa borrar recetas
 	@Override
@@ -358,8 +358,6 @@ public class RecipeServiceImpl implements RecipeService {
 		List<String> ingredientList = (ingredients == null || ingredients.isEmpty()) ? new ArrayList<>()
 				: Arrays.asList(ingredients.split(",")).stream().map(String::trim) // Limpiamos espacios en blanco
 						.collect(Collectors.toList());
-		System.out.println("*************************");
-		System.out.println(ingredientList);
 
 		// Obtenemos las recetas según la dificultad y la calificación
 		for (recipe r : recipeRepository.findRecipesByFilters(difficulty, rating)) {
@@ -376,5 +374,53 @@ public class RecipeServiceImpl implements RecipeService {
 				.collect(Collectors.toList());
 
 		return filteredRecipes;
+	}
+
+	@Override
+	public boolean toggleLike(Integer recipeId, int cookId) {
+	    // Obtener al cocinero por su ID
+		boolean isLiked = false;
+	    cook cook = cookRepository.findById(cookId).orElseThrow(() -> new RuntimeException("Cook not found"));
+
+	    // Obtener la receta por su ID
+	    recipe recipe = recipeRepository.findById(recipeId).orElseThrow(() -> new RuntimeException("Recipe not found"));
+
+	   for(recipe r : cook.getLikedRecipes())
+		   if(r.getId()==recipe.getId())
+			   isLiked=true;
+
+	    if (isLiked) {
+	        // Si ya dio "like", eliminarlo
+	        recipe.setLikesCount(recipe.getLikesCount() - 1);
+	        // Usar un Iterator para eliminar todas las recetas del Set "likedRecipes"
+	        Iterator<recipe> iterator = cook.getLikedRecipes().iterator();
+	        while (iterator.hasNext()) {
+	            recipe likedRecipe = iterator.next();
+	            if (likedRecipe.getId()==recipe.getId()) {
+	                iterator.remove();  // Eliminar la receta del Set utilizando el Iterator
+	            }
+	        }
+	    } else {
+	        // Si no dio "like", agregarlo
+	        recipe.setLikesCount(recipe.getLikesCount() + 1);
+	        cook.getLikedRecipes().add(recipe);  // Añadir la receta al Set
+	    }
+
+	    // Guardar los cambios en ambas entidades
+	    recipeRepository.save(recipe);
+	    cookRepository.save(cook);
+
+	    return !isLiked; // Devuelve el nuevo estado del "like"
+	}
+
+
+	@Override
+	public boolean booleanLike(cookModel c, recipeModel r) {
+		// TODO Auto-generated method stub
+		boolean isLiked = false;
+		 for(recipeModel re : c.getLikedRecipes())
+			   if(re.getId()==r.getId())
+				   isLiked=true;
+		return isLiked;
 	}
 }

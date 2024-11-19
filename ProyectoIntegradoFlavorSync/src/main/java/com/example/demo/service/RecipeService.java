@@ -29,5 +29,9 @@ public interface RecipeService {
 
 	boolean toggleFav(Integer recipeId, int id);
 
+	boolean toggleLike(Integer recipeId, int id);
+
 	public List<recipeModel> filterRecipes(String ingredients, String category, String difficulty, Integer rating);
+
+    boolean booleanLike(cookModel c, recipeModel r);
 }

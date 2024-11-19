@@ -288,4 +288,14 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 		return cook;
 	}
 
+	@Override
+	public boolean booleanFav(cookModel c, recipeModel r) {
+		// TODO Auto-generated method stub
+		for (recipeModel rI : c.getListRecipesFavorites()) {
+			if (rI.getId() == r.getId())
+				return true;
+		}
+		return false;
+	}
+
 }

@@ -4,9 +4,13 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
+
+import com.example.demo.entity.recipe;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -116,6 +120,8 @@ public class cookModel {
 	private LocalDateTime updateDate;
 	
 	private String token;
+	
+	private Set<recipeModel> likedRecipes = new HashSet<>();
 
 	public cookModel() {
 		super();
@@ -334,6 +340,15 @@ public class cookModel {
 	public void setToken(String token) {
 		this.token = token;
 	}
+	
+	 // Getters y Setters
+    public Set<recipeModel> getLikedRecipes() {
+        return likedRecipes;
+    }
+
+    public void setLikedRecipes(Set<recipeModel> likedRecipes) {
+        this.likedRecipes = likedRecipes;
+    }
 
 	@Override
 	public String toString() {

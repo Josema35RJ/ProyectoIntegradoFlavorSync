@@ -2,9 +2,12 @@ package com.example.demo.model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
-import com.example.demo.entity.nutritionalInformation;
+import java.util.Set;
+
+import com.example.demo.entity.cook;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -122,6 +125,9 @@ public class recipeModel {
 	
 	//Fecha de la actualizacion de esta receta
 	private LocalDate updateDate;
+	
+	// Contador de likes
+    private int likesCount;
 	
 	public recipeModel(Integer id, String name, int diners, float preparationTime, List<String> whereItisDone,
 			List<String> category, List<String> Ingredients, List<String> listkitchenUtensils,
@@ -369,7 +375,16 @@ public class recipeModel {
 	public void setUpdateDate(LocalDate updateDate) {
 		this.updateDate = updateDate;
 	}
+	
+	 // Getters y Setters
+    public int getLikesCount() {
+        return likesCount;
+    }
 
+    public void setLikesCount(int likesCount) {
+        this.likesCount = likesCount;
+    }
+    
 	@Override
 	public String toString() {
 		return "recipeModel [id=" + id + ", name=" + name + ", level=" + level + ", diners=" + diners
