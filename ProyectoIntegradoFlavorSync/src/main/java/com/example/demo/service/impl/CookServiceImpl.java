@@ -25,6 +25,7 @@ import com.example.demo.converter.RecipeConverter;
 import com.example.demo.entity.cook;
 import com.example.demo.entity.culinaryTechniques;
 import com.example.demo.model.cookModel;
+import com.example.demo.model.culinaryTechniquesModel;
 import com.example.demo.model.recipeModel;
 import com.example.demo.repository.CookRepository;
 import com.example.demo.repository.CulinaryTechniquesRepository;
@@ -284,7 +285,17 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 	@Override
 	public cookModel registrar(cookModel cook) {
 		// TODO Auto-generated method stub
-		cookRepository.save(cookConverter.transform(cook));
+		List<culinaryTechniques> l = new ArrayList<>();
+		for (culinaryTechniquesModel x : cook.getListCulinaryTechniques()) {
+			l.add(culinaryTechniquesRepository.findById(x.getId()).get());
+		}
+		cook.setPassword(passwordEncoder().encode(cook.getPassword()));
+		cook.setEnabled(false);
+		cook.setRole("ROL_COOKAPRENDIZ");
+		cook.setCreateDate(LocalDateTime.now());
+		cook c = cookConverter.transform(cook);
+		c.setListCulinaryTechniques(l);
+		cookRepository.save(c);
 		return cook;
 	}
 

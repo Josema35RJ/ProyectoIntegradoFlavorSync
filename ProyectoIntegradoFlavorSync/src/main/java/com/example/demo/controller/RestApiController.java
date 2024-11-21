@@ -100,7 +100,7 @@ public class RestApiController {
 		}
 	}
 	
-	@GetMapping("/auth/cookapp/api/ListRecipe")
+	@GetMapping("/api/auth/cookapp/ListRecipe")
 	public ResponseEntity<?> ListRecipe() {
 		Map<String, Object> response = new HashMap<>();
 		try {
@@ -122,13 +122,14 @@ public class RestApiController {
 	public ResponseEntity<?> saveCook(@RequestBody cookModel cook) {
 		Map<String, Object> response = new HashMap<>();
 		try {
+			System.out.println("*************************E1*******************************");
+			System.out.println(cook);
 			cookService.registrar(cook);
 			response.put("success", true);
 			response.put("message", "Usuario registrado con exito");
 			return new ResponseEntity<>(response, HttpStatus.CREATED);
 		} catch (IllegalArgumentException e) {
-			System.out.println("*************************E1*******************************");
-			System.out.println(e);
+			
 			response.put("success", false);
 			response.put("message", e.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);

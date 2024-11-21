@@ -47,7 +47,7 @@ public class SecurityConfig {
             .csrf().disable() // Deshabilita CSRF ya que se usa JWT
             .authorizeRequests()
                 .requestMatchers("/api/login", "/api/register").permitAll() // Rutas públicas para login y registro
-                .requestMatchers("/auth/cookapp/api/**").authenticated() // Rutas de la API protegidas por JWT
+                .requestMatchers("/api/auth/cookapp/**").authenticated() // Rutas de la API protegidas por JWT
             .and()
             .addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class); // Filtro JWT
 

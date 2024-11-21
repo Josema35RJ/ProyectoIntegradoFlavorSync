@@ -98,7 +98,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     // Método para determinar si una ruta debe ser filtrada por JWT
     private boolean shouldFilter(HttpServletRequest request) {
         String uri = request.getRequestURI();
-        // Se aplica JWT solo a las rutas de "/api/" y "/cookapp/"
-        return uri.startsWith("/cookapp/");
+        // Se aplica JWT solo a las rutas dey "/cookapp/"
+        return uri.contains("/auth/cookapp/");
     }
 }
