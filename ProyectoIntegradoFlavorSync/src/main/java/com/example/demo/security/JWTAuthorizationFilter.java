@@ -35,7 +35,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
             throws ServletException, IOException {
         try {
-            // Solo filtrar las rutas que requieren JWT, como "/api/" y "/cookapp/"
+            // Solo filtrar las rutas que requieren JWT, "/cookapp/"
             if (shouldFilter(request)) {
                 if (existeJWTToken(request, response)) {
                     Claims claims = validateToken(request);
@@ -71,7 +71,7 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
                     // Aplicar roles según las rutas
                     if ((role.equals("ROL_COOKCHEF") || role.equals("ROL_COOKPROFESSIONAL")
                             || role.equals("ROL_COOKAPRENDIZ") || role.equals("ROL_COOKAMATEUR"))
-                            && !request.getRequestURI().startsWith("/api/cook/")) {
+                            && !request.getRequestURI().contains("/cookapp/")) {
                         return null; // No autorizar si la ruta no empieza con "/api/cook/"
                     }
                     return new SimpleGrantedAuthority(role);
@@ -99,6 +99,6 @@ public class JWTAuthorizationFilter extends OncePerRequestFilter {
     private boolean shouldFilter(HttpServletRequest request) {
         String uri = request.getRequestURI();
         // Se aplica JWT solo a las rutas de "/api/" y "/cookapp/"
-        return uri.startsWith("/api/") || uri.startsWith("/cookapp/");
+        return uri.startsWith("/cookapp/");
     }
 }

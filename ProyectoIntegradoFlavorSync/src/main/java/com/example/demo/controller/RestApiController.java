@@ -22,8 +22,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.example.demo.model.cookModel;
 import com.example.demo.model.culinaryTechniquesModel;
+import com.example.demo.model.recipeModel;
 import com.example.demo.service.CookService;
 import com.example.demo.service.CulinaryTechniquesService;
+import com.example.demo.service.RecipeService;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -33,6 +35,9 @@ public class RestApiController {
 
 	@Autowired
 	private CookService cookService;
+	
+	@Autowired
+	private RecipeService recipeService;
 
 	@Autowired
 	private CulinaryTechniquesService culinaryTechniquesService;
@@ -94,6 +99,24 @@ public class RestApiController {
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@GetMapping("/auth/cookapp/api/ListRecipe")
+	public ResponseEntity<?> ListRecipe() {
+		Map<String, Object> response = new HashMap<>();
+		try {
+			List<recipeModel> listRecipe = recipeService.getListRecipe();
+			response.put("success", true);
+			response.put("data", listRecipe);
+			response.put("message", "Lista obtenida con exito");
+			return new ResponseEntity<>(response, HttpStatus.OK);
+		} catch (Exception e) {
+			System.out.println("**************************************************");
+			System.out.println(e);
+			response.put("success", false);
+			response.put("message", e);
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+	}
 
 	@PostMapping("/api/register")
 	public ResponseEntity<?> saveCook(@RequestBody cookModel cook) {
@@ -104,10 +127,14 @@ public class RestApiController {
 			response.put("message", "Usuario registrado con exito");
 			return new ResponseEntity<>(response, HttpStatus.CREATED);
 		} catch (IllegalArgumentException e) {
+			System.out.println("*************************E1*******************************");
+			System.out.println(e);
 			response.put("success", false);
 			response.put("message", e.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
+			System.out.println("*************************E2*****************************");
+			System.out.println(e);
 			response.put("success", false);
 			response.put("message", "Error al registrar el usuario: " + e.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
