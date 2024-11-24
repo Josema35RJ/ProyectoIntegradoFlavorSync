@@ -110,8 +110,6 @@ public class RestApiController {
 			response.put("message", "Lista obtenida con exito");
 			return new ResponseEntity<>(response, HttpStatus.OK);
 		} catch (Exception e) {
-			System.out.println("**************************************************");
-			System.out.println(e);
 			response.put("success", false);
 			response.put("message", e);
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
@@ -122,20 +120,15 @@ public class RestApiController {
 	public ResponseEntity<?> saveCook(@RequestBody cookModel cook) {
 		Map<String, Object> response = new HashMap<>();
 		try {
-			System.out.println("*************************E1*******************************");
-			System.out.println(cook);
 			cookService.registrar(cook);
 			response.put("success", true);
 			response.put("message", "Usuario registrado con exito");
 			return new ResponseEntity<>(response, HttpStatus.CREATED);
 		} catch (IllegalArgumentException e) {
-			
 			response.put("success", false);
 			response.put("message", e.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
 		} catch (Exception e) {
-			System.out.println("*************************E2*****************************");
-			System.out.println(e);
 			response.put("success", false);
 			response.put("message", "Error al registrar el usuario: " + e.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);

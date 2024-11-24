@@ -2,9 +2,9 @@ package com.example.demo.entity;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -14,7 +14,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.JoinTable;
 import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
@@ -105,7 +104,7 @@ public class recipe {
 	// grasas, carbohidratos,
 	// proteínas y otros nutrientes por porción.
 	@OneToOne(cascade = CascadeType.ALL)
-	   @JoinColumn(name = "nutritional_information_id")
+	@JoinColumn(name = "nutritional_information_id")
 	private nutritionalInformation nutritionalInformation;
 
 	// Consejos útiles, variantes de la receta, sugerencias de presentación, o
@@ -143,19 +142,19 @@ public class recipe {
 	// Video de la elaboracion guardado en base 64
 	// private byte[] video;
 	@ElementCollection
-	private List<String>  Ingredients = new ArrayList<>();
+	private List<String> Ingredients = new ArrayList<>();
 
 	// Imagen de perfil de la receta
 	@Lob // Indica que el campo debe ser tratado como un tipo grande
 	@Column(name = "imagenRecipePerfil", columnDefinition = "LONGBLOB") // Define el tipo específico de la columna
 	private byte[] imageRecipePerfil;
-	
-	@Column(name = "createDate") 
+
+	@Column(name = "createDate")
 	private LocalDate createDate;
-	
-	@Column(name = "updateDate") 
+
+	@Column(name = "updateDate")
 	private LocalDate updateDate;
-		
+
 	// Contador de likes
-    private int likesCount;
+	private int likesCount;
 }

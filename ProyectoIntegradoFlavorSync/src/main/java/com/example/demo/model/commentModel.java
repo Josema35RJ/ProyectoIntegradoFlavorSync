@@ -25,13 +25,14 @@ public class commentModel {
 	@Positive(message = "The punctuation must be a positive number")
 	private int punctuation;
 
+	@JsonIgnore
 	private cookModel cookId;
 
 	private LocalDateTime createDate;
 
 	private LocalDateTime updateDate;
 
-	// Relación recursiva: un comentario puede tener respuestas.
+	@JsonIgnore
 	private commentModel parentComment; // Comentario al que responde, si lo tiene.
 
 	private List<commentModel> replies = new ArrayList<>(); // Respuestas a este comentario.
@@ -39,16 +40,14 @@ public class commentModel {
 	public commentModel() {
 		super();
 	}
-	
-	public commentModel(
-			@Size(max = 255, message = "The description cannot exceed 255 characters") String description) {
+
+	public commentModel(@Size(max = 255, message = "The description cannot exceed 255 characters") String description) {
 		super();
 		this.description = description;
 		this.createDate = LocalDateTime.now();
 	}
 
-	public commentModel(
-			@Size(max = 255, message = "The description cannot exceed 255 characters") String description,
+	public commentModel(@Size(max = 255, message = "The description cannot exceed 255 characters") String description,
 			@Positive(message = "The punctuation must be a positive number") int punctuation) {
 		super();
 		this.description = description;
@@ -123,6 +122,7 @@ public class commentModel {
 
 	@Override
 	public String toString() {
-		return "commentModel [id=" + id + ", description=" + description + ", punctuation=" + punctuation + ", createDate=" + createDate + ", updateDate=" + updateDate + "]";
+		return "commentModel [id=" + id + ", description=" + description + ", punctuation=" + punctuation
+				+ ", createDate=" + createDate + ", updateDate=" + updateDate + "]";
 	}
 }
