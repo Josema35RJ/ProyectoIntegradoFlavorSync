@@ -2,11 +2,9 @@ package com.example.demo.model;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
-import com.example.demo.entity.cook;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.GeneratedValue;
@@ -51,6 +49,7 @@ public class recipeModel {
 	private float averageRating = 0;
 
 	// Cada cocinero podra valorar la receta (menos el creador)
+	@JsonIgnore
 	private List<commentModel> listComments = new ArrayList<>();
 
 	// Lista de utensilios

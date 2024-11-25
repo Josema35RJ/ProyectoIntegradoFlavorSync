@@ -25,14 +25,12 @@ public class commentModel {
 	@Positive(message = "The punctuation must be a positive number")
 	private int punctuation;
 
-	@JsonIgnore
 	private cookModel cookId;
 
 	private LocalDateTime createDate;
 
 	private LocalDateTime updateDate;
 
-	@JsonIgnore
 	private commentModel parentComment; // Comentario al que responde, si lo tiene.
 
 	private List<commentModel> replies = new ArrayList<>(); // Respuestas a este comentario.
