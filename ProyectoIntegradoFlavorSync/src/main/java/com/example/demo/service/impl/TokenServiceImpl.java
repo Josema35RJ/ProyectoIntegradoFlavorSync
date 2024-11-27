@@ -85,4 +85,5 @@ public class TokenServiceImpl implements TokenService {
 	public void cleanupExpiredTokens() {
 		passwordResetTokenRepository.deleteExpiredTokens(LocalDateTime.now());
 	}
+	
 }

@@ -5,13 +5,14 @@ import java.util.List;
 
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.example.demo.entity.cook;
 import com.example.demo.model.cookModel;
 import com.example.demo.model.recipeModel;
 
 public interface CookService {
 
 	boolean deletedCook (int id);
-	boolean updateCook (cookModel cook, List<String> l);
+	boolean updateCook (cookModel cook);
 	List<cookModel> getAllCooks();
 	List<cookModel> getFindByCooksChefs();
 	List<cookModel> getFindByCooksProfessionals();
@@ -30,4 +31,5 @@ public interface CookService {
 	cookModel registrar(cookModel cook);
 	cookModel findByUsernameAndPassword(String username, String password);
 	boolean booleanFav(cookModel c, recipeModel r);
+	boolean updateCook(cookModel cook, List<String> culinaryTechniquesIds);
 }

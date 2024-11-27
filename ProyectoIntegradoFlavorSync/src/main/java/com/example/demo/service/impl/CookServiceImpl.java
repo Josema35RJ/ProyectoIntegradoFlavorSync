@@ -309,4 +309,11 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 		return false;
 	}
 
+	@Override
+	public boolean updateCook(cookModel cook) {
+		// TODO Auto-generated method stub
+		 cookRepository.save(cookConverter.transform(cook));
+		return true;
+	}
+
 }

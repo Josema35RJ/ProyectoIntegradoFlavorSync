@@ -17,6 +17,7 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -114,6 +115,44 @@ public class RestApiController {
 			response.put("message", e);
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
+	}
+	
+	@GetMapping("/api/auth/cookapp/Cook")
+	public ResponseEntity<Map<String, Object>> getCook(/*@RequestHeader("Authorization") String authorizationHeader,*/ @RequestBody Map<String, String> requestBody) {
+	    Map<String, Object> response = new HashMap<>();
+	    try {
+	        // Obtener el id desde el cuerpo de la solicitud
+	        String id = requestBody.get("id");
+
+	        // Validar si el id es un número válido
+	        Integer cookId = Integer.valueOf(id); // Esto lanzará un NumberFormatException si id no es un número
+	        cookModel c = cookService.findById(cookId);
+              
+	        if (c == null) {
+	            response.put("success", false);
+	            response.put("message", "Cook no encontrado");
+	            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+	        } 
+	       
+	       /* if(!c.getToken().equals(authorizationHeader)) {
+	        	  response.put("success", false);
+		            response.put("message", "No tienes Acceso a esta Informacion");
+		            return new ResponseEntity<>(response, HttpStatus.NON_AUTHORITATIVE_INFORMATION);
+	        }*/
+
+	        response.put("success", true);
+	        response.put("data", c);
+	        response.put("message", "Lista de Recetas del Cook obtenida con éxito");
+	        return new ResponseEntity<>(response, HttpStatus.OK);
+	    } catch (NumberFormatException e) {
+	        response.put("success", false);
+	        response.put("message", "ID inválido, debe ser un número");
+	        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	    } catch (Exception e) {
+	        response.put("success", false);
+	        response.put("message", "Ocurrió un error: " + e.getMessage());
+	        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
 	}
 
 	@PostMapping("/api/register")
