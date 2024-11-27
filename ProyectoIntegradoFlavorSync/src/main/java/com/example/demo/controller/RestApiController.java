@@ -116,30 +116,30 @@ public class RestApiController {
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
+	
+	@PostMapping("/api/auth/cookapp/Cook")
+	public ResponseEntity<?> getCookData(@RequestBody Map<String, Integer> request) {
+	    Map<String, Object> response = new HashMap<>();
+	    try {
+	        int id = request.get("id"); // Obtener el 'id' del cuerpo
+	        cookModel cook = cookService.findById(id);
 
-	@GetMapping("/api/auth/cookapp/Cook")
-	public ResponseEntity<?> getCookData(@RequestParam("id") int id) {
-		Map<String, Object> response = new HashMap<>();
-		try {
-			// Suponiendo que tienes un servicio para obtener el Cook por su ID
-			cookModel cook = cookService.findById(id);
+	        if (cook != null) {
+	            response.put("success", true);
+	            response.put("data", cook);
+	            response.put("message", "Cook obtenido con éxito");
+	            return new ResponseEntity<>(response, HttpStatus.OK);
+	        } else {
+	            response.put("success", false);
+	            response.put("message", "Cook no encontrado");
+	            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+	        }
 
-			if (cook != null) {
-				response.put("success", true);
-				response.put("data", cook);
-				response.put("message", "Cook obtenido con éxito");
-				return new ResponseEntity<>(response, HttpStatus.OK);
-			} else {
-				response.put("success", false);
-				response.put("message", "Cook no encontrado");
-				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-			}
-
-		} catch (Exception e) {
-			response.put("success", false);
-			response.put("message", "Error: " + e.getMessage());
-			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+	    } catch (Exception e) {
+	        response.put("success", false);
+	        response.put("message", "Error: " + e.getMessage());
+	        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
 	}
 
 	@PostMapping("/api/register")
