@@ -160,7 +160,7 @@ public class loginController {
 		return "redirect:" + LOGIN_VIEW;
 	}
 	
-	@GetMapping("/auth/cook/logout")
+	@GetMapping("/auth/cookweb/logout")
 	public String logout(HttpServletRequest request, HttpServletResponse response) {
 		// Invalida la sesión actual
 		request.getSession().invalidate();
