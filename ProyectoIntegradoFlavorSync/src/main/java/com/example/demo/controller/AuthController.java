@@ -90,7 +90,7 @@ public class AuthController {
 		}
 	}
 
-	@GetMapping("/auth/cookweb/verify-email/{token}")
+	@GetMapping("/verify-email/{token}")
 	public String verifyEmail(@PathVariable("token") String token, RedirectAttributes flash) {
 		String email = tokenService.getEmailFromToken(token); // Obtén el email a partir del token
 		if (email != null && tokenService.isTokenValid(token)) {
