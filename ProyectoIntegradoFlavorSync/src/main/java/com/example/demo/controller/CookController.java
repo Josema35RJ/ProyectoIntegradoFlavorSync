@@ -41,7 +41,7 @@ public class CookController {
 	private static final String PANEL_VIEW = "/auth/cook/cookPanel";
 	private static final String PANELPERFIL_VIEW = "/auth/cook/cookPerfil";
 	private static final String FORMRECIPE_VIEW = "/auth/cook/formRecipe";
-	private static final String UPDATERECIPE_VIEW = "/auth/cook/updateRecipe";
+	private static final String UPDATERECIPE_VIEW = "/auth/cookweb/updateRecipe";
 	private static final String COOKRECIPES_VIEW = "/auth/cook/cookRecipes";
 	private static final String RESETPASSWORD_VIEW = "/auth/resetPassword";
 	private static final String RECIPE_VIEW = "/auth/cook/viewRecipe";
@@ -242,7 +242,7 @@ public class CookController {
 		}
 		cookService.updateCook(cOrigin, listCulinaryTechniques);
 		flash.addFlashAttribute("success", "¡Cocinero Actualizado exitosamente!");
-		return "redirect:" + PANELPERFIL_VIEW;
+		return "redirect:/auth/cookweb/cookPerfil";
 	}
 
 	@GetMapping("/auth/cookweb/formRecipe")
@@ -254,7 +254,7 @@ public class CookController {
 		return FORMRECIPE_VIEW;
 	}
 
-	@PostMapping("/auth/cook/addRecipe")
+	@PostMapping("/auth/cookweb/addRecipe")
 	public String AddRecipe(recipeModel recipe, RedirectAttributes flash,
 			@RequestParam(value = "RecipeTechniques", required = false) String[] listTechniques,
 			@RequestParam(value = "recipeImagesBase64", required = false) String[] ImagesBase64,
@@ -281,7 +281,7 @@ public class CookController {
 		recipeService.addRecipe(recipe, c);
 
 		flash.addFlashAttribute("success", "¡Receta registrada exitosamente!");
-		return "redirect:" + COOKRECIPES_VIEW;
+		return "redirect:/auth/cook/cookRecipes";
 	}
 
 	@PostMapping("/auth/cookweb/AddComment")
@@ -316,7 +316,7 @@ public class CookController {
 		return "redirect:" + referer;
 	}
 
-	@PostMapping("/auth/cook/updateRecipe")
+	@PostMapping("/auth/cookweb/updateRecipe")
 	public String UpdateRecipePost(recipeModel r, Model model,
 			@RequestParam(value = "RecipeTechniques", required = false) String[] listTechniques,
 			@RequestParam("imagenPerfilBase64") String imagenPerfilRecipe,
@@ -330,7 +330,7 @@ public class CookController {
 		recipeService.updateRecipe(r.getId(), r, imagenPerfilRecipe, ImagesBase64);
 		flash.addFlashAttribute("success", "¡Receta actualizada exitosamente!");
 
-		return "redirect:" + PANEL_VIEW;
+		return "redirect:/auth/cookweb/cookPanel";
 	}
 
 	@PostMapping("/auth/cookweb/formUpdateRecipe")
@@ -363,7 +363,7 @@ public class CookController {
 		model.addAttribute("recipeTechniques", culinaryTechniquesService.getListCulinaryTechniques());
 		model.addAttribute("recipe", r);
 
-		return UPDATERECIPE_VIEW;
+		return "/auth/cook/updateRecipe";
 	}
 
 	@PostMapping("/auth/cookweb/updatePassword")
@@ -375,7 +375,7 @@ public class CookController {
 		// Ahora puedes obtener la información del usuario logueado desde userDetails
 
 		flash.addFlashAttribute("success", "¡Contraseña Actualizada exitosamente!");
-		return "redirect:" + PANELPERFIL_VIEW;
+		return "redirect:/auth/cookweb/cookPerfil";
 
 	}
 
