@@ -55,7 +55,7 @@ public class AuthController {
 		} else {
 			redirectAttributes.addFlashAttribute("error", "El correo electrónico no está registrado.");
 		}
-		return "redirect:https://proyectointegradoflavorsync.onrender.com/login";
+		return "proyectointegradoflavorsync.onrender.com/login";
 	}
 
 	private boolean isEmailRegistered(String email) {
