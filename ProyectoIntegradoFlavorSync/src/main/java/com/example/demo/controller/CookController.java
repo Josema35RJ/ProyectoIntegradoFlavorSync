@@ -281,7 +281,7 @@ public class CookController {
 		recipeService.addRecipe(recipe, c);
 
 		flash.addFlashAttribute("success", "¡Receta registrada exitosamente!");
-		return "redirect:/auth/cook/cookRecipes";
+		return "redirect:/auth/cookweb/cookRecipes";
 	}
 
 	@PostMapping("/auth/cookweb/AddComment")
@@ -379,14 +379,14 @@ public class CookController {
 
 	}
 
-	@PostMapping("/auth/resetPassword")
+	@PostMapping("/resetPassword")
 	public String resetPassword(@RequestParam("token") String token, @RequestParam("newPassword") String newPassword,
 			@RequestParam("confirmPassword") String confirmPassword, RedirectAttributes flash) {
 
 		// Check if the new password and confirm password match
 		if (!newPassword.equals(confirmPassword)) {
 			flash.addFlashAttribute("error", "Las contraseñas no coinciden.");
-			return "redirect:/auth/reset-password?token=" + token; // Redirect back to the reset password page
+			return "redirect:/reset-password?token=" + token; // Redirect back to the reset password page
 		}
 		String email = tokenService.getEmailFromToken(token);
 		// Validate the token
@@ -402,7 +402,7 @@ public class CookController {
 		return "redirect:/auth/login"; // Redirect to login after successful password update
 	}
 
-	@GetMapping("/auth/resetPassword/{token}")
+	@GetMapping("/resetPassword/{token}")
 	public String ResetRecipe(@PathVariable("token") String token, Model model, RedirectAttributes flash) {
 		model.addAttribute("token", token);
 		return RESETPASSWORD_VIEW;

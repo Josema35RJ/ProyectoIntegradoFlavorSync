@@ -60,7 +60,7 @@ public class SecurityConfig {
         http
             .csrf().disable() // Deshabilita CSRF (puede ser necesario si usas cookies de sesión)
             .authorizeRequests()
-                .requestMatchers("/", "/imgs/**", "/webjars/*", "/css/*", "/files/", "/js/*", "/favicon.ico", "/login", "/register").permitAll() // Rutas públicas
+                .requestMatchers("/", "/imgs/**", "/webjars/*", "/css/*", "/files/", "/js/*", "/favicon.ico", "/login", "/register", "/recover-password", "/reset-password/**", "/resetPassword/**").permitAll() // Rutas públicas
                 .requestMatchers("/auth/cookweb/**") // Rutas protegidas por roles
                 .hasAnyAuthority("ROL_COOKCHEF", "ROL_COOKPROFESSIONAL", "ROL_COOKAPRENDIZ", "ROL_COOKAMATEUR") // Requiere un rol específico
                 .anyRequest().authenticated() // Otras rutas requieren autenticación

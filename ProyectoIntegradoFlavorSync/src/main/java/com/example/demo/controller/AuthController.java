@@ -38,12 +38,12 @@ public class AuthController {
 	@Qualifier("cookService")
 	private CookService cookService;
 
-	@PostMapping("/auth/cookweb/recover-password")
+	@PostMapping("/recover-password")
 	public String recoverPassword(@RequestParam("recoverEmail") String email, RedirectAttributes redirectAttributes) {
 		if (isEmailRegistered(email)) {
 			String token = tokenService.generateToken(email); // Generar token único para el enlace
 			tokenService.saveTokenToDatabase(token, email);
-			String recoveryLink = "http://localhost:8080/auth/resetPassword/" + token;
+			String recoveryLink = "proyectointegradoflavorsync.onrender.com/resetPassword/" + token;
 
 			try {
 				emailService.sendRecoveryEmail(email, recoveryLink, "Recuperación de contraseña");
@@ -55,7 +55,7 @@ public class AuthController {
 		} else {
 			redirectAttributes.addFlashAttribute("error", "El correo electrónico no está registrado.");
 		}
-		return "redirect:/login";
+		return "redirect:https://proyectointegradoflavorsync.onrender.com/login";
 	}
 
 	private boolean isEmailRegistered(String email) {
@@ -71,7 +71,7 @@ public class AuthController {
 			String token = tokenService.generateToken(email);
 
 			// Crear el enlace de recuperación
-			String recoveryLink = "http://flavorSync/cookweb/reset-password?token=" + token;
+			String recoveryLink = "https://proyectointegradoflavorsync.onrender.com/reset-password?token=" + token;
 
 			// Almacenar el token en la base de datos junto con la fecha de expiración
 			tokenService.saveTokenToDatabase(token, email);

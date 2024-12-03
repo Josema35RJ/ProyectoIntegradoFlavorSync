@@ -148,7 +148,7 @@ public class loginController {
 		tokenService.saveTokenToDatabase(token, cook.getUsername()); // Guarda el token en la base de datos
 
 		// Enviar correo de verificación
-		String verificationLink = "http://localhost:8080/auth/verify-email/" + token;
+		String verificationLink = "https://proyectointegradoflavorsync.onrender.com/auth/cookweb/verify-email/" + token;
 		try {
 			emailService.sendVerificationEmail(cook.getUsername(), verificationLink, "Verificación de correo electrónico");
 			flash.addFlashAttribute("success",
