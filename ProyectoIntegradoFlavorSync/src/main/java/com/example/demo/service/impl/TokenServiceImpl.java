@@ -14,6 +14,8 @@ import com.example.demo.entity.PasswordResetToken;
 import com.example.demo.repository.PasswordResetTokenRepository;
 import com.example.demo.service.TokenService;
 
+import jakarta.transaction.Transactional;
+
 @Service("tokenService")
 public class TokenServiceImpl implements TokenService {
 
@@ -51,6 +53,7 @@ public class TokenServiceImpl implements TokenService {
 	    LocalDateTime expirationTime = LocalDateTime.now().plusHours(EXPIRATION_HOURS);
 		PasswordResetToken passwordResetToken = new PasswordResetToken(token, email, expirationTime);
 		passwordResetTokenRepository.save(passwordResetToken);
+		
 	}
 
 	@Override
@@ -82,8 +85,9 @@ public class TokenServiceImpl implements TokenService {
 	}
 
 	@Override
+	 @Transactional
 	public void cleanupExpiredTokens() {
-		passwordResetTokenRepository.deleteExpiredTokens(LocalDateTime.now());
+		 passwordResetTokenRepository.deleteByExpirationTime(LocalDateTime.now());
 	}
 	
 }

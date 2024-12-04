@@ -11,6 +11,7 @@ import com.example.demo.model.recipeModel;
 
 public interface CookService {
 
+	boolean booleanCookCreate (cookModel c, recipeModel r);
 	boolean deletedCook (int id);
 	boolean updateCook (cookModel cook);
 	List<cookModel> getAllCooks();

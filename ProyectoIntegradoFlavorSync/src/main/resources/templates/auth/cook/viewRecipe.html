@@ -179,32 +179,35 @@ body {
 	color: #1E90FF; /* Azul claro */
 	transition: color 0.3s ease, transform 0.3s ease;
 }
+
 .like-btn {
-    background-color: transparent; /* Color de fondo atractivo */
-    color: white; /* Color de texto (ícono en blanco) */
-    border: 2px solid transparent; /* Borde transparente */
-    border-radius: 50px; /* Bordes redondeados */
-    cursor: pointer;
-    display: inline-flex;
-    justify-content: center;
-    align-items: center;
-    transition: all 0.3s ease; /* Transición suave para el hover */
+	background-color: transparent; /* Color de fondo atractivo */
+	color: white; /* Color de texto (ícono en blanco) */
+	border: 2px solid transparent; /* Borde transparente */
+	border-radius: 50px; /* Bordes redondeados */
+	cursor: pointer;
+	display: inline-flex;
+	justify-content: center;
+	align-items: center;
+	transition: all 0.3s ease; /* Transición suave para el hover */
 }
 
 /* Efecto hover: cambiar el color y agrandar */
 .like-btn:hover {
-    background-color: #ff6347; /* Color de fondo al pasar el ratón (tomate) */
-    border-color: #ff6347; /* Agrega un borde con el mismo color */
+	background-color: #ff6347;
+	/* Color de fondo al pasar el ratón (tomate) */
+	border-color: #ff6347; /* Agrega un borde con el mismo color */
 }
 
 /* Efecto de animación para el ícono */
 .like-btn i {
-    transition: transform 0.3s ease;
+	transition: transform 0.3s ease;
 }
 
 /* Efecto hover sobre el ícono */
 .like-btn:hover i {
-    transform: rotate(15deg); /* Rota ligeramente el ícono al hacer hover */
+	transform: rotate(15deg);
+	/* Rota ligeramente el ícono al hacer hover */
 }
 </style>
 </head>
@@ -276,8 +279,7 @@ body {
 								<button id="like-btn" class="like-btn"
 									data-recipe-id="${recipe.id}">
 									<i
-										th:classappend="${booleanLike} ? 'fa-solid fa-thumbs-up' : 'fa-regular fa-thumbs-up'"
-										></i>
+										th:classappend="${booleanLike} ? 'fa-solid fa-thumbs-up' : 'fa-regular fa-thumbs-up'"></i>
 								</button>
 								<span id="like-count" name="like-count" class="like-count"
 									th:text="${recipe.likesCount}"></span>
@@ -461,18 +463,20 @@ body {
 						<p class="text-muted">No hay comentarios aún para esta receta.</p>
 					</div>
 					<!-- Solo mostrar el botón de añadir comentario si el usuario no ha comentado aún -->
+					<div th:unless="${booleanCookCreate}">
 					<div th:unless="${booleanComment}">
 						<button type="button" class="btn btn-primary mt-3"
 							th:attr="data-bs-toggle='modal', data-bs-target='#commentModal', data-recipe-id=${recipe.id}">
 							<i class="fas fa-comment-dots"></i> Añadir Comentario
 						</button>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
 
-	<!-- Modal para responder al comentario -->
+	<!-- Modal para responder comentarios -->
 	<div class="modal fade" id="replyModal" tabindex="-1"
 		aria-labelledby="replyModalLabel" aria-hidden="true">
 		<div class="modal-dialog">
@@ -485,18 +489,13 @@ body {
 				</div>
 				<div class="modal-body">
 					<form action="/auth/cookweb/AddReply" method="post">
-						<input type="hidden" id="commentId" name="commentId" /> <input
-							type="hidden" id="recipeId" name="recipeId"
-							th:value="${recipe.id}" /> <input type="hidden"
-							id="cookCommentId" name="cookCommentId"
-							th:value="${userSession.id}" />
-						<div class="mb-3">
-							<label for="commentText" class="form-label">Escribe tu
-								comentario:</label>
-							<textarea class="form-control" id="description"
-								name="description" rows="3" required></textarea>
-						</div>
-						<button type="submit" class="btn btn-primary">Enviar
+						<input type="hidden" id="cookCommentId" name="cookCommentId"
+							th:value="${userSession.id}" /> <input type="hidden"
+							id="recipeIdReply" name="recipeId" /> <input type="hidden"
+							id="commentIdReply" name="commentId" />
+						<textarea class="form-control" id="replyDescription"
+							name="description" rows="3" required></textarea>
+						<button type="submit" class="btn btn-primary mt-3">Enviar
 							Respuesta</button>
 					</form>
 				</div>
@@ -517,27 +516,22 @@ body {
 				</div>
 				<div class="modal-body">
 					<form action="/auth/cookweb/AddComment" method="post">
-						<input type="hidden" id="recipeId" name="recipeId"
-							th:value="${recipe.id}" /> <input type="hidden"
-							id="cookCommentId" name="cookCommentId"
-							th:value="${userSession.id}" />
-						<div class="mb-3">
-							<label for="commentText" class="form-label">Escribe tu
-								comentario:</label>
-							<textarea class="form-control" id="description"
-								name="description" rows="3" required></textarea>
-						</div>
-						<div class="mb-3">
-							<label class="form-label">Valoración:</label>
-							<div class="star-punctuation" id="starpunctuation">
+						<input type="hidden" id="cookCommentId" name="cookCommentId"
+							th:value="${userSession.id}" /> <input type="hidden"
+							id="recipeIdComment" name="recipeId" />
+						<textarea class="form-control" id="commentDescription"
+							name="description" rows="3" required></textarea>
+						<div class="mt-3">
+							<label>Valoración:</label>
+							<div class="star-punctuation" id="commentStars">
 								<span class="star" data-value="1">★</span> <span class="star"
 									data-value="2">★</span> <span class="star" data-value="3">★</span>
 								<span class="star" data-value="4">★</span> <span class="star"
 									data-value="5">★</span>
 							</div>
-							<input type="hidden" name="punctuation" id="punctuation" />
+							<input type="hidden" id="commentPunctuation" name="punctuation" />
 						</div>
-						<button type="submit" class="btn btn-primary">Enviar
+						<button type="submit" class="btn btn-primary mt-3">Enviar
 							Comentario</button>
 					</form>
 				</div>
@@ -570,149 +564,71 @@ body {
 		src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 
 	<script>
-		// Escuchar el evento de apertura del modal
-		var commentModal = document.getElementById('commentModal');
-		commentModal.addEventListener('show.bs.modal', function(event) {
-			// Obtener el botón que abrió el modal
-			var button = event.relatedTarget;
+	document.addEventListener('DOMContentLoaded', function () {
+	    // Escuchar eventos para el modal de comentarios
+	    initializeModal('commentModal', 'recipeIdComment', 'commentStars', 'commentPunctuation');
+	    // Escuchar eventos para el modal de respuestas
+	    initializeModal('replyModal', 'recipeIdReply', 'replyStars', 'replyPunctuation', 'commentIdReply');
+	});
 
-			// Obtener el ID de la receta del atributo data-recipe-id
-			var recipeId = button.getAttribute('data-recipe-id');
+	function initializeModal(modalId, recipeInputId, starsContainerId, punctuationInputId, commentInputId = null) {
+	    const modal = document.getElementById(modalId);
+	    if (!modal) {
+	        console.error(`Modal con ID '${modalId}' no encontrado`);
+	        return;
+	    }
 
-			// Establecer el ID de la receta en el campo oculto del modal
-			var recipeIdInput = commentModal.querySelector('#id');
-			recipeIdInput.value = recipeId;
+	    modal.addEventListener('show.bs.modal', function (event) {
+	        const button = event.relatedTarget;
+	        if (!button) {
+	            console.error('Botón que activó el modal no encontrado');
+	            return;
+	        }
 
-			// Resetear la valoración al abrir el modal
-			resetStarpunctuation();
-		});
+	        const recipeId = button.getAttribute('data-recipe-id');
+	        const recipeInput = modal.querySelector(`#${recipeInputId}`);
+	        if (recipeInput) recipeInput.value = recipeId;
 
-		// Manejo de la valoración por estrellas dentro del modal
-		commentModal.addEventListener('click', function(event) {
-			if (event.target.classList.contains('star')) {
-				var punctuationValue = event.target.getAttribute('data-value');
-				setStarpunctuation(punctuationValue);
-			}
-		});
+	        if (commentInputId) {
+	            const commentId = button.getAttribute('data-comment-id');
+	            const commentInput = modal.querySelector(`#${commentInputId}`);
+	            if (commentInput) commentInput.value = commentId;
+	        }
 
-		// Establecer la valoración seleccionada
-		function setStarpunctuation(punctuation) {
-			// Establecer la valoración en el campo oculto
-			document.getElementById('punctuation').value = punctuation;
+	        resetStars(modal, starsContainerId, punctuationInputId);
+	    });
 
-			// Obtener todas las estrellas dentro del modal
-			var stars = commentModal.querySelectorAll('.star');
+	    modal.addEventListener('click', function (event) {
+	        if (event.target.classList.contains('star')) {
+	            const punctuation = event.target.getAttribute('data-value');
+	            updateStars(modal, starsContainerId, punctuationInputId, punctuation);
+	        }
+	    });
+	}
 
-			// Resetear las clases de selección en todas las estrellas
-			stars.forEach(function(star) {
-				star.classList.remove('selected');
-			});
+	function resetStars(modal, starsContainerId, punctuationInputId) {
+	    const starsContainer = modal.querySelector(`#${starsContainerId}`);
+	    const punctuationInput = modal.querySelector(`#${punctuationInputId}`);
 
-			// Añadir la clase de selección a las estrellas seleccionadas
-			for (let i = 0; i < punctuation; i++) {
-				stars[i].classList.add('selected');
-			}
-		}
+	    if (punctuationInput) punctuationInput.value = 0;
+	    if (starsContainer) {
+	        starsContainer.querySelectorAll('.star').forEach(star => star.classList.remove('selected'));
+	    }
+	}
 
-		// Resetear la valoración al abrir el modal
-		function resetStarpunctuation() {
-			// Resetear el valor oculto de la valoración
-			document.getElementById('punctuation').value = 0;
+	function updateStars(modal, starsContainerId, punctuationInputId, punctuation) {
+	    const starsContainer = modal.querySelector(`#${starsContainerId}`);
+	    const punctuationInput = modal.querySelector(`#${punctuationInputId}`);
 
-			// Obtener todas las estrellas dentro del modal
-			var stars = commentModal.querySelectorAll('.star');
-
-			// Resetear las clases de selección en todas las estrellas
-			stars.forEach(function(star) {
-				star.classList.remove('selected');
-			});
-		}
-		
-		// Establecer la valoración seleccionada en el modal de edición
-		function setStarpunctuationEdit(punctuation) {
-			// Establecer la valoración en el campo oculto
-			document.getElementById('punctuationEdit').value = punctuation;
-
-			// Obtener todas las estrellas dentro del modal de edición
-			var stars = editCommentModal.querySelectorAll('.star');
-
-			// Resetear las clases de selección en todas las estrellas
-			stars.forEach(function(star) {
-				star.classList.remove('selected');
-			});
-
-			// Añadir la clase de selección a las estrellas seleccionadas
-			for (let i = 0; i < punctuation; i++) {
-				stars[i].classList.add('selected');
-			}
-		}
-		document.addEventListener('DOMContentLoaded', function() {
-		    const buttons = document.querySelectorAll('.btn-secondary[data-bs-toggle="modal"]');
-		    console.log('Botones encontrados:', buttons);
-
-		    if (buttons.length > 0) {
-		        buttons.forEach(button => {
-		            console.log('Botón:', button);
-		            button.addEventListener('click', function() {
-		                var recipeId = this.getAttribute('data-recipe-id');
-		                var commentId = this.getAttribute('data-comment-id');
-		                
-		                console.log('Recipe ID:', recipeId);
-		                console.log('Comment ID:', commentId);
-
-		                // Asignar los valores a los campos del modal
-		                document.getElementById('recipeId').value = recipeId;
-		                document.getElementById('commentId').value = commentId;
-		            });
-		        });
-		    } else {
-		        console.log('No se encontraron los botones');
-		    }
-		});
-		// Escuchar el evento de apertura del modal de respuesta
-		var replyModal = document.getElementById('replyModal');
-		replyModal.addEventListener('show.bs.modal', function(event) {
-		    // Obtener el botón que abrió el modal
-		    var button = event.relatedTarget;
-
-		    // Obtener el ID de la receta del atributo data-recipe-id
-		    var recipeId = button.getAttribute('data-recipe-id');
-		    var commentId = button.getAttribute('data-comment-id');
-
-		    // Establecer los valores en los campos ocultos
-		    document.getElementById('recipeId').value = recipeId;
-		    document.getElementById('commentId').value = commentId;
-
-		    // Resetear la valoración al abrir el modal
-		    resetStarpunctuation(replyModal);
-		});
-
-		// Manejo de la valoración por estrellas dentro del modal de respuesta
-		replyModal.addEventListener('click', function(event) {
-		    if (event.target.classList.contains('star')) {
-		        var punctuationValue = event.target.getAttribute('data-value');
-		        setStarpunctuation(replyModal, punctuationValue);
-		    }
-		});
-
-		// Establecer la valoración seleccionada para el modal de respuesta
-		function setStarpunctuation(modal, punctuation) {
-		    // Establecer la valoración en el campo oculto
-		    modal.querySelector('#punctuation').value = punctuation;
-
-		    // Obtener todas las estrellas dentro del modal
-		    var stars = modal.querySelectorAll('.star');
-
-		    // Resetear las clases de selección en todas las estrellas
-		    stars.forEach(function(star) {
-		        star.classList.remove('selected');
-		    });
-
-		    // Añadir la clase de selección a las estrellas seleccionadas
-		    for (let i = 0; i < punctuation; i++) {
-		        stars[i].classList.add('selected');
-		    }
-		}
+	    if (punctuationInput) punctuationInput.value = punctuation;
+	    if (starsContainer) {
+	        const stars = starsContainer.querySelectorAll('.star');
+	        stars.forEach(star => star.classList.remove('selected'));
+	        for (let i = 0; i < punctuation; i++) {
+	            stars[i]?.classList.add('selected');
+	        }
+	    }
+	}
 		</script>
 </body>
 </html>

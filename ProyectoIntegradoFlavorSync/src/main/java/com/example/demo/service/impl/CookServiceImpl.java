@@ -316,4 +316,14 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 		return true;
 	}
 
+	@Override
+	public boolean booleanCookCreate(cookModel c, recipeModel r) {
+		// TODO Auto-generated method stub
+		boolean f = false;
+		for(recipeModel rm :c.getListRecipes()) {
+			if(rm.getId()==r.getId())
+				f=true;
+		}
+		return f;
+	}
 }

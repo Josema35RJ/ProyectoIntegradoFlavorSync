@@ -143,6 +143,7 @@ public class CookController {
 				"data:image/jpeg;base64," + Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
 		model.addAttribute("listImagesRecipe", listImagesRecipe);
 		model.addAttribute("userSession", c);
+		model.addAttribute("booleanCookCreate", cookService.booleanCookCreate(c, r)); //Probar a comparar por id
 		model.addAttribute("recipe", r);
 		return RECIPE_VIEW; // Asegúrate de que LOGIN_VIEW sea el nombre correcto de la vista de login
 	}
@@ -390,7 +391,7 @@ public class CookController {
 		}
 		String email = tokenService.getEmailFromToken(token);
 		// Validate the token
-		if (tokenService.isTokenValid(token)) {
+		if (!tokenService.isTokenValid(token)) {
 			flash.addFlashAttribute("error", "Token inválido o expirado.");
 			return "redirect:/auth/login"; // Redirect to login or another appropriate page
 		}
@@ -399,7 +400,7 @@ public class CookController {
 																					// UserService
 		tokenService.cleanupExpiredTokens();
 		flash.addFlashAttribute("success", "¡Contraseña actualizada exitosamente!");
-		return "redirect:/auth/login"; // Redirect to login after successful password update
+		return "/auth/login"; // Redirect to login after successful password update
 	}
 
 	@GetMapping("/resetPassword/{token}")

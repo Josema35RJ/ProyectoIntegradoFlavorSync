@@ -68,9 +68,10 @@ public class CommentServiceImpl implements CommentService {
 
 		// Calcular el nuevo promedio de puntuación
 		int validCommentCount = validComments.size();
-		double updatedAverageRating = ((recipe.getAverageRating() + comment.getPunctuation())
-				/ validCommentCount);
-
+		if(validCommentCount==0)
+			validCommentCount=+1;
+		double updatedAverageRating = (recipe.getAverageRating() + comment.getPunctuation())
+				/ validCommentCount;
 		recipe.setAverageRating((float)updatedAverageRating);
 
 		// Agregar el nuevo comentario a la receta

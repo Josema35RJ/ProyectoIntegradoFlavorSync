@@ -14,8 +14,9 @@ import com.example.demo.entity.PasswordResetToken;
 public interface PasswordResetTokenRepository extends JpaRepository<PasswordResetToken, Long> {
     PasswordResetToken findByToken(String token);
     void deleteByUserEmail(String email);
+
     @Modifying
-    @Query("DELETE FROM PasswordResetToken t WHERE t.expirationTime < :now")
-    void deleteExpiredTokens(@Param("now") LocalDateTime now);
+    @Query("DELETE FROM PasswordResetToken t WHERE t.expirationTime <= :expirationTime")
+    void deleteByExpirationTime(@Param("expirationTime") LocalDateTime expirationTime);
     PasswordResetToken findByUserEmail(String email);
 }
