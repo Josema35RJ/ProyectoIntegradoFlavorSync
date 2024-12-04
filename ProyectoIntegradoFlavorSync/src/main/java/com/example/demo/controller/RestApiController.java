@@ -27,6 +27,7 @@ import com.example.demo.model.recipeModel;
 import com.example.demo.service.CookService;
 import com.example.demo.service.CulinaryTechniquesService;
 import com.example.demo.service.RecipeService;
+import com.example.demo.service.impl.TokenServiceImpl;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -39,6 +40,9 @@ public class RestApiController {
 
 	@Autowired
 	private RecipeService recipeService;
+
+	@Autowired
+	private TokenServiceImpl tokenService;
 
 	@Autowired
 	private CulinaryTechniquesService culinaryTechniquesService;
@@ -116,30 +120,30 @@ public class RestApiController {
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 	}
-	
+
 	@PostMapping("/api/auth/cookapp/Cook")
 	public ResponseEntity<?> getCookData(@RequestBody Map<String, Integer> request) {
-	    Map<String, Object> response = new HashMap<>();
-	    try {
-	        int id = request.get("id"); // Obtener el 'id' del cuerpo
-	        cookModel cook = cookService.findById(id);
+		Map<String, Object> response = new HashMap<>();
+		try {
+			int id = request.get("id"); // Obtener el 'id' del cuerpo
+			cookModel cook = cookService.findById(id);
 
-	        if (cook != null) {
-	            response.put("success", true);
-	            response.put("data", cook);
-	            response.put("message", "Cook obtenido con éxito");
-	            return new ResponseEntity<>(response, HttpStatus.OK);
-	        } else {
-	            response.put("success", false);
-	            response.put("message", "Cook no encontrado");
-	            return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
-	        }
+			if (cook != null) {
+				response.put("success", true);
+				response.put("data", cook);
+				response.put("message", "Cook obtenido con éxito");
+				return new ResponseEntity<>(response, HttpStatus.OK);
+			} else {
+				response.put("success", false);
+				response.put("message", "Cook no encontrado");
+				return new ResponseEntity<>(response, HttpStatus.NOT_FOUND);
+			}
 
-	    } catch (Exception e) {
-	        response.put("success", false);
-	        response.put("message", "Error: " + e.getMessage());
-	        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-	    }
+		} catch (Exception e) {
+			response.put("success", false);
+			response.put("message", "Error: " + e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@PostMapping("/api/register")
@@ -147,6 +151,15 @@ public class RestApiController {
 		Map<String, Object> response = new HashMap<>();
 		try {
 			cookService.registrar(cook);
+			// Registrar el cocinero con estado "no verificado"
+			cook.setConfirm_email(false); // Indica que el correo aún no ha sido verificado
+
+			// Generar token de verificación
+			String token = tokenService.generateToken(cook.getUsername()); // Genera el token usando el email
+			tokenService.saveTokenToDatabase(token, cook.getUsername()); // Guarda el token en la base de datos
+
+			// Enviar correo de verificación
+			String verificationLink = "https://proyectointegradoflavorsync.onrender.com/verify-email/" + token;
 			response.put("success", true);
 			response.put("message", "Usuario registrado con exito");
 			return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -157,6 +170,48 @@ public class RestApiController {
 		} catch (Exception e) {
 			response.put("success", false);
 			response.put("message", "Error al registrar el usuario: " + e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
+
+	@PostMapping("/api/cookweb/addRecipe")
+	public ResponseEntity<?> saveRecipe(@RequestBody Map<String, Integer> request, @RequestBody recipeModel r) {
+		Map<String, Object> response = new HashMap<>();
+		try {
+			int id = request.get("id"); // Obtener el 'id' del cuerpo
+			cookModel cook = cookService.findById(id);
+			recipeService.addRecipe(r, cook);
+			response.put("success", true);
+			response.put("message", "Receta creada con exito");
+			return new ResponseEntity<>(response, HttpStatus.CREATED);
+		} catch (IllegalArgumentException e) {
+			response.put("success", false);
+			response.put("message", e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			response.put("success", false);
+			response.put("message", "Error al crear receta: " + e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+	}
+	
+	@PostMapping("/api/cookweb/updateRecipe")
+	public ResponseEntity<?> updateRecipe(@RequestBody Map<String, Integer> request, @RequestBody recipeModel r) {
+		Map<String, Object> response = new HashMap<>();
+		try {
+			recipeService.updateRecipe(r.getId(), r);
+			response.put("success", true);
+			response.put("message", "Receta creada con exito");
+			return new ResponseEntity<>(response, HttpStatus.CREATED);
+		} catch (IllegalArgumentException e) {
+			response.put("success", false);
+			response.put("message", e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			response.put("success", false);
+			response.put("message", "Error al crear receta: " + e.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
