@@ -27,10 +27,12 @@ import com.example.demo.model.recipeModel;
 import com.example.demo.service.CookService;
 import com.example.demo.service.CulinaryTechniquesService;
 import com.example.demo.service.RecipeService;
+import com.example.demo.service.impl.EmailServiceImpl;
 import com.example.demo.service.impl.TokenServiceImpl;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import jakarta.mail.MessagingException;
 
 @RestController
 public class RestApiController {
@@ -43,6 +45,9 @@ public class RestApiController {
 
 	@Autowired
 	private TokenServiceImpl tokenService;
+
+	@Autowired
+	private EmailServiceImpl emailService;
 
 	@Autowired
 	private CulinaryTechniquesService culinaryTechniquesService;
@@ -160,6 +165,8 @@ public class RestApiController {
 
 			// Enviar correo de verificación
 			String verificationLink = "https://proyectointegradoflavorsync.onrender.com/verify-email/" + token;
+			emailService.sendVerificationEmail(cook.getUsername(), verificationLink,
+					"Verificación de correo electrónico");
 			response.put("success", true);
 			response.put("message", "Usuario registrado con exito");
 			return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -196,7 +203,7 @@ public class RestApiController {
 		}
 
 	}
-	
+
 	@PostMapping("/api/cookweb/updateRecipe")
 	public ResponseEntity<?> updateRecipe(@RequestBody Map<String, Integer> request, @RequestBody recipeModel r) {
 		Map<String, Object> response = new HashMap<>();
@@ -214,7 +221,6 @@ public class RestApiController {
 			response.put("message", "Error al crear receta: " + e.getMessage());
 			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
-
 	}
 
 	private boolean isValidEmailAddress(String email) {
