@@ -45,7 +45,7 @@ public class RestApiController {
 
 	@Autowired
 	private TokenServiceImpl tokenService;
-
+	
 	@Autowired
 	private EmailServiceImpl emailService;
 
@@ -165,8 +165,7 @@ public class RestApiController {
 
 			// Enviar correo de verificación
 			String verificationLink = "https://proyectointegradoflavorsync.onrender.com/verify-email/" + token;
-			emailService.sendVerificationEmail(cook.getUsername(), verificationLink,
-					"Verificación de correo electrónico");
+		    emailService.sendVerificationEmail(cook.getUsername(), verificationLink, "Verificación de correo electrónico");
 			response.put("success", true);
 			response.put("message", "Usuario registrado con exito");
 			return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -203,7 +202,7 @@ public class RestApiController {
 		}
 
 	}
-
+	
 	@PostMapping("/api/cookweb/updateRecipe")
 	public ResponseEntity<?> updateRecipe(@RequestBody Map<String, Integer> request, @RequestBody recipeModel r) {
 		Map<String, Object> response = new HashMap<>();
