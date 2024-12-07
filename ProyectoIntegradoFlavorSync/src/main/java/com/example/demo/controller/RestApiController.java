@@ -180,7 +180,7 @@ public class RestApiController {
 
 	}
 	
-	@PostMapping("/api/cookapp/updateCook")
+	@PostMapping("/api/auth/cookapp/updateCook")
 	public ResponseEntity<?> updateCook(@RequestBody cookModel c) {
 	    // Inicializar la respuesta como un mapa
 	    Map<String, Object> response = new HashMap<>();
