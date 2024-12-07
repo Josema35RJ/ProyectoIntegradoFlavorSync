@@ -210,25 +210,31 @@ public class RestApiController {
 	    }
 	}
 
-	
 	@PostMapping("/api/cookweb/updateRecipe")
-	public ResponseEntity<?> updateRecipe(@RequestBody Map<String, Integer> request, @RequestBody recipeModel r) {
-		Map<String, Object> response = new HashMap<>();
-		try {
-			recipeService.updateRecipe(r.getId(), r);
-			response.put("success", true);
-			response.put("message", "Receta creada con exito");
-			return new ResponseEntity<>(response, HttpStatus.CREATED);
-		} catch (IllegalArgumentException e) {
-			response.put("success", false);
-			response.put("message", e.getMessage());
-			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-		} catch (Exception e) {
-			response.put("success", false);
-			response.put("message", "Error al crear receta: " + e.getMessage());
-			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+	public ResponseEntity<?> updateRecipe(@RequestBody recipeModel r) {
+	    // Inicializar la respuesta como un mapa
+	    Map<String, Object> response = new HashMap<>();
+	    try {
+	        // Actualizar la receta usando el ID de la receta y el objeto recipeModel
+	        recipeService.updateRecipe(r.getId(), r);
+
+	        // Respuesta exitosa
+	        response.put("success", true);
+	        response.put("message", "Receta actualizada con éxito");
+	        return new ResponseEntity<>(response, HttpStatus.OK); // Cambiar a OK en lugar de CREATED
+	    } catch (IllegalArgumentException e) {
+	        // Respuesta en caso de argumentos inválidos
+	        response.put("success", false);
+	        response.put("message", e.getMessage());
+	        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	    } catch (Exception e) {
+	        // Respuesta en caso de errores inesperados
+	        response.put("success", false);
+	        response.put("message", "Error al actualizar la receta: " + e.getMessage());
+	        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
 	}
+
 
 	private boolean isValidEmailAddress(String email) {
 		// Expresión regular para verificar el formato de un correo electrónico
