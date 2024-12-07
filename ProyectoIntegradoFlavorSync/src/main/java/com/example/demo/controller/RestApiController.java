@@ -180,7 +180,7 @@ public class RestApiController {
 
 	}
 	
-	@PostMapping("/api/cookweb/updateCook")
+	@PostMapping("/api/cookapp/updateCook")
 	public ResponseEntity<?> updateCook(@RequestBody cookModel c) {
 	    // Inicializar la respuesta como un mapa
 	    Map<String, Object> response = new HashMap<>();
@@ -205,7 +205,7 @@ public class RestApiController {
 	}
 
 
-	@PostMapping("/api/cookweb/addRecipe")
+	@PostMapping("/api/cookapp/addRecipe")
 	public ResponseEntity<?> saveRecipe(@RequestBody Map<String, Object> request) {
 	    Map<String, Object> response = new HashMap<>();
 	    try {
@@ -235,7 +235,7 @@ public class RestApiController {
 	    }
 	}
 
-	@PostMapping("/api/cookweb/updateRecipe")
+	@PostMapping("/api/cookapp/updateRecipe")
 	public ResponseEntity<?> updateRecipe(@RequestBody recipeModel r) {
 	    // Inicializar la respuesta como un mapa
 	    Map<String, Object> response = new HashMap<>();
