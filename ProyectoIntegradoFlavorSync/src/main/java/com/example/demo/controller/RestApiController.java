@@ -179,6 +179,31 @@ public class RestApiController {
 		}
 
 	}
+	
+	@PostMapping("/api/cookweb/updateCook")
+	public ResponseEntity<?> updateCook(@RequestBody cookModel c) {
+	    // Inicializar la respuesta como un mapa
+	    Map<String, Object> response = new HashMap<>();
+	    try {
+	        // Actualizar la receta usando el ID de la receta y el objeto recipeModel
+	        cookService.updateCook(c);
+	        // Respuesta exitosa
+	        response.put("success", true);
+	        response.put("message", "Cocinero actualizado con éxito");
+	        return new ResponseEntity<>(response, HttpStatus.OK); // Cambiar a OK en lugar de CREATED
+	    } catch (IllegalArgumentException e) {
+	        // Respuesta en caso de argumentos inválidos
+	        response.put("success", false);
+	        response.put("message", e.getMessage());
+	        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	    } catch (Exception e) {
+	        // Respuesta en caso de errores inesperados
+	        response.put("success", false);
+	        response.put("message", "Error al actualizar el cocinero: " + e.getMessage());
+	        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	}
+
 
 	@PostMapping("/api/cookweb/addRecipe")
 	public ResponseEntity<?> saveRecipe(@RequestBody Map<String, Object> request) {
