@@ -173,6 +173,32 @@ public class recipeModel {
 		this.city = city;
 		this.createDate = LocalDate.now();
 	}
+	
+	public recipeModel(Integer id, String name, int diners, float preparationTime, List<String> whereItisDone,
+			List<String> category, List<String> listkitchenUtensils,
+			String instructions, String difficulty, List<String> allergensAndDietaryRestrictions,
+			nutritionalInformationModel nutritionalInformation, String grades, String history, String country, String city, byte[] imageRecipePerfil, List<byte[]> imagesRecipe) {
+		super();
+		this.id = id;
+		this.name = name;
+		this.diners = diners;
+		this.preparationTime = preparationTime;
+		this.whereItisDone = whereItisDone;
+		this.category = category;
+		this.listkitchenUtensils = listkitchenUtensils;
+		this.instructions = instructions;
+		this.difficulty = difficulty;
+		AllergensAndDietaryRestrictions = allergensAndDietaryRestrictions;
+		this.nutritionalInformation = nutritionalInformation;
+		this.grades = grades;
+		History = history;
+		Country = country;
+		this.city = city;
+		this.imageRecipePerfil = imageRecipePerfil;
+		this.imagesRecipe = imagesRecipe;
+		this.createDate = LocalDate.now();
+	}
+
 
 	public recipeModel() {
 		// TODO Auto-generated constructor stub
