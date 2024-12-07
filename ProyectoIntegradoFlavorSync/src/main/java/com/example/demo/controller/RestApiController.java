@@ -17,7 +17,6 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -29,10 +28,10 @@ import com.example.demo.service.CulinaryTechniquesService;
 import com.example.demo.service.RecipeService;
 import com.example.demo.service.impl.EmailServiceImpl;
 import com.example.demo.service.impl.TokenServiceImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
-import jakarta.mail.MessagingException;
 
 @RestController
 public class RestApiController {
@@ -182,26 +181,35 @@ public class RestApiController {
 	}
 
 	@PostMapping("/api/cookweb/addRecipe")
-	public ResponseEntity<?> saveRecipe(@RequestBody Map<String, Integer> request, @RequestBody recipeModel r) {
-		Map<String, Object> response = new HashMap<>();
-		try {
-			int id = request.get("id"); // Obtener el 'id' del cuerpo
-			cookModel cook = cookService.findById(id);
-			recipeService.addRecipe(r, cook);
-			response.put("success", true);
-			response.put("message", "Receta creada con exito");
-			return new ResponseEntity<>(response, HttpStatus.CREATED);
-		} catch (IllegalArgumentException e) {
-			response.put("success", false);
-			response.put("message", e.getMessage());
-			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-		} catch (Exception e) {
-			response.put("success", false);
-			response.put("message", "Error al crear receta: " + e.getMessage());
-			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+	public ResponseEntity<?> saveRecipe(@RequestBody Map<String, Object> request) {
+	    Map<String, Object> response = new HashMap<>();
+	    try {
+	        // Extraer el ID y la receta del JSON
+	        int id = (int) request.get("id");
+	        Map<String, Object> recipeData = (Map<String, Object>) request.get("recipe");
 
+	        // Convertir el mapa de datos de la receta al objeto recipeModel
+	        ObjectMapper mapper = new ObjectMapper();
+	        recipeModel r = mapper.convertValue(recipeData, recipeModel.class);
+
+	        // Buscar el cocinero y agregar la receta
+	        cookModel cook = cookService.findById(id);
+	        recipeService.addRecipe(r, cook);
+
+	        response.put("success", true);
+	        response.put("message", "Receta creada con éxito");
+	        return new ResponseEntity<>(response, HttpStatus.CREATED);
+	    } catch (IllegalArgumentException e) {
+	        response.put("success", false);
+	        response.put("message", e.getMessage());
+	        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+	    } catch (Exception e) {
+	        response.put("success", false);
+	        response.put("message", "Error al crear receta: " + e.getMessage());
+	        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
 	}
+
 	
 	@PostMapping("/api/cookweb/updateRecipe")
 	public ResponseEntity<?> updateRecipe(@RequestBody Map<String, Integer> request, @RequestBody recipeModel r) {
