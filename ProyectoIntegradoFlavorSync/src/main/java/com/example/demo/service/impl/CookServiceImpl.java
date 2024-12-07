@@ -311,10 +311,109 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 
 	@Override
 	public boolean updateCook(cookModel cook) {
-		// TODO Auto-generated method stub
-		 cookRepository.save(cookConverter.transform(cook));
-		return true;
+	    // Fetch the existing cook from the repository using the cook ID
+	    cookModel c = cookConverter.transform(cookRepository.findByid(cook.getId()));
+
+	    // Check each field and update if it's different
+	    boolean updated = false;
+
+	    if (!cook.getFirstName().equals(c.getFirstName())) {
+	        c.setFirstName(cook.getFirstName());
+	        updated = true;
+	    }
+	    if (!cook.getLastName().equals(c.getLastName())) {
+	        c.setLastName(cook.getLastName());
+	        updated = true;
+	    }
+	    if (!cook.getNickName().equals(c.getNickName())) {
+	        c.setNickName(cook.getNickName());
+	        updated = true;
+	    }
+	    if (!cook.getUsername().equals(c.getUsername())) {
+	        c.setUsername(cook.getUsername());
+	        updated = true;
+	    }
+	    if (!cook.getBirthDate().equals(c.getBirthDate())) {
+	        c.setBirthDate(cook.getBirthDate());
+	        updated = true;
+	    }
+	    if (!cook.getCity().equals(c.getCity())) {
+	        c.setCity(cook.getCity());
+	        updated = true;
+	    }
+	    if (!cook.getCountry().equals(c.getCountry())) {
+	        c.setCountry(cook.getCountry());
+	        updated = true;
+	    }
+	    if (!cook.getPassword().equals(c.getPassword())) {
+	        c.setPassword(cook.getPassword());
+	        updated = true;
+	    }
+	    if (cook.isEnabled() != c.isEnabled()) {
+	        c.setEnabled(cook.isEnabled());
+	        updated = true;
+	    }
+	    if (!cook.getListSpecialty().equals(c.getListSpecialty())) {
+	        c.setListSpecialty(cook.getListSpecialty());
+	        updated = true;
+	    }
+	    if (!cook.getListCulinaryTechniques().equals(c.getListCulinaryTechniques())) {
+	        c.setListCulinaryTechniques(cook.getListCulinaryTechniques());
+	        updated = true;
+	    }
+	    if (cook.getExperience() != c.getExperience()) {
+	        c.setExperience(cook.getExperience());
+	        updated = true;
+	    }
+	    if (!cook.getRole().equals(c.getRole())) {
+	        c.setRole(cook.getRole());
+	        updated = true;
+	    }
+	    if (cook.getPunctuation() != c.getPunctuation()) {
+	        c.setPunctuation(cook.getPunctuation());
+	        updated = true;
+	    }
+	    if (!cook.getListRecipes().equals(c.getListRecipes())) {
+	        c.setListRecipes(cook.getListRecipes());
+	        updated = true;
+	    }
+	    if (!cook.getListRecipesFavorites().equals(c.getListRecipesFavorites())) {
+	        c.setListRecipesFavorites(cook.getListRecipesFavorites());
+	        updated = true;
+	    }
+	    if (!java.util.Arrays.equals(cook.getImagePerfil(), c.getImagePerfil())) {
+	        c.setImagePerfil(cook.getImagePerfil());
+	        updated = true;
+	    }
+	    if (!cook.getImagesCook().equals(c.getImagesCook())) {
+	        c.setImagesCook(cook.getImagesCook());
+	        updated = true;
+	    }
+	    if (!cook.getCreateDate().equals(c.getCreateDate())) {
+	        c.setCreateDate(cook.getCreateDate());
+	        updated = true;
+	    }
+	    if (!cook.getUpdateDate().equals(c.getUpdateDate())) {
+	        c.setUpdateDate(cook.getUpdateDate());
+	        updated = true;
+	    }
+	    if (!cook.getToken().equals(c.getToken())) {
+	        c.setToken(cook.getToken());
+	        updated = true;
+	    }
+	    if (!cook.getLikedRecipes().equals(c.getLikedRecipes())) {
+	        c.setLikedRecipes(cook.getLikedRecipes());
+	        updated = true;
+	    }
+
+	    // If any field was updated, save the changes to the repository
+	    if (updated) {
+	        cookRepository.save(cookConverter.transform(c));
+	    }
+
+	    return updated; // Return whether the cook was updated
 	}
+
 
 	@Override
 	public boolean booleanCookCreate(cookModel c, recipeModel r) {
