@@ -59,111 +59,113 @@ public class RecipeServiceImpl implements RecipeService {
 	}
 
 	@Override
-	public boolean updateRecipe(int id, recipeModel re) {
-		// Buscar la receta existente en el repositorio
-		recipeModel recipeOld = recipeConverter.transform(recipeRepository.findById(id));
+	public boolean updateRecipe(recipeModel re) {
+	    // Buscar la receta existente en el repositorio
+	    recipeModel recipeOld = recipeConverter.transform(recipeRepository.findById(re.getId()).get());
 
-		if (recipeOld.toString().isEmpty()) {
-			// Si no se encuentra la receta, retornar false
-			return false;
-		}
-		// Actualizar nombre si es diferente
-		if (!re.getName().equalsIgnoreCase(recipeOld.getName())) {
-			recipeOld.setName(re.getName());
-		}
+	    if (recipeOld.toString().isEmpty()) {
+	        // Si no se encuentra la receta, retornar false
+	        return false;
+	    }
 
-		// Actualizar cantidad de comensales si es diferente
-		if (re.getDiners() != recipeOld.getDiners()) {
-			recipeOld.setDiners(re.getDiners());
-		}
+	    // Actualizar nombre si es diferente y no está vacío o nulo
+	    if (re.getName() != null && !re.getName().isEmpty() && !re.getName().equalsIgnoreCase(recipeOld.getName())) {
+	        recipeOld.setName(re.getName());
+	    }
 
-		// Actualizar tiempo de preparación si es diferente
-		if (re.getPreparationTime() != recipeOld.getPreparationTime()) {
-			recipeOld.setPreparationTime(re.getPreparationTime());
-		}
+	    // Actualizar cantidad de comensales si es diferente
+	    if (re.getDiners() > 0 && re.getDiners() != recipeOld.getDiners()) {
+	        recipeOld.setDiners(re.getDiners());
+	    }
 
-		// Actualizar lugar de elaboración si es diferente
-		if (!re.getWhereItisDone().equals(recipeOld.getWhereItisDone())) {
-			recipeOld.setWhereItisDone(re.getWhereItisDone());
-		}
+	    // Actualizar tiempo de preparación si es diferente
+	    if (re.getPreparationTime() > 0 && re.getPreparationTime() != recipeOld.getPreparationTime()) {
+	        recipeOld.setPreparationTime(re.getPreparationTime());
+	    }
 
-		// Actualizar categorías si son diferentes
-		if (!re.getCategory().equals(recipeOld.getCategory())) {
-			recipeOld.setCategory(re.getCategory());
-		}
+	    // Actualizar lugar de elaboración si es diferente y no está vacío o nulo
+	    if (re.getWhereItisDone() != null && !re.getWhereItisDone().isEmpty() && !re.getWhereItisDone().equals(recipeOld.getWhereItisDone())) {
+	        recipeOld.setWhereItisDone(re.getWhereItisDone());
+	    }
 
-		// Actualizar dificultad si es diferente
-		if (!re.getDifficulty().equalsIgnoreCase(recipeOld.getDifficulty())) {
-			recipeOld.setDifficulty(re.getDifficulty());
-		}
+	    // Actualizar categorías si son diferentes y no están vacías o nulas
+	    if (re.getCategory() != null && !re.getCategory().isEmpty() && !re.getCategory().equals(recipeOld.getCategory())) {
+	        recipeOld.setCategory(re.getCategory());
+	    }
 
-		// Actualizar las técnicas culinarias si son diferentes
-		if (!re.getListRecipeTechniques().equals(recipeOld.getListRecipeTechniques())) {
-			recipeOld.setListRecipeTechniques(re.getListRecipeTechniques());
-		}
+	    // Actualizar dificultad si es diferente y no está vacío o nulo
+	    if (re.getDifficulty() != null && !re.getDifficulty().isEmpty() && !re.getDifficulty().equalsIgnoreCase(recipeOld.getDifficulty())) {
+	        recipeOld.setDifficulty(re.getDifficulty());
+	    }
 
-		// Actualizar utensilios de cocina si son diferentes
-		if (!re.getListkitchenUtensils().equals(recipeOld.getListkitchenUtensils())) {
-			recipeOld.setListkitchenUtensils(re.getListkitchenUtensils());
-		}
+	    // Actualizar las técnicas culinarias si son diferentes y no están vacías o nulas
+	    if (re.getListRecipeTechniques() != null && !re.getListRecipeTechniques().equals(recipeOld.getListRecipeTechniques())) {
+	        recipeOld.setListRecipeTechniques(re.getListRecipeTechniques());
+	    }
 
-		// Actualizar restricciones alimentarias si son diferentes
-		if (!re.getAllergensAndDietaryRestrictions().equals(recipeOld.getAllergensAndDietaryRestrictions())) {
-			recipeOld.setAllergensAndDietaryRestrictions(re.getAllergensAndDietaryRestrictions());
-		}
+	    // Actualizar utensilios de cocina si son diferentes y no están vacíos o nulos
+	    if (re.getListkitchenUtensils() != null && !re.getListkitchenUtensils().equals(recipeOld.getListkitchenUtensils())) {
+	        recipeOld.setListkitchenUtensils(re.getListkitchenUtensils());
+	    }
 
-		// Actualizar la información nutricional si es diferente
-		if (re.getNutritionalInformation() != null
-				&& !re.getNutritionalInformation().equals(recipeOld.getNutritionalInformation())) {
-			recipeOld.setNutritionalInformation(re.getNutritionalInformation());
-		}
+	    // Actualizar restricciones alimentarias si son diferentes y no están vacías o nulas
+	    if (re.getAllergensAndDietaryRestrictions() != null && !re.getAllergensAndDietaryRestrictions().equals(recipeOld.getAllergensAndDietaryRestrictions())) {
+	        recipeOld.setAllergensAndDietaryRestrictions(re.getAllergensAndDietaryRestrictions());
+	    }
 
-		// Actualizar las instrucciones si son diferentes
-		if (!re.getInstructions().equals(recipeOld.getInstructions())) {
-			recipeOld.setInstructions(re.getInstructions());
-		}
+	    // Actualizar la información nutricional si es diferente y no es nula
+	    if (re.getNutritionalInformation() != null && !re.getNutritionalInformation().equals(recipeOld.getNutritionalInformation())) {
+	        recipeOld.setNutritionalInformation(re.getNutritionalInformation());
+	    }
 
-		// Actualizar los ingredientes si son diferentes
-		if (!re.getIngredients().equals(recipeOld.getIngredients())) {
-			recipeOld.setIngredients(re.getIngredients());
-		}
+	    // Actualizar las instrucciones si son diferentes y no están vacías o nulas
+	    if (re.getInstructions() != null && !re.getInstructions().isEmpty() && !re.getInstructions().equals(recipeOld.getInstructions())) {
+	        recipeOld.setInstructions(re.getInstructions());
+	    }
 
-		// Actualizar las imágenes si son diferentes
-		if (!re.getImagesRecipe().equals(recipeOld.getImagesRecipe())) {
-			recipeOld.setImagesRecipe(re.getImagesRecipe());
-		}
+	    // Actualizar los ingredientes si son diferentes y no están vacíos o nulos
+	    if (re.getIngredients() != null && !re.getIngredients().isEmpty() && !re.getIngredients().equals(recipeOld.getIngredients())) {
+	        recipeOld.setIngredients(re.getIngredients());
+	    }
 
-		// Actualizar la imagen de perfil si es diferente
-		if (re.getImageRecipePerfil() != null
-				&& !Arrays.equals(re.getImageRecipePerfil(), recipeOld.getImageRecipePerfil())) {
-			recipeOld.setImageRecipePerfil(re.getImageRecipePerfil());
-		}
+	    // Actualizar las imágenes si son diferentes y no están vacías o nulas
+	    if (re.getImagesRecipe() != null && !re.getImagesRecipe().equals(recipeOld.getImagesRecipe())) {
+	        recipeOld.setImagesRecipe(re.getImagesRecipe());
+	    }
 
-		// Actualizar el historial si es diferente
-		if (!re.getHistory().equals(recipeOld.getHistory())) {
-			recipeOld.setHistory(re.getHistory());
-		}
+	    // Actualizar la imagen de perfil si es diferente y no es nula
+	    if (re.getImageRecipePerfil() != null && !Arrays.equals(re.getImageRecipePerfil(), recipeOld.getImageRecipePerfil())) {
+	        recipeOld.setImageRecipePerfil(re.getImageRecipePerfil());
+	    }
 
-		// Actualizar las observaciones (grades) si son diferentes
-		if (!re.getGrades().equals(recipeOld.getGrades())) {
-			recipeOld.setGrades(re.getGrades());
-		}
+	    // Actualizar el historial si es diferente y no está vacío o nulo
+	    if (re.getHistory() != null && !re.getHistory().isEmpty() && !re.getHistory().equals(recipeOld.getHistory())) {
+	        recipeOld.setHistory(re.getHistory());
+	    }
 
-		// Actualizar país si es diferente
-		if (!re.getCountry().equalsIgnoreCase(recipeOld.getCountry())) {
-			recipeOld.setCountry(re.getCountry());
-		}
+	    // Actualizar las observaciones (grades) si son diferentes y no están vacías o nulas
+	    if (re.getGrades() != null && !re.getGrades().equals(recipeOld.getGrades())) {
+	        recipeOld.setGrades(re.getGrades());
+	    }
 
-		// Actualizar ciudad si es diferente
-		if (!re.getCity().equalsIgnoreCase(recipeOld.getCity())) {
-			recipeOld.setCity(re.getCity());
-		}
-		// Actualizar la fecha de actualización
-		recipeOld.setUpdateDate(LocalDate.now());
-		// Guardar la receta actualizada en el repositorio
-		recipeRepository.save(recipeConverter.transform(recipeOld));
-		return true;
+	    // Actualizar país si es diferente y no está vacío o nulo
+	    if (re.getCountry() != null && !re.getCountry().isEmpty() && !re.getCountry().equalsIgnoreCase(recipeOld.getCountry())) {
+	        recipeOld.setCountry(re.getCountry());
+	    }
+
+	    // Actualizar ciudad si es diferente y no está vacío o nulo
+	    if (re.getCity() != null && !re.getCity().isEmpty() && !re.getCity().equalsIgnoreCase(recipeOld.getCity())) {
+	        recipeOld.setCity(re.getCity());
+	    }
+
+	    // Actualizar la fecha de actualización
+	    recipeOld.setUpdateDate(LocalDate.now());
+
+	    // Guardar la receta actualizada en el repositorio
+	    recipeRepository.save(recipeConverter.transform(recipeOld));
+	    return true;
 	}
+
 
 	@Override
 	public boolean updateRecipe(int id, recipeModel re, String imagenPerfilRecipe, String[] ImagesBase64) {

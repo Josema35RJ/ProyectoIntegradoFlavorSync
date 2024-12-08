@@ -13,7 +13,7 @@ public interface RecipeService {
 
 	boolean updateRecipe(int id, recipeModel re, String imagenPerfilRecipe, String[] ImagesBase64);
 	
-	boolean updateRecipe(int id, recipeModel re);
+	boolean updateRecipe( recipeModel re);
 
 	boolean deleteRecipe(int id);
 

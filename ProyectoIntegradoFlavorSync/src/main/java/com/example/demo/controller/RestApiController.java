@@ -241,8 +241,7 @@ public class RestApiController {
 	    Map<String, Object> response = new HashMap<>();
 	    try {
 	        // Actualizar la receta usando el ID de la receta y el objeto recipeModel
-	        recipeService.updateRecipe(r.getId(), r);
-
+	        recipeService.updateRecipe(r);
 	        // Respuesta exitosa
 	        response.put("success", true);
 	        response.put("message", "Receta actualizada con éxito");
