@@ -4,8 +4,8 @@ albertoChicote@gmail.com clave: Alberto31.
 
 josemanuel.jmrjn@gmail.com clave: Jose31.
 
-argui@gmail.com clave: argui38.
+josemanuelreyesjimenez13@gmail.com clave: Joaquin31.
 
  Conexion de base datos:
 
- url: x  puerto User:  password : 
+ host:bsuexkv4comakgunf0yb-mysql.services.clever-cloud.com  puerto:3306 User:ub4kveobsf0rlq3e  password : IEuniqNVFleW5NtZBjZy
