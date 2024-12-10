@@ -63,11 +63,6 @@ public class RecipeServiceImpl implements RecipeService {
 	    // Buscar la receta existente en el repositorio
 	    recipeModel recipeOld = recipeConverter.transform(recipeRepository.findById(re.getId()).get());
 
-	    if (recipeOld.toString().isEmpty()) {
-	        // Si no se encuentra la receta, retornar false
-	        return false;
-	    }
-
 	    // Actualizar nombre si es diferente y no está vacío o nulo
 	    if (re.getName() != null && !re.getName().isEmpty() && !re.getName().equalsIgnoreCase(recipeOld.getName())) {
 	        recipeOld.setName(re.getName());
