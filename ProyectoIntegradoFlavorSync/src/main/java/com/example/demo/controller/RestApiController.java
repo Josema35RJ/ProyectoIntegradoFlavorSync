@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.demo.model.cookModel;
 import com.example.demo.model.culinaryTechniquesModel;
 import com.example.demo.model.recipeModel;
+import com.example.demo.security.CustomUserDetails;
 import com.example.demo.service.CookService;
 import com.example.demo.service.CulinaryTechniquesService;
 import com.example.demo.service.RecipeService;
@@ -44,7 +45,7 @@ public class RestApiController {
 
 	@Autowired
 	private TokenServiceImpl tokenService;
-	
+
 	@Autowired
 	private EmailServiceImpl emailService;
 
@@ -164,7 +165,8 @@ public class RestApiController {
 
 			// Enviar correo de verificación
 			String verificationLink = "https://proyectointegradoflavorsync.onrender.com/verify-email/" + token;
-		    emailService.sendVerificationEmail(cook.getUsername(), verificationLink, "Verificación de correo electrónico");
+			emailService.sendVerificationEmail(cook.getUsername(), verificationLink,
+					"Verificación de correo electrónico");
 			response.put("success", true);
 			response.put("message", "Usuario registrado con exito");
 			return new ResponseEntity<>(response, HttpStatus.CREATED);
@@ -179,86 +181,111 @@ public class RestApiController {
 		}
 
 	}
-	
+
 	@PostMapping("/api/auth/cookapp/updateCook")
 	public ResponseEntity<?> updateCook(@RequestBody cookModel c) {
-	    // Inicializar la respuesta como un mapa
-	    Map<String, Object> response = new HashMap<>();
-	    try {
-	        // Actualizar la receta usando el ID de la receta y el objeto recipeModel
-	        cookService.updateCook(c);
-	        // Respuesta exitosa
-	        response.put("success", true);
-	        response.put("message", "Cocinero actualizado con éxito");
-	        return new ResponseEntity<>(response, HttpStatus.OK); // Cambiar a OK en lugar de CREATED
-	    } catch (IllegalArgumentException e) {
-	        // Respuesta en caso de argumentos inválidos
-	        response.put("success", false);
-	        response.put("message", e.getMessage());
-	        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-	    } catch (Exception e) {
-	        // Respuesta en caso de errores inesperados
-	        response.put("success", false);
-	        response.put("message", "Error al actualizar el cocinero: " + e.getMessage());
-	        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-	    }
+		// Inicializar la respuesta como un mapa
+		Map<String, Object> response = new HashMap<>();
+		try {
+			// Actualizar la receta usando el ID de la receta y el objeto recipeModel
+			cookService.updateCook(c);
+			// Respuesta exitosa
+			response.put("success", true);
+			response.put("message", "Cocinero actualizado con éxito");
+			return new ResponseEntity<>(response, HttpStatus.OK); // Cambiar a OK en lugar de CREATED
+		} catch (IllegalArgumentException e) {
+			// Respuesta en caso de argumentos inválidos
+			response.put("success", false);
+			response.put("message", e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			// Respuesta en caso de errores inesperados
+			response.put("success", false);
+			response.put("message", "Error al actualizar el cocinero: " + e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
-
 
 	@PostMapping("/api/auth/cookapp/addRecipe")
 	public ResponseEntity<?> saveRecipe(@RequestBody Map<String, Object> request) {
-	    Map<String, Object> response = new HashMap<>();
-	    try {
-	        // Extraer el ID y la receta del JSON
-	        int id = (int) request.get("id");
-	        Map<String, Object> recipeData = (Map<String, Object>) request.get("recipe");
+		Map<String, Object> response = new HashMap<>();
+		try {
+			// Extraer el ID y la receta del JSON
+			int id = (int) request.get("id");
+			Map<String, Object> recipeData = (Map<String, Object>) request.get("recipe");
 
-	        // Convertir el mapa de datos de la receta al objeto recipeModel
-	        ObjectMapper mapper = new ObjectMapper();
-	        recipeModel r = mapper.convertValue(recipeData, recipeModel.class);
+			// Convertir el mapa de datos de la receta al objeto recipeModel
+			ObjectMapper mapper = new ObjectMapper();
+			recipeModel r = mapper.convertValue(recipeData, recipeModel.class);
 
-	        // Buscar el cocinero y agregar la receta
-	        cookModel cook = cookService.findById(id);
-	        recipeService.addRecipe(r, cook);
+			// Buscar el cocinero y agregar la receta
+			cookModel cook = cookService.findById(id);
+			recipeService.addRecipe(r, cook);
 
-	        response.put("success", true);
-	        response.put("message", "Receta creada con éxito");
-	        return new ResponseEntity<>(response, HttpStatus.CREATED);
-	    } catch (IllegalArgumentException e) {
-	        response.put("success", false);
-	        response.put("message", e.getMessage());
-	        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-	    } catch (Exception e) {
-	        response.put("success", false);
-	        response.put("message", "Error al crear receta: " + e.getMessage());
-	        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-	    }
+			response.put("success", true);
+			response.put("message", "Receta creada con éxito");
+			return new ResponseEntity<>(response, HttpStatus.CREATED);
+		} catch (IllegalArgumentException e) {
+			response.put("success", false);
+			response.put("message", e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			response.put("success", false);
+			response.put("message", "Error al crear receta: " + e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	@PostMapping("/api/auth/cookapp/updateRecipe")
 	public ResponseEntity<?> updateRecipe(@RequestBody recipeModel r) {
-	    // Inicializar la respuesta como un mapa
-	    Map<String, Object> response = new HashMap<>();
-	    try {
-	        // Actualizar la receta usando el ID de la receta y el objeto recipeModel
-	        recipeService.updateRecipe(r);
-	        // Respuesta exitosa
-	        response.put("success", true);
-	        response.put("message", "Receta actualizada con éxito");
-	        return new ResponseEntity<>(response, HttpStatus.OK); // Cambiar a OK en lugar de CREATED
-	    } catch (IllegalArgumentException e) {
-	        // Respuesta en caso de argumentos inválidos
-	        response.put("success", false);
-	        response.put("message", e.getMessage());
-	        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-	    } catch (Exception e) {
-	        // Respuesta en caso de errores inesperados
-	        response.put("success", false);
-	        response.put("message", "Error al actualizar la receta: " + e.getMessage());
-	        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-	    }
+		// Inicializar la respuesta como un mapa
+		Map<String, Object> response = new HashMap<>();
+		try {
+			// Actualizar la receta usando el ID de la receta y el objeto recipeModel
+			recipeService.updateRecipe(r);
+			// Respuesta exitosa
+			response.put("success", true);
+			response.put("message", "Receta actualizada con éxito");
+			return new ResponseEntity<>(response, HttpStatus.OK); // Cambiar a OK en lugar de CREATED
+		} catch (IllegalArgumentException e) {
+			// Respuesta en caso de argumentos inválidos
+			response.put("success", false);
+			response.put("message", e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+		} catch (Exception e) {
+			// Respuesta en caso de errores inesperados
+			response.put("success", false);
+			response.put("message", "Error al actualizar la receta: " + e.getMessage());
+			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
 	}
 
+	@PostMapping("/api/auth/cookapp/favoriteRecipe")
+	public ResponseEntity<?> favRecipe(@RequestParam("recipeId") Integer rId, @RequestParam("userId") Integer userId) {
+		// Crear un mapa para almacenar la respuesta
+		Map<String, Object> response = new HashMap<>();
+
+		try {
+
+			// Llamar al servicio para alternar el estado de favorito
+			recipeService.toggleFav(rId, userId);
+
+			// Respuesta exitosa
+			response.put("success", true);
+			response.put("message", "Receta Agregada a Favoritas");
+			return ResponseEntity.ok(response); // OK, con la respuesta en formato JSON
+		} catch (IllegalArgumentException e) {
+			// Respuesta en caso de argumentos inválidos
+			response.put("success", false);
+			response.put("message", e.getMessage());
+			return ResponseEntity.badRequest().body(response); // BAD_REQUEST
+		} catch (Exception e) {
+			// Respuesta en caso de errores inesperados
+			response.put("success", false);
+			response.put("message", "Error al marcar la receta como favorita: " + e.getMessage());
+			return ResponseEntity.status(500).body(response); // INTERNAL_SERVER_ERROR
+		}
+	}
 
 	private boolean isValidEmailAddress(String email) {
 		// Expresión regular para verificar el formato de un correo electrónico
