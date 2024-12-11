@@ -206,34 +206,32 @@ public class RestApiController {
 		}
 	}
 
-	@PostMapping("/api/auth/cookapp/addRecipe")
-	public ResponseEntity<?> saveRecipe(@RequestBody Map<String, Object> request) {
-		Map<String, Object> response = new HashMap<>();
-		try {
-			// Extraer el ID y la receta del JSON
-			int id = (int) request.get("id");
-			Map<String, Object> recipeData = (Map<String, Object>) request.get("recipe");
+	@PostMapping("/api/auth/cookapp/favoriteRecipe")
+	public ResponseEntity<?> favRecipe(@RequestBody Map<String, Integer> body) {
+	    Map<String, Object> response = new HashMap<>();
+	    
+	    Integer recipeId = body.get("recipeId");
+	    Integer userId = body.get("userId");
 
-			// Convertir el mapa de datos de la receta al objeto recipeModel
-			ObjectMapper mapper = new ObjectMapper();
-			recipeModel r = mapper.convertValue(recipeData, recipeModel.class);
+	    try {
+	        // Llamar al servicio para alternar el estado de favorito
+	        recipeService.toggleFav(recipeId, userId);
 
-			// Buscar el cocinero y agregar la receta
-			cookModel cook = cookService.findById(id);
-			recipeService.addRecipe(r, cook);
-
-			response.put("success", true);
-			response.put("message", "Receta creada con éxito");
-			return new ResponseEntity<>(response, HttpStatus.CREATED);
-		} catch (IllegalArgumentException e) {
-			response.put("success", false);
-			response.put("message", e.getMessage());
-			return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
-		} catch (Exception e) {
-			response.put("success", false);
-			response.put("message", "Error al crear receta: " + e.getMessage());
-			return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
+	        // Respuesta exitosa
+	        response.put("success", true);
+	        response.put("message", "Receta Agregada a Favoritas");
+	        return ResponseEntity.ok(response); // OK, con la respuesta en formato JSON
+	    } catch (IllegalArgumentException e) {
+	        // Respuesta en caso de argumentos inválidos
+	        response.put("success", false);
+	        response.put("message", e.getMessage());
+	        return ResponseEntity.badRequest().body(response); // BAD_REQUEST
+	    } catch (Exception e) {
+	        // Respuesta en caso de errores inesperados
+	        response.put("success", false);
+	        response.put("message", "Error al marcar la receta como favorita: " + e.getMessage());
+	        return ResponseEntity.status(500).body(response); // INTERNAL_SERVER_ERROR
+	    }
 	}
 
 	@PostMapping("/api/auth/cookapp/updateRecipe")
