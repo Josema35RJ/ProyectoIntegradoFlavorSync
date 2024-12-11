@@ -264,7 +264,7 @@ public class RestApiController {
 	    }
 	}
 	
-	@PostMapping("/auth/cookweb/AddComment")
+	@PostMapping("/api/auth/cookapp/AddComment")
 	public ResponseEntity<?> addComment(@RequestBody Map<String, Object> requestBody) {
 	    Map<String, Object> response = new HashMap<>();
 	    
@@ -294,7 +294,7 @@ public class RestApiController {
 	    }
 	}
 	
-	@PostMapping("/auth/cookweb/AddReply")
+	@PostMapping("/api/auth/cookapp/AddReply")
 	public ResponseEntity<?> addReply(@RequestBody Map<String, Object> requestBody) {
 	    Map<String, Object> response = new HashMap<>();
 
@@ -328,7 +328,7 @@ public class RestApiController {
 
 
 	
-	@PostMapping("/auth/cookweb/likeRecipe")
+	@PostMapping("/api/auth/cookapp/likeRecipe")
 	public ResponseEntity<?> likeRecipe(@RequestBody Map<String, Integer> body) {
 	    Map<String, Object> response = new HashMap<>();
 	    
