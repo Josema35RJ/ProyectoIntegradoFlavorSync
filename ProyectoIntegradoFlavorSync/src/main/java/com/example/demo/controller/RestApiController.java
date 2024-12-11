@@ -20,9 +20,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.demo.model.commentModel;
 import com.example.demo.model.cookModel;
 import com.example.demo.model.culinaryTechniquesModel;
 import com.example.demo.model.recipeModel;
+import com.example.demo.service.CommentService;
 import com.example.demo.service.CookService;
 import com.example.demo.service.CulinaryTechniquesService;
 import com.example.demo.service.RecipeService;
@@ -41,6 +43,9 @@ public class RestApiController {
 
 	@Autowired
 	private RecipeService recipeService;
+	
+	@Autowired
+	private CommentService commentService;
 
 	@Autowired
 	private TokenServiceImpl tokenService;
@@ -256,6 +261,98 @@ public class RestApiController {
 	        response.put("success", false);
 	        response.put("message", "Error al actualizar la receta: " + e.getMessage());
 	        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
+	    }
+	}
+	
+	@PostMapping("/auth/cookweb/AddComment")
+	public ResponseEntity<?> addComment(@RequestBody Map<String, Object> requestBody) {
+	    Map<String, Object> response = new HashMap<>();
+	    
+	    try {
+	        // Parse the request body data
+	        Integer recipeId = (Integer) requestBody.get("recipeId");
+	        Integer cookCommentId = (Integer) requestBody.get("cookCommentId");
+	        commentModel c = new ObjectMapper().convertValue(requestBody.get("comment"), commentModel.class); // Convert the 'comment' part of the body to the commentModel object
+
+	        // Retrieve the recipe and cook information
+	        recipeModel r = recipeService.getRecipeById(recipeId);
+	        c.setCookId(cookService.findById(cookCommentId));
+	        
+	        // Add the comment
+	        commentService.addComment(c, recipeId);
+	        r.getListComments().add(c);
+	        cookService.verifyPunctuation(cookService.findByRecipeId(r));
+	        
+	        response.put("success", true);
+	        response.put("message", "¡Comentario registrado exitosamente!");
+	        return ResponseEntity.ok(response); // Return response with status OK
+
+	    } catch (Exception e) {
+	        response.put("success", false);
+	        response.put("message", "Error al registrar el comentario: " + e.getMessage());
+	        return ResponseEntity.status(500).body(response); // Return server error response
+	    }
+	}
+	
+	@PostMapping("/auth/cookweb/AddReply")
+	public ResponseEntity<?> addReply(@RequestBody Map<String, Object> requestBody) {
+	    Map<String, Object> response = new HashMap<>();
+
+	    try {
+	        // Parse the request body data
+	        Integer recipeId = (Integer) requestBody.get("recipeId");
+	        Integer commentId = (Integer) requestBody.get("commentId");
+	        Integer cookCommentId = (Integer) requestBody.get("cookCommentId");
+	        commentModel c = new ObjectMapper().convertValue(requestBody.get("comment"), commentModel.class); // Convert the 'comment' part of the body to the commentModel object
+
+	        // Retrieve the recipe and comment information
+	        recipeModel r = recipeService.getRecipeById(recipeId);
+	        c.setParentComment(commentService.findById(commentId));
+	        c.setCookId(cookService.findById(cookCommentId));
+
+	        // Add the reply as a comment
+	        commentService.addComment(c, recipeId);
+	        r.getListComments().add(c);
+	        cookService.verifyPunctuation(cookService.findByRecipeId(r));
+
+	        response.put("success", true);
+	        response.put("message", "¡Comentario registrado exitosamente!");
+	        return ResponseEntity.ok(response); // Return response with status OK
+
+	    } catch (Exception e) {
+	        response.put("success", false);
+	        response.put("message", "Error al registrar la respuesta: " + e.getMessage());
+	        return ResponseEntity.status(500).body(response); // Return server error response
+	    }
+	}
+
+
+	
+	@PostMapping("/auth/cookweb/likeRecipe")
+	public ResponseEntity<?> likeRecipe(@RequestBody Map<String, Integer> body) {
+	    Map<String, Object> response = new HashMap<>();
+	    
+	    Integer recipeId = body.get("recipeId");
+	    Integer userId = body.get("userId");
+
+	    try {
+	        // Llamar al servicio para alternar el estado de like
+	        recipeService.toggleLike(recipeId, userId);
+
+	        // Respuesta exitosa
+	        response.put("success", true);
+	        response.put("message", "Receta agregada a favoritos");
+	        return ResponseEntity.ok(response); // Respuesta OK, con JSON
+	    } catch (IllegalArgumentException e) {
+	        // Respuesta en caso de argumentos inválidos
+	        response.put("success", false);
+	        response.put("message", e.getMessage());
+	        return ResponseEntity.badRequest().body(response); // BAD_REQUEST
+	    } catch (Exception e) {
+	        // Respuesta en caso de errores inesperados
+	        response.put("success", false);
+	        response.put("message", "Error al marcar la receta como favorita: " + e.getMessage());
+	        return ResponseEntity.status(500).body(response); // INTERNAL_SERVER_ERROR
 	    }
 	}
 	
