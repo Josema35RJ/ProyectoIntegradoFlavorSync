@@ -362,7 +362,7 @@ public class RestApiController {
 	    
 	    Integer recipeId = body.get("recipeId");
 	    Integer userId = body.get("userId");
-
+   
 	    try {
 	        // Llamar al servicio para alternar el estado de favorito
 	        recipeService.toggleFav(recipeId, userId);
