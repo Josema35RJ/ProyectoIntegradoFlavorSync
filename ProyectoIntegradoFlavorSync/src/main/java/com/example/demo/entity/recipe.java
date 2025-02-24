@@ -4,8 +4,6 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.ElementCollection;
@@ -103,8 +101,8 @@ public class recipe {
 	// Algunas recetas incluyen una tabla con información sobre las calorías,
 	// grasas, carbohidratos,
 	// proteínas y otros nutrientes por porción.
-	@OneToOne(cascade = CascadeType.ALL)
-	@JoinColumn(name = "nutritional_information_id")
+	@OneToOne(cascade = CascadeType.ALL, optional = true)
+	@JoinColumn(name = "nutritional_information_id", nullable = true)
 	private nutritionalInformation nutritionalInformation;
 
 	// Consejos útiles, variantes de la receta, sugerencias de presentación, o
@@ -134,20 +132,21 @@ public class recipe {
 	private String city;
 
 	// Imagen o imagenes de la receta guardada en base 64
-	@Lob // Indica que el campo debe ser tratado como un tipo grande
-	@Column(name = "imagesRecipe", columnDefinition = "LONGBLOB") // Define el tipo específico de la columna
+	@Column(name = "imagesRecipe", columnDefinition = "TEXT") // Define el tipo específico de la columna
 	@ElementCollection
-	private List<byte[]> imagesRecipe = new ArrayList<>();
+	private List<String> imagesRecipe = new ArrayList<>();
 
 	// Video de la elaboracion guardado en base 64
-	// private byte[] video;
-	@ElementCollection
-	private List<String> Ingredients = new ArrayList<>();
+	@Column(name = "video", columnDefinition = "TEXT")
+	private String video;
+
+	@Column( nullable = true)
+	@OneToMany(mappedBy = "receta", cascade = CascadeType.ALL)
+	private List<ingredientRecipe> ingredients = new ArrayList<>();
 
 	// Imagen de perfil de la receta
-	@Lob // Indica que el campo debe ser tratado como un tipo grande
-	@Column(name = "imagenRecipePerfil", columnDefinition = "LONGBLOB") // Define el tipo específico de la columna
-	private byte[] imageRecipePerfil;
+	@Column(name = "imagenRecipePerfil", columnDefinition = "TEXT") // Define el tipo específico de la columna
+	private String imageRecipePerfil;
 
 	@Column(name = "createDate")
 	private LocalDate createDate;

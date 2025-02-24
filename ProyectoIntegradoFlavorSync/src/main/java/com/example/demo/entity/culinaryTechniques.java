@@ -18,9 +18,9 @@ import lombok.Data;
 public class culinaryTechniques {
 
 	// Identificador único para cada tecnica
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer id;
+	  @Id
+	    @GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 	
 	//Nombre de la tecnica
 	@Column(name = "name", nullable = false)

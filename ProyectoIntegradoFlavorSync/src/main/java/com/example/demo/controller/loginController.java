@@ -110,9 +110,8 @@ public class loginController {
 			return "redirect:"+ REGISTER_VIEW;
 			
 		}
-		// Convertir la imagen en Base64 a byte[]
-		byte[] imageBytes = Base64.getDecoder().decode(imagenPerfil);
-		cook.setImagePerfil(imageBytes);
+	
+		cook.setImagePerfil(imagenPerfil);
 
 		// Validaciones adicionales
 		cook.setUsername(cook.getUsername().toLowerCase());
@@ -159,6 +158,7 @@ public class loginController {
 		}
 		return "redirect:" + LOGIN_VIEW;
 	}
+
 	
 	@GetMapping("/auth/cookweb/logout")
 	public String logout(HttpServletRequest request, HttpServletResponse response) {

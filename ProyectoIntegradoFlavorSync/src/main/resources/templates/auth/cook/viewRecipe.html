@@ -297,7 +297,8 @@ body {
 					<ul class="list-group">
 						<li class="list-group-item"
 							th:each="ingredient : ${recipe.Ingredients}"
-							th:text="${ingredient}">Ingrediente</li>
+							th:text="${ingredient.ingrediente.nombre} + ' ' + ${ingredient.cantidad} + ' ' + ${ingredient.unidadMedida}">
+							Ingrediente</li>
 					</ul>
 				</div>
 
@@ -319,15 +320,34 @@ body {
 				</div>
 
 				<!-- Galería de Imágenes -->
-				<div class="recipe-section">
-					<h4 class="mb-3">Galería de Imágenes</h4>
-					<div class="image-gallery row">
-						<div class="col-4" th:each="img : ${listImagesRecipe}">
-							<img th:src="${img}" class="img-thumbnail"
-								alt="Imagen de la receta">
+				<div class="recipe-section container my-4">
+					<h4 class="mb-4">🍽️ Galería de Imágenes</h4>
+					<div class="row row-cols-1 row-cols-md-3 g-4">
+						<div class="col" th:each="img : ${listImagesRecipe}">
+							<div class="card h-100 shadow-sm">
+								<img th:src="'data:image/jpeg;base64,' + ${img}"
+									class="card-img-top img-thumbnail" alt="Imagen de la receta">
+								<div class="card-body"></div>
+							</div>
 						</div>
 					</div>
 				</div>
+
+				<!-- Video -->
+				<div class="recipe-section">
+					<h4 class="mb-4">🎬 Multimedia</h4>
+					<div class="row row-cols-1 row-cols-md-3 g-4">
+						<div class="card h-100 shadow-sm">
+							<div class="ratio ratio-16x9">
+								<video th:src="${video}" class="rounded-top" controls> Tu
+									navegador no soporta el elemento de video.
+								</video>
+							</div>
+							<div class="card-body"></div>
+						</div>
+					</div>
+				</div>
+
 			</div>
 
 			<!-- Columna lateral: Información adicional -->
@@ -464,11 +484,11 @@ body {
 					</div>
 					<!-- Solo mostrar el botón de añadir comentario si el usuario no ha comentado aún -->
 					<div th:unless="${booleanCookCreate}">
-					<div th:unless="${booleanComment}">
-						<button type="button" class="btn btn-primary mt-3"
-							th:attr="data-bs-toggle='modal', data-bs-target='#commentModal', data-recipe-id=${recipe.id}">
-							<i class="fas fa-comment-dots"></i> Añadir Comentario
-						</button>
+						<div th:unless="${booleanComment}">
+							<button type="button" class="btn btn-primary mt-3"
+								th:attr="data-bs-toggle='modal', data-bs-target='#commentModal', data-recipe-id=${recipe.id}">
+								<i class="fas fa-comment-dots"></i> Añadir Comentario
+							</button>
 						</div>
 					</div>
 				</div>

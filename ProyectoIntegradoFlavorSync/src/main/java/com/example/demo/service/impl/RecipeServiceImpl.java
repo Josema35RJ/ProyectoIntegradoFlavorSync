@@ -129,7 +129,7 @@ public class RecipeServiceImpl implements RecipeService {
 	    }
 
 	    // Actualizar la imagen de perfil si es diferente y no es nula
-	    if (re.getImageRecipePerfil() != null && !Arrays.equals(re.getImageRecipePerfil(), recipeOld.getImageRecipePerfil())) {
+	    if (re.getImageRecipePerfil() != null && !re.getImageRecipePerfil().equals(recipeOld.getImageRecipePerfil())) {
 	        recipeOld.setImageRecipePerfil(re.getImageRecipePerfil());
 	    }
 
@@ -172,7 +172,7 @@ public class RecipeServiceImpl implements RecipeService {
 			return false;
 		}
 		if (imagenPerfilRecipe.getBytes().length > 0) {
-			recipeOld.setImageRecipePerfil(Base64.getDecoder().decode(imagenPerfilRecipe));
+			recipeOld.setImageRecipePerfil(imagenPerfilRecipe);
 		}
 		// Actualizar nombre si es diferente
 		if (!re.getName().equalsIgnoreCase(recipeOld.getName())) {
@@ -242,7 +242,7 @@ public class RecipeServiceImpl implements RecipeService {
 
 		// Actualizar la imagen de perfil si es diferente
 		if (re.getImageRecipePerfil() != null
-				&& !Arrays.equals(re.getImageRecipePerfil(), recipeOld.getImageRecipePerfil())) {
+				&& !re.getImageRecipePerfil().equals(recipeOld.getImageRecipePerfil())) {
 			recipeOld.setImageRecipePerfil(re.getImageRecipePerfil());
 		}
 
@@ -269,7 +269,7 @@ public class RecipeServiceImpl implements RecipeService {
 		if (ImagesBase64.length > 0) {
 			recipeOld.getImagesRecipe().clear();
 			for (String x : ImagesBase64) {
-				recipeOld.getImagesRecipe().add(Base64.getDecoder().decode(x));
+				recipeOld.getImagesRecipe().add(x);
 			}
 
 		}
@@ -285,6 +285,10 @@ public class RecipeServiceImpl implements RecipeService {
 	@Override
 	public boolean deleteRecipe(int id) {
 		// TODO Auto-generated method stub
+		recipe r = recipeRepository.findById(id);
+		if(r.getImagesRecipe().isEmpty())
+			r.getImagesRecipe().clear();
+		recipeRepository.delete(recipeRepository.findById(id));
 		return false;
 	}
 
@@ -363,12 +367,7 @@ public class RecipeServiceImpl implements RecipeService {
 		}
 
 		// Aplicamos filtros para categoría e ingredientes
-		filteredRecipes = filteredRecipes.stream()
-				.filter(recipe -> category == null || category.isEmpty() || recipe.getCategory().contains(category))
-				.filter(recipe -> ingredientList.isEmpty() || ingredientList.stream()
-						.allMatch(filterIngredient -> recipe.getIngredients().stream().anyMatch(
-								ingredient -> ingredient.toUpperCase().contains(filterIngredient.toUpperCase()))))
-				.collect(Collectors.toList());
+		
 
 		return filteredRecipes;
 	}

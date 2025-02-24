@@ -57,7 +57,13 @@ public class SecurityConfig {
     // Configuración de seguridad para la aplicación web (cookweb) - NO usa JWT
     @Bean
     public SecurityFilterChain webSecurity(HttpSecurity http) throws Exception {
-        http
+        http .headers()
+        .addHeaderWriter((request, response) -> {
+            // Agregar las cabeceras necesarias
+            response.setHeader("Cross-Origin-Opener-Policy", "same-origin");
+            response.setHeader("Cross-Origin-Embedder-Policy", "require-corp");
+        })
+    .and()
             .csrf().disable() // Deshabilita CSRF (puede ser necesario si usas cookies de sesión)
             .authorizeRequests()
                 .requestMatchers("/", "/imgs/**", "/webjars/*", "/css/*", "/files/", "/js/*", "/favicon.ico", "/login", "/register", "/recover-password", "/reset-password/**", "/resetPassword/**", "/verify-email/**").permitAll() // Rutas públicas

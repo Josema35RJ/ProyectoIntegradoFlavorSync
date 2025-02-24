@@ -3,6 +3,7 @@ package com.example.demo.entity;
 import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -124,15 +125,14 @@ public class cook {
 	private List<recipe> listRecipesFavorites;
 
 	// Imagen del perfil
-	@Lob // Indica que el campo debe ser tratado como un tipo grande
-	@Column(name = "imagePerfil", columnDefinition = "LONGBLOB") // Define el tipo específico de la columna
-	private byte[] imagePerfil;
+	@Column(name = "imagePerfil", columnDefinition = "TEXT") // Define el tipo específico de la columna
+	private String imagePerfil;
 
 	// Imagen o imagenes del cocinero guardada en base64
-	@Lob // Indica que el campo debe ser tratado como un tipo grande
-	@Column(name = "imagesCook", columnDefinition = "LONGBLOB") // Define el tipo específico de la columna
+    // Indica que el campo debe ser tratado como un tipo grande
+	@Column(name = "imagesCook", columnDefinition = "TEXT") // Define el tipo específico de la columna
 	@ElementCollection
-	private List<byte[]> imagesCook = new ArrayList<>();
+	private List<String> imagesCook = new ArrayList<>();
 
 	@Column(name = "createDate")
 	private LocalDateTime createDate;

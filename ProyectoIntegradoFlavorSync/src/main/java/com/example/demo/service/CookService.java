@@ -33,4 +33,6 @@ public interface CookService {
 	cookModel findByUsernameAndPassword(String username, String password);
 	boolean booleanFav(cookModel c, recipeModel r);
 	boolean updateCook(cookModel cook, List<String> culinaryTechniquesIds);
+	boolean deleteRecipeByListCook(int id, Integer id2);
+	boolean deleteCookAndRecipes(int id);
 }

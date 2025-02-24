@@ -25,8 +25,8 @@ import lombok.Data;
 public class comment {
 	// Identificador único para cada comentario.
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	private Integer id;
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
 	// El comentario que escribe
 	@Column(name = "description", nullable = false)

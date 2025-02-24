@@ -14,31 +14,31 @@ import lombok.Data;
 @Data
 public class nutritionalInformation {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Integer id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    // Calorías por porción
-	@Column(name = "calories", nullable = false)
-    @Positive(message = "Calories must be a positive number")
-    private float calories;
+	// Calorías por porción
+	@Column(name = "calories")
+	@Positive(message = "Calories must be a positive number")
+	private Float calories;
 
-    // Grasas en gramos
-	@Column(name = "fat", nullable = false)
-    @Positive(message = "Fat content must be a positive number")
-    private float fat;
+	// Grasas en gramos
+	@Column(name = "fat")
+	@Positive(message = "Fat content must be a positive number")
+	private Float fat;
 
-    // Carbohidratos en gramos
-	@Column(name = "carbohydrates", nullable = false)
-    @Positive(message = "Carbohydrates content must be a positive number")
-    private float carbohydrates;
+	// Carbohidratos en gramos
+	@Column(name = "carbohydrates")
+	@Positive(message = "Carbohydrates content must be a positive number")
+	private Float carbohydrates;
 
-    // Proteínas en gramos
-	@Column(name = "proteins", nullable = false)
-    @Positive(message = "Proteins content must be a positive number")
-    private float proteins;
+	// Proteínas en gramos
+	@Column(name = "proteins")
+	@Positive(message = "Proteins content must be a positive number")
+	private Float proteins;
 
-    // Otros nutrientes (opcional, por ejemplo, fibra, sodio, etc.)
+	// Otros nutrientes (opcional, por ejemplo, fibra, sodio, etc.)
 	@Column(name = "otherNutrients")
-    private String otherNutrients;
+	private String otherNutrients;
 }

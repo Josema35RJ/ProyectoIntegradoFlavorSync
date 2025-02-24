@@ -347,9 +347,20 @@ ul li {
 
 	<!-- Main Content -->
 	<main class="container mt-5">
+		<div th:if="${success}" class="alert alert-success" role="alert">
+			<span th:text="${success}"></span>
+			<!-- Muestra el mensaje flash de éxito -->
+		</div>
+
+		<!-- Mensaje de error -->
+		<div th:if="${error}" class="alert alert-danger" role="alert">
+			<span th:text="${error}"></span>
+			<!-- Muestra el mensaje flash de error -->
+		</div>
 		<div class="row">
 			<!-- Left Sidebar for Profile and Info -->
 			<aside class="col-lg-3 sidebar">
+
 				<div class="text-center">
 					<h4>
 						Bienvenido, <span th:text="${cook.nickName ?: cook.firstName}"></span>!
@@ -443,25 +454,33 @@ ul li {
 													th:value="${recipe.id}">
 												<button type="submit" class="btn btn-primary">Actualizar</button>
 											</form>
+											<form id="deleteForm" action="/auth/cookweb/DeleteRecipe"
+												method="POST">
+												<input type="hidden" id="id" name="id"
+													th:value="${recipe.id}">
+												<button type="button" class="btn btn-primary"
+													data-bs-toggle="modal" data-bs-target="#deleteModal">Eliminar
+													Receta</button>
+											</form>
 										</div>
 										<button class="btn btn-info btn-sm" data-bs-toggle="modal"
 											data-bs-target="#recipeModal"
 											th:attr="data-name=${recipe.name},
-            data-level=${recipe.level},
-            data-diners=${recipe.diners},
-            data-time=${recipe.preparationTime},
-            data-category=${recipe.category},
-            data-rating=${recipe.averageRating},
-            data-appliance=${recipe.whereItisDone},
-            data-techniques=${recipe.listRecipeTechniques},
-            data-instructions=${recipe.instructions},
-            data-allergens=${recipe.AllergensAndDietaryRestrictions},
-            data-nutritional=${recipe.nutritionalInformation},
-            data-grades=${recipe.grades},
-            data-history=${recipe.History},
-            data-country=${recipe.Country},
-            data-city=${recipe.city},
-            data-ingredients=${recipe.Ingredients}">
+                data-level=${recipe.level},
+                data-diners=${recipe.diners},
+                data-time=${recipe.preparationTime},
+                data-category=${recipe.category},
+                data-rating=${recipe.averageRating},
+                data-appliance=${recipe.whereItisDone},
+                data-techniques=${recipe.listRecipeTechniques},
+                data-instructions=${recipe.instructions},
+                data-allergens=${recipe.AllergensAndDietaryRestrictions},
+                data-nutritional=${recipe.nutritionalInformation},
+                data-grades=${recipe.grades},
+                data-history=${recipe.History},
+                data-country=${recipe.Country},
+                data-city=${recipe.city},
+                data-ingredients=${recipe.ingredients}">
 											Ver</button>
 										<button class="btn btn-info btn-sm" data-bs-toggle="modal"
 											data-bs-target="#recipeModalComments"
@@ -506,21 +525,21 @@ ul li {
 										<button class="btn btn-info btn-sm" data-bs-toggle="modal"
 											data-bs-target="#recipeModal"
 											th:attr="data-name=${recipe.name},
-            data-level=${recipe.level},
-            data-diners=${recipe.diners},
-            data-time=${recipe.preparationTime},
-            data-category=${recipe.category},
-            data-rating=${recipe.averageRating},
-            data-appliance=${recipe.whereItisDone},
-            data-techniques=${recipe.listRecipeTechniques},
-            data-instructions=${recipe.instructions},
-            data-allergens=${recipe.AllergensAndDietaryRestrictions},
-            data-nutritional=${recipe.nutritionalInformation},
-            data-grades=${recipe.grades},
-            data-history=${recipe.History},
-            data-country=${recipe.Country},
-            data-city=${recipe.city},
-            data-ingredients=${recipe.Ingredients}">
+    data-level=${recipe.level},
+    data-diners=${recipe.diners},
+    data-time=${recipe.preparationTime},
+    data-category=${recipe.category},
+    data-rating=${recipe.averageRating},
+    data-appliance=${recipe.whereItisDone},
+    data-techniques=${recipe.listRecipeTechniques},
+    data-instructions=${recipe.instructions},
+    data-allergens=${recipe.AllergensAndDietaryRestrictions},
+    data-nutritional=${recipe.nutritionalInformation},
+    data-grades=${recipe.grades},
+    data-history=${recipe.History},
+    data-country=${recipe.Country},
+    data-city=${recipe.city}"
+											th:utext="'data-ingredients=' + ${T(com.fasterxml.jackson.databind.ObjectMapper).writeValueAsString(recipe.Ingredients)}">
 											Ver</button>
 									</div>
 								</div>
@@ -648,6 +667,29 @@ ul li {
 		</div>
 	</div>
 
+	<div class="modal fade" id="deleteModal" tabindex="-1"
+		aria-labelledby="deleteModalLabel" aria-hidden="true">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<h5 class="modal-title" id="deleteModalLabel">Confirmar
+						eliminación</h5>
+					<button type="button" class="btn-close" data-bs-dismiss="modal"
+						aria-label="Close"></button>
+				</div>
+				<div class="modal-body">¿Estás seguro de que deseas eliminar
+					esta receta? Esta acción no se puede deshacer *Recuerda
+					desaparesera la receta para todos y de sus favoritas, puedes
+					actualizarla.</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-secondary"
+						data-bs-dismiss="modal">Cancelar</button>
+					<button type="button" class="btn btn-danger" id="confirmDelete">Eliminar</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
 	<!-- Footer -->
 	<footer class="footer py-3 text-center">
 		<div class="container">© 2024 FlavorSync - Todos los derechos
@@ -669,10 +711,9 @@ ul li {
 	<script
 		src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
 	<script>
-	$('#recipeModal').on('show.bs.modal', function(event) {
-	    var button = $(event.relatedTarget); // El botón que disparó el modal
+	$('#recipeModal').on('show.bs.modal', function (event) {
+	    var button = $(event.relatedTarget);
 
-	    // Agrupar los datos en un objeto para mayor claridad
 	    var recipe = {
 	        name: button.data('name'),
 	        level: button.data('level'),
@@ -689,34 +730,49 @@ ul li {
 	        history: button.data('history'),
 	        country: button.data('country'),
 	        city: button.data('city'),
-	        ingredients: button.data('ingredients')
+	        ingredients: button.data('ingredients') // Aquí obtienes el JSON de ingredientes
 	    };
 
 	    var modal = $(this);
-	    
-	    // Asignar los valores de la receta a los elementos del modal
-	    modal.find('#modalRecipeName').text(recipe.name);
-	    modal.find('#modalRecipeLevel').text(recipe.level);
-	    modal.find('#modalRecipeDiners').text(recipe.diners);
-	    modal.find('#modalRecipeTime').text(recipe.time);
-	    modal.find('#modalRecipeCategory').text(recipe.category);
 
-	    // Calificación usando un ciclo más limpio
-	    var ratingHtml = Array.from({ length: 5 }, (_, i) => i < recipe.rating ? '★' : '☆').join('');
+	    // Asignación de campos generales
+	    Object.entries(recipe).forEach(([key, value]) => {
+	        const element = modal.find(`#modalRecipe${capitalizeFirstLetter(key)}`);
+	        if (element.length) {
+	            if (key === 'ingredients') {
+	                // Formateamos los ingredientes usando la función formatIngredients
+	                element.text(formatIngredients(value)); 
+	            } else {
+	                element.text(value || 'No disponible');
+	            }
+	        }
+	    });
+
+	    // Calificación
+	    var ratingHtml = '★'.repeat(recipe.rating) + '☆'.repeat(5 - recipe.rating);
 	    modal.find('#modalRecipeRating').html(ratingHtml);
 
-	    // Mostrar los demás detalles
-	    modal.find('#modalRecipeAppliance').text(formatArray(recipe.appliance));
-	    modal.find('#modalRecipeTechniques').text(formatTechniques(recipe.techniques));
-	    modal.find('#modalRecipeInstructions').text(recipe.instructions);
-	    modal.find('#modalRecipeAllergens').text(formatArray(recipe.allergens));
-	    modal.find('#modalRecipeNutritional').text(recipe.nutritional || 'Información nutricional no disponible');
-	    modal.find('#modalRecipeGrades').text(recipe.grades || '');
-	    modal.find('#modalRecipeHistory').text(recipe.history || 'Historia no disponible');
-	    modal.find('#modalRecipeCountry').text(recipe.country);
-	    modal.find('#modalRecipeCity').text(recipe.city);
-	    modal.find('#modalRecipeIngredients').text(formatIngredients(recipe.ingredients));
+	    // Función para capitalizar la primera letra de las claves
+	    function capitalizeFirstLetter(string) {
+	        return string.charAt(0).toUpperCase() + string.slice(1);
+	    }
+
+	    // Formato de ingredientes
+	    function formatIngredients(ingredientRecipes) {
+	        if (!Array.isArray(ingredientRecipes) || ingredientRecipes.length === 0) {
+	            return 'No disponible';
+	        }
+
+	        return ingredientRecipes.map(ingRecipe => {
+	            // Acceder correctamente a los atributos del ingrediente
+	            let nombre = ingRecipe.ingrediente?.nombre || 'Ingrediente desconocido';
+	            let cantidad = ingRecipe.cantidad || 0;
+	            let unidad = ingRecipe.unidadMedida || '';
+	            return `${nombre} ${cantidad} ${unidad}`;
+	        }).join(', ');
+	    }
 	});
+
 
 	// Función para dar formato a los arrays
 	function formatArray(arr) {
@@ -801,6 +857,9 @@ ul li {
 		        }
 		    });
 		});
+		document.getElementById('confirmDelete').addEventListener('click', function () {
+	        document.getElementById('deleteForm').submit();
+	    });
 	</script>
 </body>
 </html>

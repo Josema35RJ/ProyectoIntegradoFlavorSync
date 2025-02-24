@@ -2,7 +2,6 @@ package com.example.demo.service.impl;
 
 import java.time.Duration;
 import java.time.LocalDateTime;
-import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -25,6 +24,7 @@ import com.example.demo.converter.CulinaryTechniquesConverter;
 import com.example.demo.converter.RecipeConverter;
 import com.example.demo.entity.cook;
 import com.example.demo.entity.culinaryTechniques;
+import com.example.demo.entity.recipe;
 import com.example.demo.model.cookModel;
 import com.example.demo.model.culinaryTechniquesModel;
 import com.example.demo.model.recipeModel;
@@ -65,8 +65,9 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 	public boolean deletedCook(int id) {
 		// TODO Auto-generated method stub
 		cookModel c = cookConverter.transform(cookRepository.findByid(id));
-		c.setEnabled(false);
-		cookRepository.save(cookConverter.transform(c));
+		c.getImagesCook().clear();
+		c.getListCulinaryTechniques().clear();
+		cookRepository.delete(cookConverter.transform(c));
 		return true;
 	}
 
@@ -363,7 +364,7 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 	        c.setExperience(cook.getExperience());
 	        updated = true;
 	    }
-	    if (cook.getImagePerfil() != null && !java.util.Arrays.equals(cook.getImagePerfil(), c.getImagePerfil())) {
+	    if (cook.getImagePerfil() != null && !cook.getImagePerfil().equals(c.getImagePerfil())) {
 	        c.setImagePerfil(cook.getImagePerfil());
 	        updated = true;
 	    }
@@ -400,5 +401,34 @@ public class CookServiceImpl implements UserDetailsService, CookService {
 				f=true;
 		}
 		return f;
+	}
+
+	@Override
+	public boolean deleteRecipeByListCook(int cookId, Integer recipeId) {
+	    cook cook = cookRepository.findByid(cookId);
+	    if (cook == null) {
+	        return false; // Manejo básico si no se encuentra el usuario.
+	    }
+
+	    // Eliminar de la lista de favoritos de forma segura
+	    cook.getListRecipesFavorites().removeIf(recipe -> recipe.getId().equals(recipeId));
+
+	    // Eliminar de la lista personal de recetas de forma segura
+	    cook.getListRecipes().removeIf(recipe -> recipe.getId().equals(recipeId));
+
+	    // Guardar cambios en la base de datos
+	    cookRepository.save(cook);
+	    return true;
+	}
+
+	@Override
+	public boolean deleteCookAndRecipes(int id) {
+		// TODO Auto-generated method stub
+		cookModel c = cookConverter.transform(cookRepository.findByid(id));
+		c.getImagesCook().clear();
+		c.getListCulinaryTechniques().clear();
+		c.getListRecipes().clear();
+		cookRepository.delete(cookConverter.transform(c));
+		return true;
 	}
 }

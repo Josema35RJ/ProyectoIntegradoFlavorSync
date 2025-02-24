@@ -5,16 +5,16 @@ public class nutritionalInformationModel {
     private Integer id;
 
     // Calorías por porción
-    private float calories;
+    private Float calories;
 
     // Grasas en gramos
-    private float fat;
+    private Float fat;
 
     // Carbohidratos en gramos
-    private float carbohydrates;
+    private Float carbohydrates;
 
     // Proteínas en gramos
-    private float proteins;
+    private Float proteins;
 
     // Otros nutrientes (opcional, por ejemplo, fibra, sodio, etc.)
     private String otherNutrients;
@@ -23,7 +23,7 @@ public class nutritionalInformationModel {
 		super();
 	}
 
-	public nutritionalInformationModel(Integer id, float calories, float fat, float carbohydrates, float proteins,
+	public nutritionalInformationModel(Integer id, Float calories, Float fat, Float carbohydrates, Float proteins,
 			String otherNutrients) {
 		super();
 		this.id = id;
@@ -42,35 +42,35 @@ public class nutritionalInformationModel {
 		this.id = id;
 	}
 
-	public float getCalories() {
+	public Float getCalories() {
 		return calories;
 	}
 
-	public void setCalories(float calories) {
+	public void setCalories(Float calories) {
 		this.calories = calories;
 	}
 
-	public float getFat() {
+	public Float getFat() {
 		return fat;
 	}
 
-	public void setFat(float fat) {
+	public void setFat(Float fat) {
 		this.fat = fat;
 	}
 
-	public float getCarbohydrates() {
+	public Float getCarbohydrates() {
 		return carbohydrates;
 	}
 
-	public void setCarbohydrates(float carbohydrates) {
+	public void setCarbohydrates(Float carbohydrates) {
 		this.carbohydrates = carbohydrates;
 	}
 
-	public float getProteins() {
+	public Float getProteins() {
 		return proteins;
 	}
 
-	public void setProteins(float proteins) {
+	public void setProteins(Float proteins) {
 		this.proteins = proteins;
 	}
 

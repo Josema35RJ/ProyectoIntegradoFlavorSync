@@ -13,28 +13,29 @@ import lombok.Data;
 @Data
 public class PasswordResetToken {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
 
-    @Column(nullable = false)
-    private String token;
+	@Column(nullable = false)
+	private String token;
 
-    @Column(nullable = false)
-    private String userEmail;
+	@Column(nullable = false)
+	private String userEmail;
 
-    @Column(nullable = false)
-    private LocalDateTime expirationTime;
+	@Column(nullable = false)
+	private LocalDateTime expirationTime;
 
-    // Getters y Setters
+	// Getters y Setters
 
-    public PasswordResetToken() {}
+	public PasswordResetToken() {
+	}
 
-    public PasswordResetToken(String token, String userEmail, LocalDateTime expirationTime) {
-        this.token = token;
-        this.userEmail = userEmail;
-        this.expirationTime = expirationTime;
-    }
+	public PasswordResetToken(String token, String userEmail, LocalDateTime expirationTime) {
+		this.token = token;
+		this.userEmail = userEmail;
+		this.expirationTime = expirationTime;
+	}
 
-    // Getters and Setters
+	// Getters and Setters
 }

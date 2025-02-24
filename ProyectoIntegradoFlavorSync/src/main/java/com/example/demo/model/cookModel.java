@@ -3,14 +3,13 @@ package com.example.demo.model;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Base64;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.springframework.format.annotation.DateTimeFormat;
-
-import com.example.demo.entity.recipe;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -110,10 +109,10 @@ public class cookModel {
 	private List<recipeModel> listRecipesFavorites;
 
 	// Imagen del perfil
-	private byte[] imagePerfil;
+	private String imagePerfil;
 
 	// Imagen o imagenes del cocinero guardada en base64
-	private List<byte[]> imagesCook = new ArrayList<>();
+	private List<String> imagesCook = new ArrayList<>();
 	 
 	private LocalDateTime createDate;
 	
@@ -137,7 +136,7 @@ public class cookModel {
 			@Size(max = 100, message = "The city cannot exceed 100 characters") @NotBlank(message = "city is required") String city,
 			@Size(max = 100, message = "The country cannot exceed 100 characters") @NotBlank(message = "country is required") String country,
 			@NotBlank(message = "The password is required") String password, List<String> listSpecialty,List<culinaryTechniquesModel> listRecipeTechniques,
-			@Positive(message = "The experience must be a positive number") int experience, byte[] imagePerfil) {
+			@Positive(message = "The experience must be a positive number") int experience, String imagePerfil) {
 		super();
 		this.firstName = firstName;
 		this.lastName = lastName;
@@ -301,19 +300,19 @@ public class cookModel {
 		this.listRecipesFavorites = listRecipesFavorites;
 	}
 
-	public byte[] getImagePerfil() {
+	public String getImagePerfil() {
 		return imagePerfil;
 	}
 
-	public void setImagePerfil(byte[] imagePerfil) {
+	public void setImagePerfil(String imagePerfil) {
 		this.imagePerfil = imagePerfil;
 	}
 
-	public List<byte[]> getImagesCook() {
+	public List<String> getImagesCook() {
 		return imagesCook;
 	}
 
-	public void setImagesCook(List<byte[]> imagesCook) {
+	public void setImagesCook(List<String> imagesCook) {
 		this.imagesCook = imagesCook;
 	}
 
@@ -357,7 +356,7 @@ public class cookModel {
 				+ city + ", country=" + country + ", password=" + password + ", enabled=" + enabled + ", listSpecialty="
 				+ listSpecialty + ", listCulinaryTechniques=" + listCulinaryTechniques + ", experience=" + experience
 				+ ", role=" + role + ", punctuation=" + punctuation + ", listRecipes=" + listRecipes
-				+ ", listRecipesFavorites=" + listRecipesFavorites + ", imagePerfil=" + Arrays.toString(imagePerfil)
+				+ ", listRecipesFavorites=" + listRecipesFavorites + ", imagePerfil=" + imagePerfil
 				+ ", imagesCook=" + imagesCook + ", createDate=" + createDate + ", updateDate=" + updateDate
 				+ ", token=" + token + "]";
 	}

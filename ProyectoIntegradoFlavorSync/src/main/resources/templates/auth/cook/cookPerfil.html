@@ -73,7 +73,8 @@
 					</div>
 					<div class="card-body">
 						<form class="row g-3 needs-validation" action="#"
-							th:action="@{/auth/cookweb/UpdatePerfil}" method="post" novalidate>
+							th:action="@{/auth/cookweb/UpdatePerfil}" method="post"
+							novalidate>
 							<!-- Mostrar la imagen si existe en base64 -->
 							<div class="text-center mb-3" style="position: relative;">
 								<!-- Imagen de perfil -->
@@ -227,6 +228,11 @@
 							</div>
 
 						</form>
+						<form id="deleteForm" action="/auth/cookweb/DeleteCook"
+							method="POST">
+							<button type="button" class="btn btn-primary"
+								data-bs-toggle="modal" data-bs-target="#deleteModal">Eliminar Cuenta</button>
+						</form>
 					</div>
 				</div>
 			</div>
@@ -270,6 +276,25 @@
 			</div>
 		</div>
 	</div>
+
+	<div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="deleteModalLabel">Confirmar eliminación</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                ¿Qué deseas eliminar, puedes irte y dejar tus recetas para los demas (pasaran a ser de la app) o eliminarlas tambien?
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-danger" id="deleteOnlyCook">Eliminar solo el cocinero</button>
+                <button type="button" class="btn btn-danger" id="deleteCookAndRecipes">Eliminar cocinero y recetas</button>
+            </div>
+        </div>
+    </div>
+</div>
 
 	<footer class="footer mt-auto">
 		<div class="container">
@@ -380,6 +405,15 @@
 				return true; // Envía el formulario si coinciden
 			}
 		}
+		   document.getElementById('deleteOnlyCook').addEventListener('click', function() {
+		        document.getElementById('deleteOption').value = 'onlyCook';
+		        document.getElementById('deleteForm').submit();
+		    });
+
+		    document.getElementById('deleteCookAndRecipes').addEventListener('click', function() {
+		        document.getElementById('deleteOption').value = 'cookAndRecipes';
+		        document.getElementById('deleteForm').submit();
+		    });
 	</script>
 </body>
 </html>

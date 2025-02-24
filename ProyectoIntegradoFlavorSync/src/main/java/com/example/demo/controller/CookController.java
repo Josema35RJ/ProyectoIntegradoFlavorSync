@@ -3,11 +3,13 @@ package com.example.demo.controller;
 import java.time.LocalDate;
 import java.time.Period;
 import java.util.ArrayList;
-import java.util.Base64;
+import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.TreeMap;
 import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,13 +26,18 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import com.example.demo.model.commentModel;
 import com.example.demo.model.cookModel;
 import com.example.demo.model.culinaryTechniquesModel;
+import com.example.demo.model.ingredientModel;
+import com.example.demo.model.ingredientRecipeModel;
 import com.example.demo.model.recipeModel;
 import com.example.demo.security.CustomUserDetails;
 import com.example.demo.service.CommentService;
 import com.example.demo.service.CookService;
 import com.example.demo.service.CulinaryTechniquesService;
+import com.example.demo.service.IngredientService;
 import com.example.demo.service.RecipeService;
 import com.example.demo.service.TokenService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -53,6 +60,10 @@ public class CookController {
 	@Autowired
 	@Qualifier("commentService")
 	private CommentService commentService;
+
+	@Autowired
+	@Qualifier("ingredientService")
+	private IngredientService ingredientService;
 
 	@Autowired
 	@Qualifier("recipeService")
@@ -81,16 +92,14 @@ public class CookController {
 		// Mapa de imágenes para las recetas filtradas
 		Map<Integer, String> imagesRecipes = new HashMap<>();
 		for (recipeModel r : recipesFilters) {
-			imagesRecipes.put(r.getId(),
-					"data:image/jpeg;base64," + Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
+			imagesRecipes.put(r.getId(), "data:image/jpeg;base64," + r.getImageRecipePerfil());
 		}
 		model.addAttribute("base64listImageFilters", imagesRecipes);
 
 		// Mapa de imágenes para recetas de dificultad "Fácil"
 		Map<Integer, String> imagesRecipesNew = new HashMap<>();
 		for (recipeModel r : recetasFacil) {
-			imagesRecipesNew.put(r.getId(),
-					"data:image/jpeg;base64," + Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
+			imagesRecipesNew.put(r.getId(), "data:image/jpeg;base64," + r.getImageRecipePerfil());
 		}
 		model.addAttribute("base64listImageEasy", imagesRecipesNew);
 
@@ -109,15 +118,12 @@ public class CookController {
 		Map<Integer, String> imagesRecipes = new HashMap<>();
 		cookModel c = cookService.findById(userDetails.getId());
 		model.addAttribute("cook", c);
-		byte[] imageBytes = c.getImagePerfil();
 		for (recipeModel r : c.getListRecipes()) {
 
-			imagesRecipes.put(r.getId(),
-					"data:image/jpeg;base64," + Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
+			imagesRecipes.put(r.getId(), "data:image/jpeg;base64," + r.getImageRecipePerfil());
 		}
-		String base64Image = Base64.getEncoder().encodeToString(imageBytes);
 		model.addAttribute("base64listImage", imagesRecipes);
-		model.addAttribute("base64Image", "data:image/jpeg;base64," + base64Image);
+		model.addAttribute("base64Image", "data:image/jpeg;base64," + c.getImagePerfil());
 
 		return COOKRECIPES_VIEW; // Asegúrate de que LOGIN_VIEW sea el nombre correcto de la vista de login
 	}
@@ -125,26 +131,21 @@ public class CookController {
 	@GetMapping("/auth/cookweb/viewRecipe/{id}")
 	public String ViewRecipe(@PathVariable("id") Integer id, Model model, Authentication authentication) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-		List<String> listImagesRecipe = new ArrayList<>();
 		// Ahora puedes obtener la información del usuario logueado desde userDetails
 		cookModel c = cookService.findById(userDetails.getId());
 		recipeModel r = recipeService.getRecipeById(id);
 		cookModel cookRecipe = cookService.findByRecipeId(r);
-		for (byte[] b : r.getImagesRecipe()) {
-			listImagesRecipe.add("data:image/jpeg;base64," + Base64.getEncoder().encodeToString(b));
-		}
 		model.addAttribute("booleanComment", commentService.findByUserId(c, r));
-		model.addAttribute("imagePerfilCook",
-				"data:image/jpeg;base64," + Base64.getEncoder().encodeToString(cookRecipe.getImagePerfil()));
+		model.addAttribute("imagePerfilCook", "data:image/jpeg;base64," + cookRecipe.getImagePerfil());
 		model.addAttribute("cookRecipe", cookRecipe);
 		model.addAttribute("booleanLike", recipeService.booleanLike(c, r));
 		model.addAttribute("booleanFav", cookService.booleanFav(c, r));
-		model.addAttribute("imageRecipe",
-				"data:image/jpeg;base64," + Base64.getEncoder().encodeToString(r.getImageRecipePerfil()));
-		model.addAttribute("listImagesRecipe", listImagesRecipe);
+		model.addAttribute("imageRecipe", "data:image/jpeg;base64," + r.getImageRecipePerfil());
+		model.addAttribute("listImagesRecipe", r.getImagesRecipe());
 		model.addAttribute("userSession", c);
-		model.addAttribute("booleanCookCreate", cookService.booleanCookCreate(c, r)); //Probar a comparar por id
+		model.addAttribute("booleanCookCreate", cookService.booleanCookCreate(c, r)); // Probar a comparar por id
 		model.addAttribute("recipe", r);
+		model.addAttribute("video", r.getVideo());
 		return RECIPE_VIEW; // Asegúrate de que LOGIN_VIEW sea el nombre correcto de la vista de login
 	}
 
@@ -157,9 +158,7 @@ public class CookController {
 		List<Integer> selectedTechniques = c.getListCulinaryTechniques().stream().map(technique -> technique.getId()) // Asegurarse
 				.collect(Collectors.toList());
 
-		byte[] imageBytes = c.getImagePerfil();
-		String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-		model.addAttribute("base64Image", "data:image/jpeg;base64," + base64Image);
+		model.addAttribute("base64Image", "data:image/jpeg;base64," + c.getImagePerfil());
 		LocalDate birthDate = LocalDate.of(1990, 5, 20); // Ejemplo de fecha de nacimiento
 		int age = calculateAge(birthDate);
 		model.addAttribute("selectedTechniques", selectedTechniques); // Lista de IDs seleccionados
@@ -180,9 +179,7 @@ public class CookController {
 		List<Integer> selectedTechniques = c.getListCulinaryTechniques().stream().map(technique -> technique.getId()) // Asegurarse
 				.collect(Collectors.toList());
 
-		byte[] imageBytes = c.getImagePerfil();
-		String base64Image = Base64.getEncoder().encodeToString(imageBytes);
-		model.addAttribute("base64Image", "data:image/jpeg;base64," + base64Image);
+		model.addAttribute("base64Image", "data:image/jpeg;base64," + c.getImagePerfil());
 		LocalDate birthDate = LocalDate.of(1990, 5, 20); // Ejemplo de fecha de nacimiento
 		int age = calculateAge(birthDate);
 		model.addAttribute("selectedTechniques", selectedTechniques); // Lista de IDs seleccionados
@@ -237,9 +234,8 @@ public class CookController {
 			cOrigin.setCity(cNew.getCity());
 		}
 
-		byte[] imageBytes = Base64.getDecoder().decode(imagenPerfil);
-		if (imageBytes.length > 0) {
-			cOrigin.setImagePerfil(imageBytes); // Almacena la imagen en byte[] en la entidad cook
+		if (imagenPerfil.length() > 0) {
+			cOrigin.setImagePerfil(imagenPerfil); // Almacena la imagen en byte[] en la entidad cook
 		}
 		cookService.updateCook(cOrigin, listCulinaryTechniques);
 		flash.addFlashAttribute("success", "¡Cocinero Actualizado exitosamente!");
@@ -252,6 +248,18 @@ public class CookController {
 		// Ahora puedes obtener la información del usuario logueado desde userDetails
 		model.addAttribute("cookPerfil", cookService.findById(userDetails.getId()));
 		model.addAttribute("recipeTechniques", culinaryTechniquesService.getListCulinaryTechniques());
+		List<ingredientModel> ingredientes = ingredientService.getListIngredients();
+		ingredientes.sort(Comparator.comparing(ingredientModel::getNombre));
+
+		// Agrupar los ingredientes por categoría
+		Map<String, List<ingredientModel>> ingredientesPorCategoria = ingredientes.stream()
+				.collect(Collectors.groupingBy(ingredientModel::getCategoria));
+
+		// Ordenar las categorías alfabéticamente
+		Map<String, List<ingredientModel>> ingredientesPorCategoriaOrdenados = new TreeMap<>(ingredientesPorCategoria);
+
+		model.addAttribute("ingredientesPorCategoria", ingredientesPorCategoriaOrdenados);
+
 		return FORMRECIPE_VIEW;
 	}
 
@@ -259,26 +267,50 @@ public class CookController {
 	public String AddRecipe(recipeModel recipe, RedirectAttributes flash,
 			@RequestParam(value = "RecipeTechniques", required = false) String[] listTechniques,
 			@RequestParam(value = "recipeImagesBase64", required = false) String[] ImagesBase64,
-			@RequestParam("imagenRecipeBase64") String imagenR, Authentication authentication) {
+			@RequestParam("imagenRecipeBase64") String imagenR, Authentication authentication,
+			@RequestParam("compressedVideoBase64") String video,
+			@RequestParam(value = "ingredientsList") String ingredientsListJson) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
-		// Ahora puedes obtener la información del usuario logueado desde userDetails
-
 		cookModel c = cookService.findById(userDetails.getId());
 		// Convertir la imagen en Base64 a byte[]
-		byte[] imageBytes = Base64.getDecoder().decode(imagenR);
-		recipe.setImageRecipePerfil(imageBytes); // Almacena la imagen en byte[] en la entidad recipe
+		recipe.setImageRecipePerfil(imagenR); // Almacena la imagen en byte[] en la entidad recipe
 		// Procesar las imágenes adicionales y convertirlas a byte[]
-		List<byte[]> images = new ArrayList<>();
-		for (String imageBase64 : ImagesBase64) {
-			byte[] imageBytesRecipe = Base64.getDecoder().decode(imageBase64);
-			images.add(imageBytesRecipe);
-		}
+
 		List<culinaryTechniquesModel> l = new ArrayList<>();
 		for (String i : listTechniques) {
-			l.add(culinaryTechniquesService.findById(Integer.valueOf(i)));
+			  if(i.isBlank() || i.isEmpty())
+				l.add(culinaryTechniquesService.findById(Integer.valueOf(i)));
 		}
-		recipe.setImagesRecipe(images);
+		recipe.setImagesRecipe(Arrays.asList(ImagesBase64));
 		recipe.setListRecipeTechniques(l);
+		recipe.setVideo(video);
+		// Deserializar JSON de ingredientes
+		ObjectMapper objectMapper = new ObjectMapper();
+		List<ingredientRecipeModel> ingredientRecipes = new ArrayList<>();
+
+		try {
+			List<Map<String, Object>> parsedIngredients = objectMapper.readValue(ingredientsListJson, List.class);
+
+			for (Map<String, Object> item : parsedIngredients) {
+				Long ingredientId = Long.parseLong(item.get("id").toString());
+				Double quantity = Double.parseDouble(item.get("quantity").toString());
+				String unit = item.get("unit").toString();
+
+				ingredientModel ingredient = ingredientService.findById(ingredientId.intValue());
+
+				if (ingredient != null) {
+					ingredientRecipeModel ingredientRecipe = new ingredientRecipeModel(recipe, ingredient, quantity,
+							unit);
+					ingredientRecipes.add(ingredientRecipe);
+				}
+			}
+		} catch (JsonProcessingException e) {
+			e.printStackTrace();
+			flash.addFlashAttribute("error", "Hubo un problema procesando los ingredientes.");
+			return "redirect:/auth/cookweb/addRecipe";
+		}
+		recipe.getIngredients().addAll(ingredientRecipes);
+
 		recipeService.addRecipe(recipe, c);
 
 		flash.addFlashAttribute("success", "¡Receta registrada exitosamente!");
@@ -341,8 +373,8 @@ public class CookController {
 		List<String> listImagesRecipe = new ArrayList<>();
 		recipeModel r = recipeService.getRecipeById(id);
 		cookModel c = cookService.findById(userDetails.getId());
-		for (byte[] b : r.getImagesRecipe()) {
-			listImagesRecipe.add("data:image/jpeg;base64," + Base64.getEncoder().encodeToString(b));
+		for (String b : r.getImagesRecipe()) {
+			listImagesRecipe.add("data:image/jpeg;base64," + b);
 		}
 		// Obtener los IDs de las técnicas culinarias seleccionadas previamente en la
 		// receta
@@ -351,12 +383,9 @@ public class CookController {
 				// IDs
 				.collect(Collectors.toList());
 
-		// Añadir las técnicas seleccionadas y las técnicas disponibles al modelo
-		byte[] imageBytes = r.getImageRecipePerfil();
-		String base64Image = Base64.getEncoder().encodeToString(imageBytes);
 		// Ahora puedes obtener la información del usuario logueado desde userDetails
 		model.addAttribute("cookPerfil", c);
-		model.addAttribute("base64Image", "data:image/jpeg;base64," + base64Image);
+		model.addAttribute("base64Image", "data:image/jpeg;base64," + r.getImageRecipePerfil());
 		model.addAttribute("imageRecipe", listImagesRecipe);
 		model.addAttribute("country", r.getCountry());
 		model.addAttribute("city", r.getCity());
@@ -427,6 +456,44 @@ public class CookController {
 
 		String referer = request.getHeader("Referer");
 		return "redirect:" + referer;
+	}
+
+	@PostMapping("/auth/cookweb/DeleteRecipe")
+	public String DeleteRecipe(@RequestParam("id") Integer id, Model model, Authentication authentication,
+			RedirectAttributes flash, HttpServletRequest request) {
+		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+		cookService.deleteRecipeByListCook(userDetails.getId(), id);
+		recipeService.deleteRecipe(id);
+
+		flash.addFlashAttribute("success", "¡Receta eliminada exitosamente!");
+		String referer = request.getHeader("Referer");
+		return "redirect:" + referer;
+	}
+
+	@PostMapping("/auth/cookweb/DeleteCook")
+	public String DeleteCook(Model model, Authentication authentication, RedirectAttributes flash,
+			HttpServletRequest request) {
+		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+
+		// Recoge el valor del campo oculto
+		String deleteOption = request.getParameter("deleteOption");
+
+		// Decide qué acción realizar según el valor de deleteOption
+		if ("onlyCook".equals(deleteOption)) {
+			// Lógica para eliminar solo al cocinero
+			cookService.deletedCook(userDetails.getId());
+			flash.addFlashAttribute("success", "¡Cocinero eliminado exitosamente!");
+		} else if ("cookAndRecipes".equals(deleteOption)) {
+			// Lógica para eliminar al cocinero y sus recetas
+			cookService.deleteCookAndRecipes(userDetails.getId());
+			flash.addFlashAttribute("success", "¡Cocinero y recetas eliminados exitosamente!");
+		} else {
+			flash.addFlashAttribute("error", "Opción de eliminación no válida.");
+			return "redirect:/error";
+		}
+
+		return "redirect:/login";
 	}
 
 	private int calculateAge(LocalDate birthDate) {
