@@ -18,6 +18,81 @@
 	src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.1/jquery.validate.min.js"></script>
 <script
 	src="https://cdnjs.cloudflare.com/ajax/libs/jquery.inputmask/3.3.4/jquery.inputmask.bundle.min.js"></script>
+
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous"
+	src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v13.0&appId=YOUR_APP_ID&autoLogAppEvents=1"
+	nonce="j6dQ8oZY"></script>
+
+<style>
+.form-label {
+	font-weight: bold;
+}
+
+.optional-fields {
+	background-color: #f8f9fa;
+	padding: 20px;
+	border-radius: 15px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+	margin-bottom: 1.5rem;
+}
+
+.container {
+	max-width: 1200px;
+}
+
+.card {
+	border-radius: 15px;
+}
+
+.col-md-6 {
+	width: 48%;
+	padding-right: 20px;
+}
+
+.col-md-6:last-child {
+	padding-left: 20px;
+}
+
+.form-control {
+	border-radius: 20px;
+	padding: 10px;
+	font-size: 1rem;
+}
+
+.btn {
+	border-radius: 20px;
+	padding: 10px 30px;
+	font-size: 1.1rem;
+}
+
+.footer {
+	font-size: 0.9rem;
+}
+
+/* Responsive design */
+@media ( max-width : 768px) {
+	.col-md-6 {
+		width: 100%;
+		padding: 0;
+	}
+}
+
+.g-signin2 {
+	width: 100%;
+	background-color: #4285F4;
+	color: white;
+	border-radius: 5px;
+	font-size: 16px;
+	padding: 10px;
+	cursor: pointer;
+	display: block;
+	text-align: center;
+}
+</style>
 </head>
 <body>
 	<nav
@@ -26,170 +101,227 @@
 			<a class="navbar-brand" href="#">FlavorSync</a>
 		</div>
 	</nav>
+
 	<div class="container d-flex align-items-center justify-content-center"
 		style="height: calc(100vh - 120px);">
 		<div
 			class="row justify-content-center animate__animated animate__fadeInUp">
-			<div class="col-md-6">
+			<div class="col-md-12">
 				<div class="card mt-5 mx-auto">
 					<div class="card-header text-center">
 						<h2>Bienvenido a FlavorSync</h2>
 					</div>
 					<div class="card-body">
-
-
 						<form action="#" th:action="@{/register}" method="post">
 
-							<div class="mb-3">
-								<label for="nickName" class="form-label">*Apodo:</label> <input
-									type="text" id="nickName" name="nickName" class="form-control"
-									required autocomplete="given-name"
-									placeholder="Introduce tu apodo">
-							</div>
-							<div class="mb-3">
-								<label for="firstName" class="form-label">*Nombre:</label> <input
-									type="text" id="firstName" name="firstName"
-									class="form-control" required autocomplete="given-name"
-									placeholder="Introduce tu nombre">
-							</div>
-							<div class="mb-3">
-								<label for="lastName" class="form-label">*Apellidos:</label> <input
-									type="text" id="lastName" name="lastName" class="form-control"
-									required autocomplete="family-name"
-									placeholder="Introduce tus apellidos">
-							</div>
-							<div class="mb-3">
-								<label for="email" class="form-label">*Correo
-									electrónico:</label> <input type="email" id="username" name="username"
-									class="form-control" required autocomplete="email"
-									placeholder="Introduce un correo electrónico válido">
-							</div>
-							<div class="mb-3">
-								<label for="birthDate" class="form-label">*Fecha de
-									Nacimiento:</label> <input type="date" id="birthDate" name="birthDate"
-									class="form-control" required>
-							</div>
-							<div class="mb-3">
-								<label for="experience" class="form-label">*Experiencia:</label>
-								<input type="number" id="experience" name="experience"
-									class="form-control" required autocomplete="new-experience"
-									placeholder="Introduce tu Experiencia" min="0" max="80">
-							</div>
-							<div class="mb-3">
-								<label for="listSpecialty" class="form-label">*Lista de
-									Especialidades (Carnes, Postres...):</label> <select id="listSpecialty"
-									name="listSpecialty" class="form-control" multiple required>
-									<option value="" disabled>Selecciona una o más
-										especialidades</option>
-									<option value="Carnes">Carnes</option>
-									<option value="Aves">Aves</option>
-									<option value="Pescados">Pescados</option>
-									<option value="Mariscos">Mariscos</option>
-									<option value="Vegetariano">Vegetariano</option>
-									<option value="Vegano">Vegano</option>
-									<option value="Panadería">Panadería</option>
-									<option value="Pastelería">Pastelería</option>
-									<option value="Postres">Postres</option>
-									<option value="Sopas">Sopas</option>
-									<option value="Cremas">Cremas</option>
-									<option value="Ensaladas">Ensaladas</option>
-									<option value="Entrantes">Entrantes</option>
-									<option value="Tapas">Tapas</option>
-									<option value="Bebidas">Bebidas</option>
-									<option value="Coctelería">Coctelería</option>
-									<option value="Arroces">Arroces</option>
-									<option value="Pasta">Pasta</option>
-									<option value="Pizza">Pizza</option>
-									<option value="Cocina Internacional">Cocina
-										Internacional</option>
-									<option value="Cocina Mexicana">Cocina Mexicana</option>
-									<option value="Cocina Italiana">Cocina Italiana</option>
-									<option value="Cocina Japonesa">Cocina Japonesa</option>
-									<option value="Cocina China">Cocina China</option>
-									<option value="Cocina India">Cocina India</option>
-									<option value="Cocina Árabe">Cocina Árabe</option>
-									<option value="Cocina Francesa">Cocina Francesa</option>
-									<option value="Cocina Española">Cocina Española</option>
-									<option value="Cocina Peruana">Cocina Peruana</option>
-									<option value="Cocina Mediterránea">Cocina
-										Mediterránea</option>
-									<option value="Barbacoas">Barbacoas</option>
-									<option value="Asados">Asados</option>
-									<option value="Guisos">Guisos</option>
-									<option value="Currys">Currys</option>
-									<option value="Ceviches">Ceviches</option>
-									<option value="Helados">Helados</option>
-									<option value="Dulces y Golosinas">Dulces y Golosinas</option>
-									<option value="Quesos y Embutidos">Quesos y Embutidos</option>
-									<option value="Dips y Salsas">Dips y Salsas</option>
-								</select>
-							</div>
-							<div class="mb-3">
-								<label for="culinaryTechniquesIds" class="form-label">*Seleccione
-									las Técnicas Culinarias</label> <select id="culinaryTechniquesIds"
-									name="culinaryTechniquesIds" class="form-control" multiple
-									required>
-									<option th:each="technique : ${recipeTechniques}"
-										th:value="${technique.id}" th:text="${technique.name}"></option>
-								</select>
-							</div>
-							<div class="mb-3">
-								<label for="countrySelect" class="form-label">*País:</label> <select
-									id="countrySelect" name="country" class="form-control" required>
-									<option value="">Selecciona un país</option>
-								</select>
-							</div>
-							<div class="mb-3">
-								<label for="citySelect" class="form-label">*Ciudad:</label> <select
-									id="citySelect" name="city" class="form-control" required>
-									<option value="">Selecciona una ciudad</option>
-								</select>
-							</div>
-							<div class="mb-3">
-								<label for="password" class="form-label">*Contraseña:</label> <input
-									type="password" id="password" name="password"
-									class="form-control" required autocomplete="new-password"
-									placeholder="Introduce una contraseña segura">
-							</div>
-							<div class="mb-3">
-								<label for="confirmPassword" class="form-label">*Confirmar
-									contraseña:</label> <input type="password" id="confirmPassword"
-									name="confirmPassword" class="form-control" required
-									autocomplete="new-password"
-									placeholder="Confirma tu contraseña">
-							</div>
-							<div class="mb-3">
-								<label for="imagenPerfilFile" class="form-label">*Imagen
-									de perfil (PNG o JPG):</label> <input type="file" id="imagenPerfilFile"
-									name="imagenPerfilFile" class="form-control"
-									accept="image/png, image/jpeg" required>
+							<div class="row">
+								<!-- Columna Izquierda - Campos obligatorios -->
+								<div class="col-md-6">
+									<div class="mb-3">
+										<label for="nickName" class="form-label">*Apodo:</label> <input
+											type="text" id="nickName" name="nickName"
+											class="form-control" required autocomplete="given-name"
+											placeholder="Introduce tu apodo">
+									</div>
 
-								<!-- Input oculto para almacenar la imagen en base64 -->
-								<input type="hidden" id="imagenPerfilBase64"
-									name="imagenPerfilBase64"> <label for="cookImages"
-									class="form-label">Subir Imágenes de la Cook (PNG o
-									JPG):</label> <input type="file" id="cookImages" name="cookImages"
-									class="form-control" accept="image/png, image/jpeg" multiple>
-								<input type="hidden" id="cookImagesBase64"
-									name="cookImagesBase64">
+									<div class="mb-3">
+										<label for="firstName" class="form-label">*Nombre:</label> <input
+											type="text" id="firstName" name="firstName"
+											class="form-control" required autocomplete="given-name"
+											placeholder="Introduce tu nombre">
+									</div>
 
+									<div class="mb-3">
+										<label for="lastName" class="form-label">*Apellidos:</label> <input
+											type="text" id="lastName" name="lastName"
+											class="form-control" required autocomplete="family-name"
+											placeholder="Introduce tus apellidos">
+									</div>
+
+									<div class="mb-3">
+										<label for="email" class="form-label">*Correo
+											electrónico:</label> <input type="email" id="username"
+											name="username" class="form-control" required
+											autocomplete="email"
+											placeholder="Introduce un correo electrónico válido">
+									</div>
+
+									<div class="mb-3">
+										<label for="birthDate" class="form-label">*Fecha de
+											Nacimiento:</label> <input type="date" id="birthDate"
+											name="birthDate" class="form-control" required>
+									</div>
+
+									<div class="mb-3">
+										<label for="password" class="form-label">*Contraseña:</label>
+										<div class="input-group">
+											<input type="password" id="password" name="password"
+												class="form-control" required autocomplete="new-password"
+												placeholder="Introduce una contraseña segura">
+											<div class="input-group-append">
+												<button type="button" class="btn btn-outline-secondary"
+													id="togglePassword"
+													onclick="togglePasswordVisibility('password')">
+													<i class="fas fa-eye" id="password-eye"></i>
+												</button>
+											</div>
+										</div>
+									</div>
+
+									<div class="mb-3">
+										<label for="confirmPassword" class="form-label">*Confirmar
+											contraseña:</label>
+										<div class="input-group">
+											<input type="password" id="confirmPassword"
+												name="confirmPassword" class="form-control" required
+												autocomplete="new-password"
+												placeholder="Confirma tu contraseña">
+											<div class="input-group-append">
+												<button type="button" class="btn btn-outline-secondary"
+													id="toggleConfirmPassword"
+													onclick="togglePasswordVisibility('confirmPassword')">
+													<i class="fas fa-eye" id="confirmPassword-eye"></i>
+												</button>
+											</div>
+										</div>
+									</div>
+
+									<div class="mb-3">
+										<label for="countrySelect" class="form-label">*País:</label> <select
+											id="countrySelect" name="country" class="form-control"
+											required>
+											<option value="">Selecciona un país</option>
+										</select>
+									</div>
+									<div class="mb-3">
+										<label for="citySelect" class="form-label">*Ciudad:</label> <select
+											id="citySelect" name="city" class="form-control" required>
+											<option value="">Selecciona una ciudad</option>
+										</select>
+									</div>
+								</div>
+
+
+								<!-- Columna Derecha - Campos opcionales -->
+								<div class="col-md-6">
+									<div class="optional-fields">
+										<div class="mb-3">
+											<label for="experience" class="form-label">*Experiencia:</label>
+											<input type="number" id="experience" name="experience"
+												class="form-control" required autocomplete="new-experience"
+												placeholder="Introduce tu Experiencia" min="0" max="80">
+										</div>
+
+										<div class="mb-3">
+											<label for="listSpecialty" class="form-label">*Lista
+												de Especialidades (Carnes, Postres...):</label> <select
+												id="listSpecialty" name="listSpecialty" class="form-control"
+												multiple required>
+												<option value="" disabled>Selecciona una o más
+													especialidades</option>
+												<option value="Carnes">Carnes</option>
+												<option value="Aves">Aves</option>
+												<option value="Pescados">Pescados</option>
+												<option value="Mariscos">Mariscos</option>
+												<option value="Vegetariano">Vegetariano</option>
+												<option value="Vegano">Vegano</option>
+												<option value="Panadería">Panadería</option>
+												<option value="Pastelería">Pastelería</option>
+												<option value="Postres">Postres</option>
+												<option value="Sopas">Sopas</option>
+												<option value="Cremas">Cremas</option>
+												<option value="Ensaladas">Ensaladas</option>
+												<option value="Entrantes">Entrantes</option>
+												<option value="Tapas">Tapas</option>
+												<option value="Bebidas">Bebidas</option>
+												<option value="Coctelería">Coctelería</option>
+												<option value="Arroces">Arroces</option>
+												<option value="Pasta">Pasta</option>
+												<option value="Pizza">Pizza</option>
+												<option value="Cocina Internacional">Cocina
+													Internacional</option>
+												<option value="Cocina Mexicana">Cocina Mexicana</option>
+												<option value="Cocina Italiana">Cocina Italiana</option>
+												<option value="Cocina Japonesa">Cocina Japonesa</option>
+												<option value="Cocina China">Cocina China</option>
+												<option value="Cocina India">Cocina India</option>
+												<option value="Cocina Árabe">Cocina Árabe</option>
+												<option value="Cocina Francesa">Cocina Francesa</option>
+												<option value="Cocina Española">Cocina Española</option>
+												<option value="Cocina Peruana">Cocina Peruana</option>
+												<option value="Cocina Mediterránea">Cocina
+													Mediterránea</option>
+												<option value="Barbacoas">Barbacoas</option>
+												<option value="Asados">Asados</option>
+												<option value="Guisos">Guisos</option>
+												<option value="Currys">Currys</option>
+												<option value="Ceviches">Ceviches</option>
+												<option value="Helados">Helados</option>
+												<option value="Dulces y Golosinas">Dulces y
+													Golosinas</option>
+												<option value="Quesos y Embutidos">Quesos y
+													Embutidos</option>
+												<option value="Dips y Salsas">Dips y Salsas</option>
+											</select>
+										</div>
+
+										<div class="mb-3">
+											<label for="culinaryTechniquesIds" class="form-label">*Seleccione
+												las Técnicas Culinarias</label> <select id="culinaryTechniquesIds"
+												name="culinaryTechniquesIds" class="form-control" multiple
+												required>
+												<option value="">Selecciona una o más técnicas
+													culinarias</option>
+												<!-- Itera sobre la lista de técnicas culinarias y crea un <option> para cada una -->
+												<th:block th:each="technique : ${recipeTechniques}">
+													<option th:value="${technique.id}"
+														th:text="${technique.name}"></option>
+												</th:block>
+											</select>
+										</div>
+
+										<div class="mb-3">
+											<label for="imagenPerfilFile" class="form-label">*Imagen
+												de perfil (PNG o JPG):</label> <input type="file"
+												id="imagenPerfilFile" name="imagenPerfilFile"
+												class="form-control" accept="image/png, image/jpeg" required>
+												
+												<input type="hidden"
+												id="imagenPerfilBase64" name="imagenPerfilBase64">
+										</div>
+
+										<div class="mb-3">
+											<label for="cookImages" class="form-label">Subir
+												Imágenes de la Cook (PNG o JPG):</label> <input type="file"
+												id="cookImages" name="cookImages" class="form-control"
+												accept="image/png, image/jpeg" multiple>
+												
+												<input type="hidden"
+												id="cookImagesBase64" name="cookImagesBase64">
+										</div>
+									</div>
+								</div>
 							</div>
-					</div>
-					<div class="form-group text-center">
-						<button type="submit" class="btn btn-primary btn-block">Registrarse</button>
-					</div>
-					</form>
-					<div class="form-group text-center">
-						<a href="/login" class="btn btn-outline-light">Iniciar sesión</a>
+
+							<div class="form-group text-center">
+								<button type="submit" class="btn btn-primary btn-block">Registrarse</button>
+							</div>
+
+						</form>
+
+						<div class="form-group text-center">
+							<a href="/login" class="btn btn-outline-light">Iniciar sesión</a>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-	</div>
+
 	<footer
 		class="footer bg-dark text-white mt-5 p-4 text-center animate__animated animate__fadeInUp">
 		© 2024 FlavorSync. Todos los derechos reservados. </footer>
+
 	<script src="/js/register.js"></script>
 	<script
 		src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
@@ -202,13 +334,26 @@
 			$('#listSpecialty').select2({
 				placeholder : "Selecciona una o más especialidades"
 			});
-		});
-		$(document).ready(function() {
-			// Inicializa Select2 en ambos campos de selección múltiple
+
 			$('#culinaryTechniquesIds').select2({
-				placeholder : "Selecciona una o más especialidades"
+				placeholder : "Selecciona una o más técnicas culinarias"
 			});
 		});
+		// Función para alternar la visibilidad de la contraseña
+		function togglePasswordVisibility(id) {
+			const passwordField = document.getElementById(id);
+			const eyeIcon = document.getElementById(id + '-eye');
+
+			if (passwordField.type === "password") {
+				passwordField.type = "text";
+				eyeIcon.classList.remove("fa-eye");
+				eyeIcon.classList.add("fa-eye-slash");
+			} else {
+				passwordField.type = "password";
+				eyeIcon.classList.remove("fa-eye-slash");
+				eyeIcon.classList.add("fa-eye");
+			}
+		}
 	</script>
 </body>
 </html>

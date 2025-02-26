@@ -209,6 +209,62 @@ body {
 	transform: rotate(15deg);
 	/* Rota ligeramente el ícono al hacer hover */
 }
+
+/* Estilo del modal (video) */
+.video-modal {
+    position: fixed;
+    top: 10%;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80%;  /* Ajustamos el modal para que no ocupe toda la pantalla */
+    max-width: 1200px;  /* Tamaño máximo del modal */
+    max-height: 80%; /* Ajustamos la altura del modal */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.7);  /* Fondo oscuro para el modal */
+    border-radius: 8px;
+    padding: 20px;
+    z-index: 9999;  /* Asegura que el modal esté encima de otros elementos */
+}
+
+/* Ajuste del tamaño del video, ocupa un porcentaje adecuado */
+#modalVideo {
+    width: 90%;  /* El video ocupa el 90% del ancho del modal */
+    height: 500px;  /* Ajustamos la altura para que no sea demasiado grande */
+    object-fit: contain;  /* Mantiene las proporciones del video */
+    border-radius: 8px; /* Bordes redondeados opcionales */
+}
+
+/* Estilo de la cabecera del modal */
+.modal-header {
+    position: absolute;
+    top: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    z-index: 10; /* Asegura que los botones estén encima del video */
+}
+
+/* Estilo de la X de cierre */
+.close-btn {
+    font-size: 30px;
+    color: white;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+
+/* Estilo del botón de redimensionar */
+.resize-btn {
+    font-size: 20px;
+    color: white;
+    background: none;
+    border: none;
+}
 </style>
 </head>
 <body>
@@ -338,15 +394,38 @@ body {
 					<h4 class="mb-4">🎬 Multimedia</h4>
 					<div class="row row-cols-1 row-cols-md-3 g-4">
 						<div class="card h-100 shadow-sm">
-							<div class="ratio ratio-16x9">
-								<video th:src="${video}" class="rounded-top" controls> Tu
-									navegador no soporta el elemento de video.
+							<!-- Video ocupa toda la Card -->
+							<div class="ratio ratio-16x9 position-relative">
+								<video id="cardVideo" th:src="${video}" class="rounded-top"
+									controls> Tu navegador no soporta el elemento de video.
 								</video>
+								<!-- Botón flotante para expandir -->
+								<button class="btn btn-light play-btn" onclick="openModal()"
+									title="Mini Reproductor">
+									<i class="fa fa-clone"></i>
+								</button>
 							</div>
-							<div class="card-body"></div>
+							<div class="card-body">
+								<h5 class="card-title">Título del Video</h5>
+								<p class="card-text">Sigue la receta mientras miras el video
+									en modo flotante.</p>
+							</div>
 						</div>
 					</div>
 				</div>
+
+				<!-- Modal Estilo YouTube (flotante y movible) -->
+				<div id="videoModal" class="video-modal">
+					<div class="modal-header">
+						<!-- Botón de cerrar -->
+						<span class="close-btn" onclick="closeModal()">&times;</span>
+						<!-- Botón para redimensionar -->
+						<button class="btn resize-btn" onclick="toggleResize()">🔳</button>
+					</div>
+					<!-- Video -->
+					<video id="modalVideo" th:src="${video}" controls autoplay></video>
+				</div>
+
 
 			</div>
 
@@ -649,6 +728,49 @@ body {
 	        }
 	    }
 	}
+	// Función para abrir el modal con el video
+	function openModal() {
+	    const modal = document.getElementById('videoModal');
+	    const video = document.getElementById('modalVideo');
+	    modal.style.display = 'block';  // Muestra el modal
+	    video.play();  // Inicia el video automáticamente
+	}
+
+	// Función para cerrar el modal
+	function closeModal() {
+	    const modal = document.getElementById('videoModal');
+	    const video = document.getElementById('modalVideo');
+	    video.pause();  // Pausa el video
+	    modal.style.display = 'none';  // Oculta el modal
+	}
+
+	// Función para alternar entre tamaño normal y fullscreen
+	function toggleResize() {
+	    const modal = document.getElementById('videoModal');
+	    modal.classList.toggle('fullscreen');  // Alterna la clase fullscreen
+	}
+
+	// Hacer el modal arrastrable
+	const modal = document.getElementById('videoModal');
+	const header = modal.querySelector('.modal-header');
+	let isDragging = false;
+
+	header.addEventListener('mousedown', function (e) {
+	    isDragging = true;
+	    let offsetX = e.clientX - modal.getBoundingClientRect().left;
+	    let offsetY = e.clientY - modal.getBoundingClientRect().top;
+
+	    document.onmousemove = function (e) {
+	        if (isDragging && !modal.classList.contains('fullscreen')) {
+	            modal.style.left = e.clientX - offsetX + 'px';
+	            modal.style.top = e.clientY - offsetY + 'px';
+	        }
+	    };
+
+	    document.onmouseup = function () {
+	        isDragging = false;
+	    };
+	});
 		</script>
 </body>
 </html>

@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import com.example.demo.model.MovieModel;
 import com.example.demo.model.commentModel;
 import com.example.demo.model.cookModel;
 import com.example.demo.model.culinaryTechniquesModel;
@@ -145,7 +146,7 @@ public class CookController {
 		model.addAttribute("userSession", c);
 		model.addAttribute("booleanCookCreate", cookService.booleanCookCreate(c, r)); // Probar a comparar por id
 		model.addAttribute("recipe", r);
-		model.addAttribute("video", r.getVideo());
+		model.addAttribute("video", "data:video/mp4;base64," +r.getVideo().getVideo());
 		return RECIPE_VIEW; // Asegúrate de que LOGIN_VIEW sea el nombre correcto de la vista de login
 	}
 
@@ -264,11 +265,10 @@ public class CookController {
 	}
 
 	@PostMapping("/auth/cookweb/addRecipe")
-	public String AddRecipe(recipeModel recipe, RedirectAttributes flash,
+	public String AddRecipe(recipeModel recipe, MovieModel video, RedirectAttributes flash,
 			@RequestParam(value = "RecipeTechniques", required = false) String[] listTechniques,
 			@RequestParam(value = "recipeImagesBase64", required = false) String[] ImagesBase64,
 			@RequestParam("imagenRecipeBase64") String imagenR, Authentication authentication,
-			@RequestParam("compressedVideoBase64") String video,
 			@RequestParam(value = "ingredientsList") String ingredientsListJson) {
 		CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 		cookModel c = cookService.findById(userDetails.getId());
@@ -276,14 +276,17 @@ public class CookController {
 		recipe.setImageRecipePerfil(imagenR); // Almacena la imagen en byte[] en la entidad recipe
 		// Procesar las imágenes adicionales y convertirlas a byte[]
 
-		List<culinaryTechniquesModel> l = new ArrayList<>();
-		for (String i : listTechniques) {
-			  if(i.isBlank() || i.isEmpty())
-				l.add(culinaryTechniquesService.findById(Integer.valueOf(i)));
-		}
-		recipe.setImagesRecipe(Arrays.asList(ImagesBase64));
+		List<culinaryTechniquesModel> l = Arrays.stream(listTechniques) 
+				.filter(technique -> !technique.isBlank()) 
+				.map(technique -> culinaryTechniquesService.findById(Integer.valueOf(technique))) 
+				.collect(Collectors.toList());
+
+		List<String> lImages = Arrays.stream(ImagesBase64) 
+				.filter(image -> !image.isBlank()) 
+				.collect(Collectors.toList());
+
+		recipe.setImagesRecipe(lImages);
 		recipe.setListRecipeTechniques(l);
-		recipe.setVideo(video);
 		// Deserializar JSON de ingredientes
 		ObjectMapper objectMapper = new ObjectMapper();
 		List<ingredientRecipeModel> ingredientRecipes = new ArrayList<>();
@@ -310,7 +313,7 @@ public class CookController {
 			return "redirect:/auth/cookweb/addRecipe";
 		}
 		recipe.getIngredients().addAll(ingredientRecipes);
-
+        recipe.setVideo(video);
 		recipeService.addRecipe(recipe, c);
 
 		flash.addFlashAttribute("success", "¡Receta registrada exitosamente!");
@@ -493,7 +496,7 @@ public class CookController {
 			return "redirect:/error";
 		}
 
-		return "redirect:/login";
+		return "redirect:/auth/cookweb/cookPerfil";
 	}
 
 	private int calculateAge(LocalDate birthDate) {

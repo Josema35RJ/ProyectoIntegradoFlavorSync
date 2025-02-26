@@ -371,6 +371,24 @@ button[type="submit"]:hover {
 					<!-- Campo oculto para el Base64 -->
 					<input type="hidden" id="compressedVideoBase64"
 						name="compressedVideoBase64">
+
+					<!-- Duración del video -->
+					<div class="mb-3">
+						<label for="duration" class="form-label">Duración del
+							Video (en segundos):</label> <input type="number" id="duration"
+							name="duration" class="form-control" readonly>
+					</div>
+
+					<!-- Indicador de si es corto -->
+					<div class="mb-3">
+						<label for="isShort" class="form-label">¿Es un video
+							corto?</label> <input type="checkbox" id="isShort" name="isShort"
+							class="form-check-input" disabled>
+					</div>
+
+					<!-- Botón de enviar -->
+					<button type="submit" class="btn btn-primary">Guardar
+						Receta</button>
 				</div>
 			</div>
 
@@ -449,6 +467,15 @@ button[type="submit"]:hover {
 								id="recipeImages" name="recipeImages" class="form-control"
 								accept="image/png, image/jpeg" multiple> <input
 								type="hidden" id="recipeImagesBase64" name="recipeImagesBase64">
+						</div>
+					</details>
+
+					<!-- Notas (Opcional) -->
+					<details class="mb-4">
+						<summary class="h6 text-secondary">Nota (Opcional)</summary>
+						<div class="mb-4">
+							<label for="grades" class="form-label">Nota</label>
+							<textarea class="form-control" id="grades" name="grades" rows="4"></textarea>
 						</div>
 					</details>
 
@@ -599,13 +626,12 @@ button[type="submit"]:hover {
 	        });
 	    });
 		document.addEventListener('DOMContentLoaded', function () {
-		    // Inicializar Select2 para el campo de ingredientes
+		    // Inicializar Select2
 		    $('#ingredientSelect').select2({
-		        placeholder: "Selecciona un ingrediente",  // Texto que aparece cuando no se ha seleccionado nada
-		        allowClear: true,  // Permite que el campo sea limpiable (cuando el usuario no elige un ingrediente)
+		        placeholder: "Selecciona un ingrediente",
+		        allowClear: true
 		    });
 
-		    // Elementos
 		    const categorySelect = document.getElementById('categorySelect');
 		    const ingredientSelect = document.getElementById('ingredientSelect');
 		    const ingredientQuantity = document.getElementById('ingredientQuantity');
@@ -613,92 +639,97 @@ button[type="submit"]:hover {
 		    const addIngredientBtn = document.getElementById('addIngredientBtn');
 		    const ingredientsList = document.getElementById('ingredientsList');
 		    const ingredientsData = document.getElementById('ingredientsData');
-		    
-		    // Hacer el select de ingredientes inicialmente inhabilitado
+
 		    ingredientSelect.disabled = true;
 
-		    // Evento cuando cambia la categoría
-		    categorySelect.addEventListener('change', function() {
+		    // 🔄 Obtener y guardar todas las opciones originales al cargar la página
+		    const allIngredients = Array.from(document.querySelectorAll('.ingredient-option')).map(option => ({
+		        id: option.value,
+		        name: option.textContent,
+		        category: option.getAttribute('data-category')
+		    }));
+
+		    categorySelect.addEventListener('change', function () {
 		        const selectedCategory = categorySelect.value;
 
-		        // Habilitar el select de ingredientes
 		        ingredientSelect.disabled = false;
 
-		        // Obtener todas las opciones de ingredientes
-		        const ingredients = ingredientSelect.querySelectorAll('.ingredient-option');
-		        
-		        // Filtrar las opciones de ingredientes según la categoría seleccionada
-		        ingredients.forEach(function(option) {
-		            // Mostrar solo los ingredientes que coinciden con la categoría seleccionada
-		            if (option.getAttribute('data-category') === selectedCategory || selectedCategory === '') {
-		                option.style.display = 'block';  // Mostrar ingrediente
-		            } else {
-		                option.style.display = 'none';   // Ocultar ingrediente
-		            }
+		        // 🔄 Destruir Select2 antes de actualizar
+		        $('#ingredientSelect').select2('destroy');
+
+		        // Limpiar opciones anteriores
+		        ingredientSelect.innerHTML = '<option></option>'; // Placeholder
+
+		        // 💡 Filtrar las opciones según la categoría seleccionada
+		        const filteredIngredients = allIngredients.filter(ingredient => 
+		            ingredient.category === selectedCategory || selectedCategory === ''
+		        );
+
+		        // Agregar las opciones filtradas al select
+		        filteredIngredients.forEach(ingredient => {
+		            const newOption = new Option(ingredient.name, ingredient.id, false, false);
+		            ingredientSelect.add(newOption);
 		        });
 
-		        // Opcional: Seleccionar la primera opción de ingrediente (si lo deseas)
-		        ingredientSelect.selectedIndex = 0;
-		        $('#ingredientSelect').trigger('change');  // Forzar a actualizar Select2
+		        // ✅ Volver a inicializar Select2 después de actualizar las opciones
+		        $('#ingredientSelect').select2({
+		            placeholder: "Selecciona un ingrediente",
+		            allowClear: true
+		        });
+
+		        // 🔔 Mostrar mensaje si no hay ingredientes en la categoría
+		        if (filteredIngredients.length === 0) {
+		            alert('No hay ingredientes disponibles para esta categoría.');
+		        }
 		    });
 
-		    // Evento para añadir ingrediente
-		    addIngredientBtn.addEventListener('click', function() {
-		        const selectedIngredientOption = ingredientSelect.selectedOptions[0];  // Obtener la opción seleccionada
+		    addIngredientBtn.addEventListener('click', function () {
+		        const selectedIngredientOption = ingredientSelect.selectedOptions[0];
 		        const selectedIngredientId = selectedIngredientOption ? selectedIngredientOption.value : '';
 		        const selectedIngredientName = selectedIngredientOption ? selectedIngredientOption.textContent : '';
 		        const quantity = ingredientQuantity.value;
 		        const unit = ingredientUnit.value;
 
-		        // Validar que los campos no estén vacíos
 		        if (!selectedIngredientId || !quantity || !unit) {
 		            alert("Por favor, completa todos los campos.");
 		            return;
 		        }
 
-		        // Crear un nuevo elemento de lista para el ingrediente
 		        const li = document.createElement('li');
 		        li.classList.add('list-group-item');
 		        li.textContent = `${selectedIngredientName} - ${quantity} ${unit}`;
 
-		        // Crear el botón para "Quitar"
 		        const removeBtn = document.createElement('button');
 		        removeBtn.classList.add('btn', 'btn-danger', 'btn-sm', 'ms-2');
 		        removeBtn.textContent = 'Quitar';
-		        removeBtn.addEventListener('click', function() {
+		        removeBtn.addEventListener('click', function () {
 		            li.remove();
 		            updateHiddenData();
 		        });
 
-		        // Añadir el botón al elemento li
 		        li.appendChild(removeBtn);
-
-		        // Añadir el ingrediente a la lista
 		        ingredientsList.appendChild(li);
 
-		        // Guardar los ingredientes en el campo oculto para enviar con el formulario
 		        const currentIngredients = ingredientsData.value ? JSON.parse(ingredientsData.value) : [];
 		        currentIngredients.push({
-		            id: selectedIngredientId,  // Aquí va el ID del ingrediente
-		            name: selectedIngredientName,  // Nombre del ingrediente
+		            id: selectedIngredientId,
+		            name: selectedIngredientName,
 		            quantity: quantity,
 		            unit: unit
 		        });
 		        ingredientsData.value = JSON.stringify(currentIngredients);
 
-		        // Limpiar los campos para el siguiente ingrediente
 		        ingredientSelect.value = '';
 		        ingredientQuantity.value = '';
 		        ingredientUnit.value = '';
-		        $('#ingredientSelect').trigger('change');  // Forzar a actualizar Select2
+		        $('#ingredientSelect').trigger('change');
 		    });
 
-		    // Función para actualizar los datos en el campo oculto
 		    function updateHiddenData() {
 		        const ingredientItems = ingredientsList.getElementsByTagName('li');
 		        const updatedIngredients = [];
-		        Array.from(ingredientItems).forEach(function(item) {
-		            const textContent = item.textContent;
+		        Array.from(ingredientItems).forEach(function (item) {
+		            const textContent = item.textContent.replace('Quitar', '').trim();
 		            const parts = textContent.split(' - ');
 		            const ingredientName = parts[0];
 		            const quantityUnit = parts[1].split(' ');
@@ -721,6 +752,8 @@ button[type="submit"]:hover {
 		    const compressionStatus = document.getElementById('compressionStatus');
 		    const progressBar = document.getElementById('uploadProgress');
 		    const countdown = document.getElementById('countdown');
+		    const durationInput = document.getElementById('duration');
+		    const isShortCheckbox = document.getElementById('isShort');
 
 		    // Deshabilitar el botón de guardar durante la compresión
 		    saveButton.disabled = true;
@@ -769,6 +802,25 @@ button[type="submit"]:hover {
 		    const url = URL.createObjectURL(blob);
 		    videoPreview.innerHTML = `<video controls width="600"><source src="${url}" type="video/mp4"></video>`;
 
+		    // Obtener la duración del video comprimido
+		    ffmpeg.FS('writeFile', 'video_compressed.mp4', await fetchFile(blob));
+		    const { stdout } = await ffmpeg.run('-i', 'video_compressed.mp4');
+		    const durationMatch = stdout.match(/Duration: (\d{2}):(\d{2}):(\d{2})\.(\d{2})/);
+		    let videoDurationInSeconds = 0;
+		    if (durationMatch) {
+		        const hours = parseInt(durationMatch[1]);
+		        const minutes = parseInt(durationMatch[2]);
+		        const seconds = parseInt(durationMatch[3]);
+		        videoDurationInSeconds = hours * 3600 + minutes * 60 + seconds;
+		    }
+
+		    // Mostrar la duración
+		    durationInput.value = videoDurationInSeconds;
+
+		    // Verificar si es corto
+		    const isShort = videoDurationInSeconds <= 30; // Video corto si dura 30 segundos o menos
+		    isShortCheckbox.checked = isShort;
+
 		    // Finalizar progreso y contador
 		    clearInterval(timer);
 		    progressBar.style.width = '100%';
@@ -779,14 +831,15 @@ button[type="submit"]:hover {
 		    // Habilitar el botón de guardar
 		    saveButton.disabled = false;
 		});
-	    // Verificación antes de enviar el formulario
-	    document.getElementById('registerForm').addEventListener('submit', function (event) {
-	        const saveButton = document.querySelector('button[type="submit"]');
-	        if (saveButton.disabled) {
-	            event.preventDefault();
-	            alert("Por favor, espera a que termine la compresión del video antes de guardar la receta.");
-	        }
-	    });
+
+		// Verificación antes de enviar el formulario
+		document.getElementById('registerForm').addEventListener('submit', function (event) {
+		    const saveButton = document.querySelector('button[type="submit"]');
+		    if (saveButton.disabled) {
+		        event.preventDefault();
+		        alert("Por favor, espera a que termine la compresión del video antes de guardar la receta.");
+		    }
+		});
 	</script>
 </body>
 </html>

@@ -12,7 +12,6 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.Lob;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
@@ -40,6 +39,7 @@ public class recipe {
 	private String name;
 
 	// Cocinero aprendiz, profesional, chef?
+	@Column(name = "level", nullable = false)
 	private String level;
 
 	// Para cuantas personas es la receta
@@ -137,9 +137,14 @@ public class recipe {
 	private List<String> imagesRecipe = new ArrayList<>();
 
 	// Video de la elaboracion guardado en base 64
-	@Column(name = "video", columnDefinition = "TEXT")
-	private String video;
-
+	@OneToOne(cascade = CascadeType.ALL)
+	@JoinColumn(name = "video_id", referencedColumnName = "id")
+	private Movie video;
+	
+	@OneToMany(cascade = CascadeType.ALL)
+	@JoinColumn(name = "video_id", referencedColumnName = "id")
+	private List<Movie> listVideo;
+	
 	@Column( nullable = true)
 	@OneToMany(mappedBy = "receta", cascade = CascadeType.ALL)
 	private List<ingredientRecipe> ingredients = new ArrayList<>();

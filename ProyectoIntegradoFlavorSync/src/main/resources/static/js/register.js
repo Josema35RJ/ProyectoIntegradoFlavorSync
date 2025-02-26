@@ -289,4 +289,92 @@ const maxDate = new Date(today.getFullYear() - minAge, today.getMonth(), today.g
 
 // Establecer el rango permitido para la fecha de nacimiento
 document.getElementById("birthDate").setAttribute("min", minDate.toISOString().split('T')[0]);
+$(document).ready(function() {
+  // Validación del correo electrónico
+  $('#username').on('input', function() {
+    const email = $(this).val();
+    const regex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
+    if (!regex.test(email)) {
+      $(this).css('border-color', 'red');
+    } else {
+      $(this).css('border-color', 'green');
+    }
+  });
+
+  // Validación de la contraseña
+  $('#password').on('input', function() {
+    const password = $(this).val();
+    if (password.length < 6) {
+      $(this).css('border-color', 'red');
+    } else {
+      $(this).css('border-color', 'green');
+    }
+  });
+});
+function showPosition(position) {
+    const latitude = position.coords.latitude;
+    const longitude = position.coords.longitude;
+
+    // Asegúrate de usar tu clave de API válida aquí
+    const apiKey = 'YOUR_API_KEY';  // Reemplázalo por tu clave real
+
+    fetch(`https://api.opencagedata.com/geocode/v1/json?q=${latitude}+${longitude}&key=${apiKey}`)
+        .then(response => response.json())
+        .then(data => {
+            if (data.results && data.results.length > 0) {
+                const country = data.results[0].components.country;
+                const city = data.results[0].components.city || data.results[0].components.town;
+
+                document.getElementById('countrySelect').value = country;
+                document.getElementById('citySelect').value = city;
+            } else {
+                console.error('No se pudo obtener la ubicación precisa.');
+            }
+        })
+        .catch(error => {
+            console.error('Error al obtener la ubicación:', error);
+        });
+}
+// Función que se ejecuta cuando el usuario inicia sesión con Google
+function onSignIn(googleUser) {
+    // Obtener los datos del perfil del usuario de Google
+    var profile = googleUser.getBasicProfile();
+    var userId = profile.getId(); // ID único del usuario
+    var userName = profile.getName(); // Nombre del usuario
+    var userEmail = profile.getEmail(); // Correo electrónico del usuario
+    var userImageUrl = profile.getImageUrl(); // URL de la imagen del perfil
+
+    // Mostrar la información del usuario (esto se puede enviar al backend)
+    console.log('ID del Usuario: ' + userId);
+    console.log('Nombre: ' + userName);
+    console.log('Correo: ' + userEmail);
+    console.log('Imagen: ' + userImageUrl);
+
+    // Opcional: Redirigir al usuario a otra página (ej. al panel de usuario)
+    // window.location.href = '/tu-dashboard';
+
+    // Puedes enviar esta información al servidor para registrar al usuario
+    var id_token = googleUser.getAuthResponse().id_token;
+
+    // Enviar el token al servidor para su verificación
+    fetch('/tu-backend-endpoint', {
+        method: 'POST',
+        body: JSON.stringify({ token: id_token }),
+        headers: { 'Content-Type': 'application/json' }
+    })
+    .then(response => response.json())
+    .then(data => {
+        // Procesar la respuesta del servidor (ej. redirigir, mostrar mensaje, etc.)
+        console.log('Usuario registrado:', data);
+    })
+    .catch(error => console.error('Error:', error));
+}
+
+// Función para cerrar sesión
+function signOut() {
+    var auth2 = gapi.auth2.getAuthInstance();
+    auth2.signOut().then(function () {
+        console.log('Usuario desconectado.');
+    });
+}
 

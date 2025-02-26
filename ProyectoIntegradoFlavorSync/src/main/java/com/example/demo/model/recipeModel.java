@@ -82,41 +82,46 @@ public class recipeModel {
 
 	// Imagen o imagenes de la receta
 	private List<String> imagesRecipe = new ArrayList<>();
-	
-	//Imagen para la receta que sale en la pantalla principal, imagen perfil de la receta
+
+	// Imagen para la receta que sale en la pantalla principal, imagen perfil de la
+	// receta
 	private String imageRecipePerfil;
 
-	// Video de la elaboracion
-    private String video;
+	// Video de la elaboracion guardado en base 64
+	private MovieModel video;
+
+	private List<MovieModel> listVideo;
 
 	// Relación many-to-many usando la clase RecipeIngredient como entidad
 	// intermedia
-    private List<ingredientRecipeModel> ingredients = new ArrayList<>();
-    
-	//Fecha de creacion de la receta 
-	private LocalDate createDate;
-	
-	//Fecha de la actualizacion de esta receta
-	private LocalDate updateDate;
-	
-	// Contador de likes
-    private int likesCount;
+	private List<ingredientRecipeModel> ingredients = new ArrayList<>();
 
-	public recipeModel(String name, int diners, float preparationTime, List<String> whereItisDone,
-			List<String> category,  List<String> listkitchenUtensils, List<culinaryTechniquesModel> listRecipeTechniques,
-			String instructions, String difficulty, List<String> allergensAndDietaryRestrictions, String country, String city) {
+	// Fecha de creacion de la receta
+	private LocalDate createDate;
+
+	// Fecha de la actualizacion de esta receta
+	private LocalDate updateDate;
+
+	// Contador de likes
+	private int likesCount;
+
+	public recipeModel(String name, int diners, float preparationTime, List<String> whereItisDone, String grades,
+			List<String> category, List<String> listkitchenUtensils, List<culinaryTechniquesModel> listRecipeTechniques,
+			String instructions, String difficulty, List<String> allergensAndDietaryRestrictions, String country,
+			String city) {
 		super();
 		this.name = name;
 		this.diners = diners;
 		this.preparationTime = preparationTime;
 		this.whereItisDone = whereItisDone;
+		this.grades = grades;
 		this.category = category;
 		this.listkitchenUtensils = listkitchenUtensils;
 		this.listRecipeTechniques = listRecipeTechniques;
 		this.instructions = instructions;
 		this.difficulty = difficulty;
 		this.AllergensAndDietaryRestrictions = allergensAndDietaryRestrictions;
-	    this.Country= country;
+		this.Country = country;
 		this.city = city;
 		this.createDate = LocalDate.now();
 
@@ -322,22 +327,30 @@ public class recipeModel {
 	public void setUpdateDate(LocalDate updateDate) {
 		this.updateDate = updateDate;
 	}
-	
-	 // Getters y Setters
-    public int getLikesCount() {
-        return likesCount;
-    }
 
-    public void setLikesCount(int likesCount) {
-        this.likesCount = likesCount;
-    }
-    
-	public String getVideo() {
+	// Getters y Setters
+	public int getLikesCount() {
+		return likesCount;
+	}
+
+	public void setLikesCount(int likesCount) {
+		this.likesCount = likesCount;
+	}
+
+	public MovieModel getVideo() {
 		return video;
 	}
 
-	public void setVideo(String video) {
+	public void setVideo(MovieModel video) {
 		this.video = video;
+	}
+
+	public List<MovieModel> getListVideo() {
+		return listVideo;
+	}
+
+	public void setListVideo(List<MovieModel> listVideo) {
+		this.listVideo = listVideo;
 	}
 
 	@Override
