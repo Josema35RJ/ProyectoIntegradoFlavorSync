@@ -1,0 +1,130 @@
+/* Reset de márgenes y padding */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Estilo general */
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  color: #333;
+}
+
+/* Cabecera */
+header {
+  background-color: #2C3E50;
+  padding: 10px 0;
+  text-align: center;
+}
+
+header nav ul {
+  list-style-type: none;
+}
+
+header nav ul li {
+  display: inline;
+  margin: 0 15px;
+}
+
+header nav ul li a {
+  color: #fff;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+/* Sección principal (hero) */
+.hero {
+  background-color: #3498DB;
+  text-align: center;
+  padding: 40px 0;
+}
+
+.hero h1 {
+  color: #fff;
+  font-size: 36px;
+}
+
+.hero p {
+  color: #fff;
+  font-size: 20px;
+}
+
+/* Filtro de categorías */
+.categories {
+  background-color: #ecf0f1;
+  padding: 20px;
+  text-align: center;
+}
+
+.categories ul {
+  list-style-type: none;
+}
+
+.categories ul li {
+  display: inline;
+  margin: 0 10px;
+}
+
+.categories ul li a {
+  color: #3498DB;
+  text-decoration: none;
+  font-size: 18px;
+}
+
+/* Galería de videos */
+.video-gallery {
+  padding: 40px 20px;
+  text-align: center;
+}
+
+.video-gallery h2 {
+  font-size: 30px;
+  margin-bottom: 20px;
+}
+
+.video-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.video-item {
+  background-color: #fff;
+  padding: 10px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.video-item img {
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.video-item h3 {
+  margin: 10px 0;
+  font-size: 18px;
+}
+
+.video-item p {
+  font-size: 14px;
+  color: #888;
+}
+
+.video-item a {
+  color: #3498DB;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+/* Pie de página */
+footer {
+  background-color: #2C3E50;
+  color: #fff;
+  text-align: center;
+  padding: 10px;
+  position: relative;
+  bottom: 0;
+  width: 100%;
+}

@@ -100,7 +100,7 @@ public class AuthController {
 		} else {
 			flash.addFlashAttribute("error", "El enlace de verificación es inválido o ha expirado.");
 		}
-		return "redirect:" + LOGIN_VIEW;
+		return LOGIN_VIEW;
 	}
 
 	@Scheduled(cron = "0 */10 * * * *") // Ejecutar cada hora

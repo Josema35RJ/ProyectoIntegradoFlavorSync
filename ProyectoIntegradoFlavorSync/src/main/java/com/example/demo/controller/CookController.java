@@ -496,7 +496,7 @@ public class CookController {
 			return "redirect:/error";
 		}
 
-		return "redirect:/auth/cookweb/cookPerfil";
+		return "redirect:/auth/cookweb/logout";
 	}
 
 	private int calculateAge(LocalDate birthDate) {
