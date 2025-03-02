@@ -46,13 +46,13 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class CookController {
 
-	private static final String PANEL_VIEW = "/auth/cook/cookPanel";
-	private static final String PANELPERFIL_VIEW = "/auth/cook/cookPerfil";
-	private static final String FORMRECIPE_VIEW = "/auth/cook/formRecipe";
-	private static final String UPDATERECIPE_VIEW = "/auth/cookweb/updateRecipe";
-	private static final String COOKRECIPES_VIEW = "/auth/cook/cookRecipes";
-	private static final String RESETPASSWORD_VIEW = "/auth/resetPassword";
-	private static final String RECIPE_VIEW = "/auth/cook/viewRecipe";
+	private static final String PANEL_VIEW = "auth/cook/cookPanel";
+	private static final String PANELPERFIL_VIEW = "auth/cook/cookPerfil";
+	private static final String FORMRECIPE_VIEW = "auth/cook/formRecipe";
+	private static final String UPDATERECIPE_VIEW = "auth/cookweb/updateRecipe";
+	private static final String COOKRECIPES_VIEW = "auth/cook/cookRecipes";
+	private static final String RESETPASSWORD_VIEW = "auth/resetPassword";
+	private static final String RECIPE_VIEW = "auth/cook/viewRecipe";
 
 	@Autowired
 	@Qualifier("cookService")

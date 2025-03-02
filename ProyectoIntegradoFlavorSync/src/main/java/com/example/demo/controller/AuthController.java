@@ -24,7 +24,7 @@ import jakarta.mail.MessagingException;
 @Controller
 public class AuthController {
 
-	private static final String LOGIN_VIEW = "/login";
+	private static final String LOGIN_VIEW = "login";
 
 	@Autowired
 	@Qualifier("emailService")

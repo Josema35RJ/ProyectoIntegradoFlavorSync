@@ -38,7 +38,7 @@ public class EmailServiceImpl {
 		Context context = new Context();
 		context.setVariable("recoveryLink", recoveryLink);
 		// Procesar la plantilla HTML
-		String htmlContent = templateEngine.process("/auth/recoverPassword", context);
+		String htmlContent = templateEngine.process("/recoverPassword", context);
 
 		helper.setTo(to);
 		helper.setSubject(subject);
@@ -67,7 +67,7 @@ public class EmailServiceImpl {
 		context.setVariable("username", to); // Puedes pasar más variables si lo necesitas
 
 		// Procesar la plantilla HTML
-		String htmlContent = templateEngine.process("/auth/verifyEmail", context);
+		String htmlContent = templateEngine.process("/verifyEmail", context);
 
 		helper.setTo(to);
 		helper.setSubject(subject);
