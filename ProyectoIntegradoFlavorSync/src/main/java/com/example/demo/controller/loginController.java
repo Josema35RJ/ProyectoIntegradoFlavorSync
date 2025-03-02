@@ -29,8 +29,8 @@ import jakarta.servlet.http.HttpSession;
 @Controller
 public class loginController {
 
-	private static final String LOGIN_VIEW = "/login";
-	private static final String REGISTER_VIEW = "/register";
+	private static final String LOGIN_VIEW = "login";
+	private static final String REGISTER_VIEW = "register";
 
 	@Autowired
 	@Qualifier("cookService")
